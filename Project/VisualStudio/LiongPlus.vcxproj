@@ -1,0 +1,204 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Include\Array.hpp" />
+    <ClInclude Include="..\..\Include\Buffer.hpp" />
+    <ClInclude Include="..\..\Include\Char.hpp" />
+    <ClInclude Include="..\..\Include\Collections\ContinuousMemoryEnumerator.hpp" />
+    <ClInclude Include="..\..\Include\Collections\ICollection.hpp" />
+    <ClInclude Include="..\..\Include\Collections\IComparer.hpp" />
+    <ClInclude Include="..\..\Include\Collections\IEnumerable.hpp" />
+    <ClInclude Include="..\..\Include\Collections\IEnumerator.hpp" />
+    <ClInclude Include="..\..\Include\Collections\IList.hpp" />
+    <ClInclude Include="..\..\Include\Collections\List.hpp" />
+    <ClInclude Include="..\..\Include\Console.hpp" />
+    <ClInclude Include="..\..\Include\DateTime.hpp" />
+    <ClInclude Include="..\..\Include\Delegate.hpp" />
+    <ClInclude Include="..\..\Include\Exception.hpp" />
+    <ClInclude Include="..\..\Include\Fundamental.hpp" />
+    <ClInclude Include="..\..\Include\Graphics\Texture.hpp" />
+    <ClInclude Include="..\..\Include\IDisposable.hpp" />
+    <ClInclude Include="..\..\Include\IO\IBuffer.hpp" />
+    <ClInclude Include="..\..\Include\IO\MemoryStream.hpp" />
+    <ClInclude Include="..\..\Include\IO\Stream.hpp" />
+    <ClInclude Include="..\..\Include\Media\Bitmap.hpp" />
+    <ClInclude Include="..\..\Include\Media\Bmp.hpp" />
+    <ClInclude Include="..\..\Include\Media\Image.hpp" />
+    <ClInclude Include="..\..\Include\Nullable.hpp" />
+    <ClInclude Include="..\..\Include\Ptr.hpp" />
+    <ClInclude Include="..\..\Include\ReferenceCounter.hpp" />
+    <ClInclude Include="..\..\Include\Serialization\ISerializable.hpp" />
+    <ClInclude Include="..\..\Include\String.hpp" />
+    <ClInclude Include="..\..\Include\Testing\Assert.hpp" />
+    <ClInclude Include="..\..\Include\Testing\Assume.hpp" />
+    <ClInclude Include="..\..\Include\Testing\Logger.hpp" />
+    <ClInclude Include="..\..\Include\Testing\UnitTest.hpp" />
+    <ClInclude Include="..\..\Include\Text\StringBuilder.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Include\Fundamental.cpp" />
+    <ClCompile Include="..\..\Include\Graphics\Texture.cpp" />
+    <ClCompile Include="..\..\Include\Buffer.cpp" />
+    <ClCompile Include="..\..\Include\Char.cpp" />
+    <ClCompile Include="..\..\Include\Console.cpp" />
+    <ClCompile Include="..\..\Include\DateTime.cpp" />
+    <ClCompile Include="..\..\Include\Image.cpp" />
+    <ClCompile Include="..\..\Include\IO\MemoryStream.cpp" />
+    <ClCompile Include="..\..\Include\Media\Bitmap.cpp" />
+    <ClCompile Include="..\..\Include\Media\Bmp.cpp" />
+    <ClCompile Include="..\..\Include\source.cpp" />
+    <ClCompile Include="..\..\Include\String.cpp" />
+    <ClCompile Include="..\..\Include\Testing\Assert.cpp" />
+    <ClCompile Include="..\..\Include\Testing\Logger.cpp" />
+    <ClCompile Include="..\..\Include\Testing\UnitTest.cpp" />
+    <ClCompile Include="..\..\Include\Text\StringBuilder.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{F7B8D8F6-627C-476F-9461-DA3A6316B45D}</ProjectGuid>
+    <RootNamespace>LiongPlus</RootNamespace>
+    <TargetPlatformVersion>8.1</TargetPlatformVersion>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)..\..\Build\x86\Debug\</OutDir>
+    <IntDir>$(SolutionDir)..\..\Build\x86\Debug\Intermediate\</IntDir>
+    <IncludePath>..\..\Include;$(IncludePath)</IncludePath>
+    <SourcePath>..\..\Source;$(SourcePath)</SourcePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)..\..\Build\x86\Release\</OutDir>
+    <IntDir>$(SolutionDir)..\..\Build\x86\Release\Intermediate\</IntDir>
+    <IncludePath>..\..\Include;$(IncludePath)</IncludePath>
+    <SourcePath>..\..\Source;$(SourcePath)</SourcePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)..\..\Build\x64\Debug\</OutDir>
+    <IntDir>$(SolutionDir)..\..\Build\x64\Debug\Intermediate\</IntDir>
+    <IncludePath>..\..\Include;$(IncludePath)</IncludePath>
+    <SourcePath>..\..\Source;$(SourcePath)</SourcePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)..\..\Build\x64\Release\</OutDir>
+    <IntDir>$(SolutionDir)..\..\Build\x64\Release\Intermediate\</IntDir>
+    <IncludePath>..\..\Include;$(IncludePath)</IncludePath>
+    <SourcePath>..\..\Source;$(SourcePath)</SourcePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>Debug</GenerateDebugInformation>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapExports>true</MapExports>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>Debug</GenerateDebugInformation>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapExports>true</MapExports>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

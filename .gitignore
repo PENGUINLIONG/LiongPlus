@@ -16,6 +16,7 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+Build/
 
 # =========================
 # Operating System Files
@@ -41,3 +42,7 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+Include/source.cpp
+Project/VisualStudio/LiongPlus.opensdf
+Project/VisualStudio/.vs/LiongPlus/v14/.suo
+Project/VisualStudio/LiongPlus.sdf
