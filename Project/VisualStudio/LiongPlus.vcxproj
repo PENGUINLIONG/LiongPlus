@@ -42,6 +42,7 @@
     <ClInclude Include="..\..\Include\Media\Bitmap.hpp" />
     <ClInclude Include="..\..\Include\Media\Bmp.hpp" />
     <ClInclude Include="..\..\Include\Media\Image.hpp" />
+    <ClInclude Include="..\..\Include\Net\Socket.hpp" />
     <ClInclude Include="..\..\Include\Nullable.hpp" />
     <ClInclude Include="..\..\Include\Ptr.hpp" />
     <ClInclude Include="..\..\Include\ReferenceCounter.hpp" />
@@ -64,6 +65,7 @@
     <ClCompile Include="..\..\Include\IO\MemoryStream.cpp" />
     <ClCompile Include="..\..\Include\Media\Bitmap.cpp" />
     <ClCompile Include="..\..\Include\Media\Bmp.cpp" />
+    <ClCompile Include="..\..\Include\Net\Socket.cpp" />
     <ClCompile Include="..\..\Include\source.cpp" />
     <ClCompile Include="..\..\Include\String.cpp" />
     <ClCompile Include="..\..\Include\Testing\Assert.cpp" />

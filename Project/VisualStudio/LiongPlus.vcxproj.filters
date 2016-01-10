@@ -47,6 +47,12 @@
     <Filter Include="Source\Testing">
       <UniqueIdentifier>{6bd6f0cd-3ffc-487d-b1c7-f83f8291aea8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Include\Net">
+      <UniqueIdentifier>{0c200138-2cae-4875-82be-1fe702b42d32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Net">
+      <UniqueIdentifier>{be80a33b-3015-49b5-9b76-61c9f49314e3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Include\Collections\ContinuousMemoryEnumerator.hpp">
@@ -148,6 +154,9 @@
     <ClInclude Include="..\..\Include\Testing\Logger.hpp">
       <Filter>Include\Testing</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Include\Net\Socket.hpp">
+      <Filter>Include\Net</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Include\Graphics\Texture.cpp">
@@ -197,6 +206,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Include\Testing\Logger.cpp">
       <Filter>Source\Testing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Include\Net\Socket.cpp">
+      <Filter>Source\Net</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
