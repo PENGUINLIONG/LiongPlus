@@ -286,121 +286,53 @@ namespace LiongPlus
 		return String(c_str, length + 1);
 	}
 
+	String String::FromValue(unsigned long long value)
+	{
+		return FromUnsignedInterger(value);
+	}
+	String String::FromValue(long long value)
+	{
+		return FromSignedInterger(value);
+	}
+	String String::FromValue(unsigned long value)
+	{
+		return FromUnsignedInterger(value);
+	}
+	String String::FromValue(long value)
+	{
+		return FromSignedInterger(value);
+	}
 	String String::FromValue(unsigned int value)
 	{
-		if (value == 0)
-		{
-			_L_Char* c_str = new _L_Char[2];
-			c_str[0] = _LT('0');
-			c_str[1] = Char::EndOfString;
-			return c_str;
-		}
-
-		int len = UnsignedIntergerWcsLength(value);
-		String output(new _L_Char[len], len - 1);
-		_L_Char* beg, *end;
-
-		beg = end = output._Field;
-
-		*end = 0; // 'NUL'.
-
-		// Write.
-		while (value != 0)
-		{
-			*(++end) = (value % 10) + 0x30; // Keep space for 'NUL'.
-			value /= 10;
-		}
-
-		// Reverse.
-		while (beg < end) // XOR exchange.
-		{
-			*beg ^= *end;
-			*end ^= *beg;
-			*(beg++) ^= *(end--);
-		}
-
-		return output;
+		return FromUnsignedInterger(value);
 	}
 	String String::FromValue(int value)
 	{
-		if (value == 0)
-		{
-			_L_Char* c_str = new _L_Char[2];
-			c_str[0] = _LT('0');
-			c_str[1] = Char::EndOfString;
-			return c_str;
-		}
-
-		int len = IntergerWcsLength(value);
-		String output(new _L_Char[len], len);
-		_L_Char* beg, *end;
-		bool neg;
-
-		if (neg = value < 0)
-			value = -value;
-
-		beg = end = output._Field;
-
-		*end = 0; // 'NUL'.
-
-		// Write.
-		while (value != 0)
-		{
-			*(++end) = (value % 10) + 0x30; // Keep space for 'NUL'.
-			value /= 10;
-		}
-
-		// Put negative sign.
-		if (neg)
-			*(++end) = _LT('-');
-
-		// Reverse.
-		while (beg < end) // XOR exchange.
-		{
-			*beg ^= *end;
-			*end ^= *beg;
-			*(beg++) ^= *(end--);
-		}
-
-		return output;
+		return FromSignedInterger(value);
+	}
+	String String::FromValue(unsigned short value)
+	{
+		return FromUnsignedInterger(value);
+	}
+	String String::FromValue(short value)
+	{
+		return FromSignedInterger(value);
+	}
+	String String::FromValue(unsigned char value)
+	{
+		return FromUnsignedInterger(value);
+	}
+	String String::FromValue(char value)
+	{
+		return FromSignedInterger(value);
 	}
 	String String::FromValue(double value)
 	{
-		if (value == 0.0)
-		{
-			_L_Char* c_str = new _L_Char[2];
-			c_str[0] = _LT('0');
-			c_str[1] = 0;
-			return c_str;
-		}
-
-		int len = FractionWcsLength(value);
-		String interger = FromValue((int)value)
-			, fraction = String(new _L_Char[len], len - 1);
-		_L_Char* c_str = fraction._Field;
-
-		if (value == 0.0)
-			return interger;
-		if (value < 0.0)
-			value = -value;
-		value -= (int)value;
-
-		*(c_str) = L'.'; // Decimal point.
-
-		while (value - 0.000001 > 0) // For the low accuracy of floating point number culculation.
-		{
-			(value *= 10);
-			*(++c_str) = (int)value + 0x30;
-			value -= (int)value;
-		}
-
-		*(++c_str) = 0; // 'NUL'.
-
-		return interger + fraction;
+		return FromFloatingPoint(value);
 	}
 	String String::FromValue(float value)
 	{
-		return FromValue((double)value);
+		return FromFloatingPoint(value);
 	}
 	String String::FromValue(bool value)
 	{
@@ -476,75 +408,23 @@ namespace LiongPlus
 		return 0;
 	}
 
-	int String::FractionWcsLength(double floating)
-	{
-		int len = 2; // '.' and 'NUL'.
-		floating -= (int)floating;
-
-		if (floating == 0)
-			return 0;
-		if (floating < 0)
-			floating = -floating;
-
-		while (floating - 0.000001 > 0) // For the low accuracy of floating point number culculation.
-		{
-			++len;
-			floating *= 10;
-			floating -= (int)floating;
-		}
-
-		return len;
-	}
-
 	_L_Char String::GetValue(int index)
 	{
 		return *(_Field + index);
 	}
 
-	int String::IntergerWcsLength(int interger)
-	{
-		if (interger == 0)
-			return 2;
-		int len = 1;
-		if (interger < 0)
-			++len;
-
-		while (interger != 0)
-		{
-			++len;
-			interger /= 10;
-		}
-
-		return len;
-	}
-
-	int String::UnsignedIntergerWcsLength(unsigned int interger)
-	{
-		if (interger < 10)
-			return 2;
-
-		int len = 1;
-		while (interger != 0)
-		{
-			++len;
-			interger /= 10;
-		}
-
-		return len;
-	}
-
 	void String::CleanUp()
 	{
 		_Length = 0;
-		if (_Counter)
+		if (_Counter && !_Counter->Dec())
 		{
-			if (_Field && !_Counter->Dec())
+			if (_Field)
 			{
 				delete[] _Field;
-				delete _Counter;
 			}
-			_Field = nullptr;
-			_Counter = nullptr;
+			delete _Counter;
 		}
+		_Field = nullptr;
+		_Counter = nullptr;
 	}
 }

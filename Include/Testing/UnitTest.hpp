@@ -67,15 +67,34 @@ namespace LiongPlus
 			: public Object
 		{
 		public:
-			static std::mutex _Mutex;
-			static List<TestResult> _Results;
+			static class ResultsObject
+			{
+			public:
+				TestResult& operator[](int index)
+				{
+					return _Results[index];
+				}
+
+				void Add(TestResult& result)
+				{
+					_Results.Add(result);
+				}
+
+				TestResult& Last()
+				{
+					return _Results.Last();
+				}
+			} Results;
 
 			static void Test(TestObject& obj);
 
 			static void RunUnit(Delegate<void(void)> unit);
 
 			static String Summary();
-			static List<String> ListResult(TestState state);
+			static List<int> ListResultId(TestState state);
+		private:
+			static std::mutex _Mutex;
+			static List<TestResult> _Results;
 		};
 	}
 }
@@ -84,5 +103,5 @@ namespace LiongPlus
 #define _L_Test_Prepare virtual void Prepare() override final
 #define _L_Test_TestList virtual void Test() override final
 #define _L_Test_CleanUp virtual void CleanUp() override final
-#define _L_Test_Unit(name, func) LiongPlus::Testing::UnitTest::_Results.Add(TestResult(_LT(name))); LiongPlus::Testing::UnitTest::RunUnit(func)
+#define _L_Test_Unit(name, func) LiongPlus::Testing::UnitTest::Results.Add(TestResult(_LT(name))); LiongPlus::Testing::UnitTest::RunUnit(func)
 #endif

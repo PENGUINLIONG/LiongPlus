@@ -10,7 +10,7 @@ namespace LiongPlus
 	{
 		void Logger::Log(String label, String msg)
 		{
-			UnitTest::_Results.Last().Log.AppendLine(String::Concat({ DateTime::Now().ToString(), label, msg }));
+			UnitTest::Results.Last().Log.AppendLine(String::Concat({ DateTime::Now().ToString(), label, msg }));
 		}
 
 		void Logger::Info(String msg)

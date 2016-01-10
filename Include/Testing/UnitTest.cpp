@@ -8,6 +8,7 @@ namespace LiongPlus
 	{
 		std::mutex UnitTest::_Mutex;
 		List<TestResult> UnitTest::_Results;
+		UnitTest::ResultsObject UnitTest::Results;
 
 		TestObject::TestObject()
 		{
@@ -26,13 +27,13 @@ namespace LiongPlus
 
 
 		TestResult::TestResult()
-			: Log(String())
+			: Log()
 			, Name(String())
 			, State(TestState::Waiting)
 		{
 		}
 		TestResult::TestResult(String name)
-			: Log(String())
+			: Log()
 			, Name(name)
 			, State(TestState::Waiting)
 		{
@@ -44,7 +45,7 @@ namespace LiongPlus
 		{
 		}
 		TestResult::TestResult(TestResult&& instance)
-			: Log(String())
+			: Log()
 			, Name(String())
 			, State(TestState::Waiting)
 		{
@@ -108,14 +109,16 @@ namespace LiongPlus
 			}
 			return String::FromValue(_Results.Count()) + _LT(" tests have been run and ") + String::FromValue(passed) + _LT(" of these passed.");
 		}
-		List<String> UnitTest::ListResult(TestState state)
+		List<int> UnitTest::ListResultId(TestState state)
 		{
-			List<String> list;
-			for (auto& result : _Results)
+			_Mutex.lock();
+			List<int> list;
+			for (int i = 0; i < _Results.GetCount(); ++i)
 			{
-				if (result.State == state)
-					list.Add(result.Name);
+				if (_Results[i].State == state)
+					list.Add(i);
 			}
+			_Mutex.unlock();
 			return list;
 		}
 	}
