@@ -87,6 +87,8 @@ namespace LiongPlus
 		bool Equals(String& value);
 		const _L_Char* GetNativePointer();
 		int GetLength();
+        String Remove(int index);
+        String Remove(int index, int count);
 		String& ToString();
 
 		static int Compare(String& a, String& b);

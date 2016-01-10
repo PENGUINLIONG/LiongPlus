@@ -224,7 +224,22 @@ namespace LiongPlus
 	{
 		return _Length;
 	}
-
+    
+    String String::Remove(int index)
+    {
+        _L_Char* c_str = new _L_Char[index + 1];
+        Buffer::Wcscpy(c_str, _Field, index);
+        c_str[index] = Char::EndOfString;
+        return String(c_str, index + 1);
+    }
+    String String::Remove(int index, int count)
+    {
+        _L_Char* c_str = new _L_Char[_Length - count];
+        Buffer::Wcscpy(c_str, _Field, index);
+        Buffer::Wcscpy(c_str + index, _Field + index + count, _Length - index - count);
+        return String(c_str, _Length - count);
+    }
+    
 	String& String::ToString()
 	{
 		return *this;
@@ -363,6 +378,8 @@ namespace LiongPlus
 	{
 		return Join(separator, values, 0, values.GetLength());
 	}
+    
+    
 
 	// IBuffer
 
