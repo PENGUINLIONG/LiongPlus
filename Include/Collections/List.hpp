@@ -122,10 +122,6 @@ namespace LiongPlus
 			{
 				return _Data.GetLength();
 			}
-			int GetCount()
-			{
-				return *_Count;
-			}
 			int InsertRange(int index, IEnumerable<T>* source)
 			{
 				int count = 0;
@@ -171,6 +167,13 @@ namespace LiongPlus
 			{
 				Array<T>::Sort(_Data, FunctorComparer<T>(comparison));
 			}
+            
+            Array<T> ToArray()
+            {
+                Array<T>(_Count) arr;
+                Array<T>::Copy(_Data, arr, _Count);
+                return arr;
+            }
 
 			// IList<T>
 
@@ -194,7 +197,7 @@ namespace LiongPlus
 				}
 				return false;
 			}
-			virtual int Count() override
+			virtual int GetCount() override
 			{
 				return *_Count;
 			}

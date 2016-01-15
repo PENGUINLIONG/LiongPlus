@@ -43,7 +43,7 @@ namespace LiongPlus
 			/// Gets the number of elements contained in this.
 			/// </summary>
 			/// <returns>The number of elements.</returns>
-			virtual int Count() = 0;
+			virtual int GetCount() = 0;
 			/// <summary>
 			/// Copies the elements to an [LiongPlus::Collections::Array], starting at a particular Array index.
 			/// </summary>

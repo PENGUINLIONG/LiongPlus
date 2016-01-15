@@ -551,7 +551,7 @@ namespace LiongPlus
 			return false;
 		}
 
-		virtual int Count() override final
+		virtual int GetCount() override final
 		{
 			return _Size;
 		}

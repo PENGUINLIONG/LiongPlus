@@ -8,6 +8,7 @@
 #include "Buffer.hpp"
 #include "Char.hpp"
 #include "Collections\ContinuousMemoryEnumerator.hpp"
+#include "Collections\List.hpp"
 #include "Delegate.hpp"
 #include "Exception.hpp"
 #include "IStandardizable.hpp"
@@ -18,6 +19,12 @@ using namespace LiongPlus::Collections;
 
 namespace LiongPlus
 {
+    enum class StringSplitOptions
+    {
+        None,
+        RemoveEmptyEntries
+    }
+    
 	/// <summary>
 	/// Represents text as a series of characters.
 	/// </summary>
@@ -29,20 +36,6 @@ namespace LiongPlus
 	{
 	public:
 		static String Empty;
-
-		struct PropertyChars
-		{
-			friend class String;
-		private:
-			Func<_L_Char, int> _OperatorBracket;
-		public:
-			_L_Char operator[](int index)
-			{
-				return _OperatorBracket(index);
-			}
-		};
-
-		PropertyChars Chars;
 
 		String();
 		String(const String& instance);
@@ -87,9 +80,22 @@ namespace LiongPlus
 		bool Equals(String& value);
 		const _L_Char* GetNativePointer();
 		int GetLength();
+        String Insert(int index, string value);
         String Remove(int index);
         String Remove(int index, int count);
+        Array<String> Split(_L_Char separator, StringSplitOptions option = StringSplitOptions::RemoveEmptyEntries);
+        Array<String> Split(_L_Char separator, int maxCount, StringSplitOptions option = SplitOptions::RemoveEmptyEntries);
+        Array<String> Split(Array<_L_Char>& separators, StringSplitOptions option);
+        Array<String> Split(Array<_L_Char>& separators, int maxCount, StringSplitOptions option = SplitOptions::RemoveEmptyEntries);
+        //Array<String> Split(std::initializer_list<_L_Char> separators, StringSplitOptions option);
+        //Array<String> Split(std::initializer_list<_L_Char> separators, int maxCount, StringSplitOptions option = SplitOptions::RemoveEmptyEntries);
+        String Substring(int index);
+        String Substring(int index, int count);
 		String& ToString();
+        String Trim();
+        String Trim(Array<_L_Char>& trimee);
+        String TrimEnd(Array<_L_Char>& trimee);
+        String TrimStart(Array<_L_Char>& trimee);
 
 		static int Compare(String& a, String& b);
 		static String Concat(String& str1, String& str2);
