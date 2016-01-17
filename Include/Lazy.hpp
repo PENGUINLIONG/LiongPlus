@@ -4,108 +4,217 @@
 #ifndef _L_Lazy
 #define _L_Lazy
 #include "Fundamental.hpp"
+#include "Delegate.hpp"
+#include "Exception.hpp"
+#include "Ptr.hpp"
+#include <mutex>
+#include <thread>
 
 namespace LiongPlus
 {
-    enum class LazyThreadSafetyMode
-    {
-        ExecutionAndPublication,
-        None,
-        PublicationOnly
-    }
+	enum class LazyThreadSafetyMode
+	{
+		ExecutionAndPublication,
+		None,
+		PublicationOnly
+	};
 
     template<typename T>
-    class Lazy<T>
+    class Lazy
     {
-        class LazyThreadSafeCaller
+	private:
+		using TInitializer = Func<T*(void)>;
+
+        class LazyObjectCaller
         {
         public:
-            virtual GetValue() = 0;
-        }
+			LazyObjectCaller(TInitializer& initializer)
+				: _Initializer(new TInitializer(initializer))
+				: _Value(nullptr)
+			{
+			}
+			virtual ~LazyThreadSafeCaller()
+			{
+				if (_Initializer != nullptr)
+				{
+					delete _Initializer;
+					_Initializer = nullptr;
+				}
+			}
+
+			bool IsValueCreated()
+			{
+				return _Value != nullptr;
+			}
+            virtual T& GetValue() = 0;
+		private:
+			TInitializer* _Initializer;
+			Ptr<T> _Value;
+		};
+
+		class LazyThreadUnsafeCaller
+			: public LazyObjectCaller
+		{
+		public:
+			LazyThreadUnsafeCaller(TInitializer& initializer)
+				: LazyObjectCaller(initializer)
+			{
+			}
+			virtual ~LazyThreadUnsafeCaller()
+			{
+			}
+
+			virtual T& GetValue() override final
+			{
+				if (_Value == nullptr)
+				{
+					_Value = (*_Initializer)();
+					delete _Initializer;
+					_Initializer = nullptr;
+				}
+
+				return *_Value;
+			}
+		};
         
         class LazyThreadSafeSharedCaller
-            : public LazyThreadSafeCaller
+            : public LazyObjectCaller
         {
         public:
-            virtual GetValue() override final
-            {
-                _Mutex.lock();
-                
-                _Mutex.unlock();
-            }
+			LazyThreadSafeSharedCaller(TInitializer& initializer)
+				: LazyObjectCaller(initializer)
+			{
+			}
+			virtual ~LazyThreadSafeSharedCaller()
+			{
+			}
+
+			virtual T& GetValue() override final
+			{
+				_Mutex.lock();
+				if (_Value == nullptr)
+				{
+					_Value = (*_Initializer)();
+					delete _Initializer;
+					_Initializer = nullptr;
+				}
+				_Mutex.unlock();
+
+				return *_Value;
+			}
         private:
             std::mutex _Mutex;
-        }
+		};
         
         class LazyThreadSafeOccupiedCaller
-            : public LazyThreadSafeCaller
+            : public LazyObjectCaller
         {
         public:
-            virtual Getvalue() override final
-            {
-                if (std::this_thread->thread_id)
-                    ;
-                else
-                    throw Thread
-            }
+			LazyThreadSafeOccupiedCaller(TInitializer& initializer)
+				: LazyObjectCaller(initializer)
+				: _ThreadId(0)
+			{
+			}
+			virtual ~LazyThreadSafeOccupiedCaller()
+			{
+				_ThreadId = 0;
+			}
+
+			virtual T& GetValue() override final
+			{
+				_Mutex.lock();
+				if (_ThreadId == 0)
+				{
+					auto tid = std::this_thread::get_id();
+					_ThreadId = *((unsigned int*)(&tid));
+				}
+				if (this_thread::get_id() == _ThreadId)
+				{
+					if (_Value == nullptr)
+					{
+						_Value = (*_Initializer)();
+						delete _Initializer;
+						_Initializer = nullptr;
+					}
+				}
+				else throw InvalidOperationException("Current thread failed to fetch the permission from the lazy object.");
+				_Mutex.unlock();
+
+				return *_Value;
+			}
         private:
-            int threadId;
-        }        
+            unsigned int _ThreadId;
+			std::mutex _Mutex;
+		};
         
     public:
         Lazy()
-            : _Initializer(new Func<T(void)>([]{ return new T; }))
-            , _Value(nullptr)
+			: _Value(new LazyThreadSafeSharedCaller(new Func<T*(void)>([] { return new T; })))
         {
         }
         Lazy(const Lazy<T>& instance) = delete;
         Lazy(Lazy<T>&& instance)
-            : _Initializer(nullptr)
-            , _Value(nullptr)
+			: _Value(nullptr)
         {
-            Swap(_Initializer, instance._Initializer);
             Swap(_Value, instance._Value);
         }
         Lazy(LazyThreadSafetyMode mode)
-            : _Initializer(new Func<T(void)>([]{ return new T; }))
-            , _Value(nullptr)
         {
+			switch (mode)
+			{
+				case LazyThreadSafetyMode::ExecutionAndPublication:
+					_Value(new LazyThreadSafeSharedCaller(new Func<T*(void)>([] { return new T; })));
+					break;
+				case LazyThreadSafetyMode::None:
+					_Value(new LazyThreadUnsafeCaller(new Func<T*(void)>([] { return new T; })));
+					break;
+				case LazyThreadSafetyMode::PublicationOnly:
+					_Value(new LazyThreadSafeOccupiedCaller(new Func<T*(void)>([] { return new T; })));
+					break;
+				default:
+					throw ArgumentOutOfRangeException("$mode");
+			}
         }
-        Lazy(Func<T>& initializer)
-            : _Initializer(new Func<T(void)>(initializer))
-            , _Value(nullptr)
+		Lazy(Func<T>& initializer)
+			: _Value(new LazyThreadSafeSharedCaller(initializer))
         {
         }
         Lazy(Func<T>& initializer, LazyThreadSafetyMode mode)
-            : _Initializer(new Func<T(void)>(initializer))
-            , _Value(nullptr)
         {
+			switch (mode)
+			{
+				case LazyThreadSafetyMode::ExecutionAndPublication:
+					_Value(new LazyThreadSafeSharedCaller(initializer));
+					break;
+				case LazyThreadSafetyMode::None:
+					_Value(new LazyThreadUnsafeCaller(initializer));
+					break;
+				case LazyThreadSafetyMode::PublicationOnly:
+					_Value(new LazyThreadSafeOccupiedCaller(initializer));
+					break;
+				default:
+					throw ArgumentOutOfRangeException("$mode");
+			}
         }
         
         Lazy<T>& operator=(const Lazy<T>& instance) = delete;
         Lazy<T>& operator=(Lazy<T>&& instance)
         {
-            Swap(_Initializer, instance._Initializer);
             Swap(_Value, instance._Value);
         }
         
         T& GetValue()
         {
-            if (_Value == nullptr)
-                _Value = 
-            return *_Value; 
+			return _Value->GetValue();
         }
         
         bool IsValueCreated()
         {
-            return _Value != nullptr;
+            return _Value->IsValueCreated();
         }
         
     private:
-        Func<T(void)>* _Initializer;
-        Ptr<T> _Value;
-        std::mutex _Mutex;
-    }
+		Ptr<LazyObjectCaller> _Value;
+	};
 }
-
 #endif

@@ -58,6 +58,16 @@ namespace LiongPlus
 		}
 	};
 
+	class InvalidOperationException
+		: public Exception
+	{
+	public:
+		InvalidOperationException(const char* description = "")
+			: Exception(description)
+		{
+		}
+	};
+
 	class NotImplementedException
 		: public Exception
 	{

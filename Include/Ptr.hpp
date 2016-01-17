@@ -5,7 +5,6 @@
 #define _L_Ptr
 #include "Fundamental.hpp"
 #include "Exception.hpp"
-#include "IStandardizable.hpp"
 #include "ReferenceCounter.hpp"
 
 namespace LiongPlus

@@ -12,7 +12,6 @@
 #include "Delegate.hpp"
 #include "Exception.hpp"
 #include "IO/IBuffer.hpp"
-#include "IStandardizable.hpp"
 #include "Ptr.hpp"
 	
 using namespace LiongPlus::Collections;

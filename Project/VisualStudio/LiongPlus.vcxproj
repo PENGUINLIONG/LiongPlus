@@ -36,9 +36,12 @@
     <ClInclude Include="..\..\Include\Fundamental.hpp" />
     <ClInclude Include="..\..\Include\Graphics\Texture.hpp" />
     <ClInclude Include="..\..\Include\IDisposable.hpp" />
+    <ClInclude Include="..\..\Include\IObservable.hpp" />
+    <ClInclude Include="..\..\Include\IObserver.hpp" />
     <ClInclude Include="..\..\Include\IO\IBuffer.hpp" />
     <ClInclude Include="..\..\Include\IO\MemoryStream.hpp" />
     <ClInclude Include="..\..\Include\IO\Stream.hpp" />
+    <ClInclude Include="..\..\Include\Lazy.hpp" />
     <ClInclude Include="..\..\Include\Media\Bitmap.hpp" />
     <ClInclude Include="..\..\Include\Media\Bmp.hpp" />
     <ClInclude Include="..\..\Include\Media\Image.hpp" />
