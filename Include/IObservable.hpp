@@ -9,13 +9,13 @@
 
 namespace LiongPlus
 {
-    template<typename T>
-    class IObservable
-        : public virtual Interface
-    {
-    public:
-        virtual IDisposable Subscribe(IObserver<T> observer) = 0;
-    }
+	template<typename T>
+	class IObservable
+		: public virtual Interface
+	{
+	public:
+		virtual IDisposable Subscribe(IObserver<T> observer) = 0;
+	}
 }
 
 #endif

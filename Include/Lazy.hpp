@@ -19,15 +19,15 @@ namespace LiongPlus
 		PublicationOnly
 	};
 
-    template<typename T>
-    class Lazy
-    {
+	template<typename T>
+	class Lazy
+	{
 	private:
 		using TInitializer = Func<T*(void)>;
 
-        class LazyObjectCaller
-        {
-        public:
+		class LazyObjectCaller
+		{
+		public:
 			LazyObjectCaller(TInitializer& initializer)
 				: _Initializer(new TInitializer(initializer))
 				: _Value(nullptr)
@@ -46,7 +46,7 @@ namespace LiongPlus
 			{
 				return _Value != nullptr;
 			}
-            virtual T& GetValue() = 0;
+			virtual T& GetValue() = 0;
 		private:
 			TInitializer* _Initializer;
 			Ptr<T> _Value;
@@ -76,11 +76,11 @@ namespace LiongPlus
 				return *_Value;
 			}
 		};
-        
-        class LazyThreadSafeSharedCaller
-            : public LazyObjectCaller
-        {
-        public:
+		
+		class LazyThreadSafeSharedCaller
+			: public LazyObjectCaller
+		{
+		public:
 			LazyThreadSafeSharedCaller(TInitializer& initializer)
 				: LazyObjectCaller(initializer)
 			{
@@ -102,14 +102,14 @@ namespace LiongPlus
 
 				return *_Value;
 			}
-        private:
-            std::mutex _Mutex;
+		private:
+			std::mutex _Mutex;
 		};
-        
-        class LazyThreadSafeOccupiedCaller
-            : public LazyObjectCaller
-        {
-        public:
+		
+		class LazyThreadSafeOccupiedCaller
+			: public LazyObjectCaller
+		{
+		public:
 			LazyThreadSafeOccupiedCaller(TInitializer& initializer)
 				: LazyObjectCaller(initializer)
 				: _ThreadId(0)
@@ -142,24 +142,24 @@ namespace LiongPlus
 
 				return *_Value;
 			}
-        private:
-            unsigned int _ThreadId;
+		private:
+			unsigned int _ThreadId;
 			std::mutex _Mutex;
 		};
-        
-    public:
-        Lazy()
+		
+	public:
+		Lazy()
 			: _Value(new LazyThreadSafeSharedCaller(new Func<T*(void)>([] { return new T; })))
-        {
-        }
-        Lazy(const Lazy<T>& instance) = delete;
-        Lazy(Lazy<T>&& instance)
+		{
+		}
+		Lazy(const Lazy<T>& instance) = delete;
+		Lazy(Lazy<T>&& instance)
 			: _Value(nullptr)
-        {
-            Swap(_Value, instance._Value);
-        }
-        Lazy(LazyThreadSafetyMode mode)
-        {
+		{
+			Swap(_Value, instance._Value);
+		}
+		Lazy(LazyThreadSafetyMode mode)
+		{
 			switch (mode)
 			{
 				case LazyThreadSafetyMode::ExecutionAndPublication:
@@ -174,13 +174,13 @@ namespace LiongPlus
 				default:
 					throw ArgumentOutOfRangeException("$mode");
 			}
-        }
+		}
 		Lazy(Func<T>& initializer)
 			: _Value(new LazyThreadSafeSharedCaller(initializer))
-        {
-        }
-        Lazy(Func<T>& initializer, LazyThreadSafetyMode mode)
-        {
+		{
+		}
+		Lazy(Func<T>& initializer, LazyThreadSafetyMode mode)
+		{
 			switch (mode)
 			{
 				case LazyThreadSafetyMode::ExecutionAndPublication:
@@ -195,25 +195,25 @@ namespace LiongPlus
 				default:
 					throw ArgumentOutOfRangeException("$mode");
 			}
-        }
-        
-        Lazy<T>& operator=(const Lazy<T>& instance) = delete;
-        Lazy<T>& operator=(Lazy<T>&& instance)
-        {
-            Swap(_Value, instance._Value);
-        }
-        
-        T& GetValue()
-        {
+		}
+		
+		Lazy<T>& operator=(const Lazy<T>& instance) = delete;
+		Lazy<T>& operator=(Lazy<T>&& instance)
+		{
+			Swap(_Value, instance._Value);
+		}
+		
+		T& GetValue()
+		{
 			return _Value->GetValue();
-        }
-        
-        bool IsValueCreated()
-        {
-            return _Value->IsValueCreated();
-        }
-        
-    private:
+		}
+		
+		bool IsValueCreated()
+		{
+			return _Value->IsValueCreated();
+		}
+		
+	private:
 		Ptr<LazyObjectCaller> _Value;
 	};
 }

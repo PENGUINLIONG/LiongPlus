@@ -31,14 +31,14 @@ namespace LiongPlus
 			{
 			}
 
-			virtual T* Current() override final
+			virtual T& Current() override final
 			{
-				return _Field + _Current;
+				return *(_Field + _Current);
 			}
 
 			virtual bool Equals(IEnumerator<T>* value) override final
 			{
-				return value->Current() == Current();
+				return &value->Current() == &Current();
 			}
 
 			virtual bool MoveNext() override final
@@ -57,7 +57,7 @@ namespace LiongPlus
 				_Current = 0;
 			}
 
-			// IDisposable.
+			// IDisposable
 
 			virtual void Dispose() override final
 			{

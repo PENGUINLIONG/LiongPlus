@@ -14,7 +14,7 @@
 #include "IEnumerator.hpp"
 #include "IList.hpp"
 #include "../Ptr.hpp"
-#include <vector>
+
 namespace LiongPlus
 {
 	namespace Collections
@@ -167,13 +167,13 @@ namespace LiongPlus
 			{
 				Array<T>::Sort(_Data, FunctorComparer<T>(comparison));
 			}
-            
-            Array<T> ToArray()
-            {
-                Array<T>(_Count) arr;
-                Array<T>::Copy(_Data, arr, _Count);
-                return arr;
-            }
+			
+			Array<T> ToArray()
+			{
+				Array<T>(_Count) arr;
+				Array<T>::Copy(_Data, arr, _Count);
+				return arr;
+			}
 
 			// IList<T>
 

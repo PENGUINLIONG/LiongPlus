@@ -13,7 +13,7 @@ namespace LiongPlus
     {
     public:
         virtual void Report(T value) = 0;
-    }
+    };
 }
 
 #endif

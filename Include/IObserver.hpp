@@ -7,13 +7,13 @@
 
 namespace LiongPlus
 {
-    class IObserver
-        : public virtual Interface
-    {
-    public:
-        virtual void OnCompleted() = 0;
-        virtual void OnError(Exception e) = 0;
-        virtual void OnNext(T value) = 0;        
-    }
+	class IObserver
+		: public virtual Interface
+	{
+	public:
+		virtual void OnCompleted() = 0;
+		virtual void OnError(Exception e) = 0;
+		virtual void OnNext(T value) = 0;		
+	}
 }
 #endif

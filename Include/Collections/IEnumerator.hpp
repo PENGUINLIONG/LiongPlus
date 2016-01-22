@@ -23,7 +23,11 @@ namespace LiongPlus
 			/// Gets the element in the collection at the current position of the enumerator.
 			/// </summary>
 			/// <returns>The element in the collection at the current position of the enumerator.</returns>
-			virtual T* Current() = 0;
+			virtual T& Current() = 0;
+			/// <summary>
+			/// This method checks if $value and the instance are equal.
+			/// </summary>
+			// <note>It is strongly recommented to overload operator==()for better experience.</note>
 			virtual bool Equals(IEnumerator<T>* value) = 0;
 			/// <summary>
 			/// Advances the enumerator to the next element of the collection.
@@ -63,9 +67,9 @@ namespace LiongPlus
 				_Enumerator->MoveNext();
 				return *this;
 			}
-			T operator*()
+			T& operator*()
 			{
-				return *(_Enumerator->Current());
+				return _Enumerator->Current();
 			}
 		};
 	}
