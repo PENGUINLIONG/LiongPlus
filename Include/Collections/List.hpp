@@ -213,10 +213,6 @@ namespace LiongPlus
 				_Data[index] = value;
 				++(*_Count);
 			}
-			virtual bool IsReadOnly() override
-			{
-				return false;
-			}
 			virtual void Remove(T& value) override
 			{
 				int i = *_Count;

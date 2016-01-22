@@ -516,11 +516,6 @@ namespace LiongPlus
 			Copy(*this, 0, array, index, _Size);
 		}
 
-		virtual bool IsReadOnly() override final
-		{
-			return false;
-		}
-
 		virtual void Remove(T& value) override final
 		{
 			throw NotSupportedException("Fixed size collection.");

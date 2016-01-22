@@ -427,11 +427,8 @@ namespace LiongPlus
 		virtual void Insert(int index, T& value) override
 		{
 			assert(index < GetCount());
-		}
 
-		virtual bool IsReadOnly() override
-		{
-
+			value
 		}
 
 		virtual void Remove(T& value) override

@@ -57,11 +57,6 @@ namespace LiongPlus
 			/// <param name="value">The object to insert.</param>
 			virtual void Insert(int index, T& value) = 0;
 			/// <summary>
-			/// Gets a value indicating whether this is read-only.
-			/// </summary>
-			/// <returns>true if the [this] is read-only; otherwise, false.</returns>
-			virtual bool IsReadOnly() = 0;
-			/// <summary>
 			/// Removes the first occurrence of a specific object.
 			/// </summary>
 			/// <param name="value">The object to remove.</param>
