@@ -82,11 +82,16 @@
 #define _L_fputs(str, file) fputs(str, file)
 #endif // !_L_WINDOWS
 
+#ifndef _L_DEBUG
+#define NDEBUG
+#endif
+
 #include <atomic>
 #include <cstdio>
 #include <cstdlib>
 #include <ctime>
 #include <cwchar>
+#include <cassert>
 #include <initializer_list>
 
 #ifdef _L_MSVC

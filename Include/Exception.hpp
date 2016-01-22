@@ -99,7 +99,7 @@ namespace LiongPlus
 	};
 
 	/// <remarks>
-	/// The method represented by the delegate is an instance method and the target object is null.
+	/// The method represented by the delegate is an instance method and the target object is nullptr.
 	/// -or -
 	/// One of the encapsulated methods throws an exception.
 	/// </remarks>

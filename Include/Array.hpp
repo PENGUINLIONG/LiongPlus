@@ -115,8 +115,7 @@ namespace LiongPlus
 
 		T& operator[](int index) const
 		{
-			if (index < 0 || index > _Size)
-				throw ArgumentOutOfRangeException("index");
+			assert(index < 0 || index > _Size, "index");
 
 			return _Ptr[index];
 		}
@@ -167,17 +166,14 @@ namespace LiongPlus
 
 		T& GetValue(int index) const
 		{
-			if (index < 0)
-				throw ArgumentOutOfRangeException("Need non-negative number.");
-			if (index > _Size)
-				throw ArgumentOutOfRangeException("Bound exceeded.");
+			assert(index < 0, "Need non-negative number.");
+			assert(index > _Size, "Bound exceeded.");
 
 			return _Ptr[index];
 		}
 		T& GetValue(Array<int>& indices) const
 		{
-			if (!TrueForAll([&](T value) -> bool { return value > 0 && value < _Size; }))
-				throw ArgumentOutOfRangeException("One(Some) elements of $indices is(are) null.");
+			assert(!TrueForAll([&](T value) -> bool { return value > 0 && value < _Size; }), "One(Some) elements of $indices is(are) nullptr.");
 
 			Array<T> output(indices._Size);
 			for (int i = 0; i < indices._Size; ++i)
@@ -186,18 +182,13 @@ namespace LiongPlus
 			}
 		}
 		
-		// Static Members. //////////////////////////////////////SAFETY CHECK
+		// Static Members
 
 		static int BinarySearch(Array<T>& arr, int index, int length, T value, Ptr<IComparer<T>> comparer)
 		{
-			if (arr == null)
-				throw ArgumentNullException("$arr is null.")
-				if (index < 0 || length < 0)
-				throw ArgumentOutOfRangeException("Need non-negative number.");
-			if (index + length > _Size)
-				throw ArgumentOutOfRangeException("Bound exceeded.");
-			if (comparer == null)
-				throw ArgumentNullException("$comparer is null.");
+			assert(index < 0 || length < 0, "Need non-negative number.");
+			assert(index + length > _Size,"Bound exceeded.");
+			assert(comparer == nullptr, "$comparer is nullptr.");
 
 			return BinarySearchImpl(arr, index, length, value, comparer);
 		}
@@ -221,12 +212,9 @@ namespace LiongPlus
 
 		static void Clear(Array<T>& arr, int index, int length)
 		{
-			if (arr == null)
-				throw ArgumentNullException("$arr is null.");
-			if (index < 0)
-				throw ArgumentOutOfRangeException("Need non-negative number.");
-			if (index + length > arr._Size)
-				throw ArgumentOutOfRangeException("Bound exceeded.");
+			assert(arr == nullptr, "$arr is nullptr.");
+			assert(index < 0, "Need non-negative number.");
+			assert(index + length > arr._Size, "Bound exceeded.");
 
 			while (length-- > 0)
 				*((byte*)(arr._Ptr + index + length) - 1) = 0;
@@ -246,10 +234,8 @@ namespace LiongPlus
 
 		static void Copy(const Array<T>& sourceArray, int sourceIndex, const Array<T>& destinationArray, int destinationIndex, int length)
 		{
-			if (sourceIndex < 0 || destinationIndex < 0 || length < 0)
-				throw ArgumentOutOfRangeException("Need non-negative number.");
-			if (sourceIndex + length > sourceArray._Size || destinationIndex + length > destinationArray._Size)
-				throw ArgumentOutOfRangeException("Bound exceeded.");
+			assert(sourceIndex < 0 || destinationIndex < 0 || length < 0, "Need non-negative number.");
+			assert(sourceIndex + length > sourceArray._Size || destinationIndex + length > destinationArray._Size, "Bound exceeded.");
 
 			while (length-- > 0)
 				*(destinationArray._Ptr + length) = *(sourceArray._Ptr + length);
@@ -277,8 +263,7 @@ namespace LiongPlus
 
 		static T Find(Array<T>& arr, Predicate<T>& match)
 		{
-			if (!match)
-				throw ArgumentNullException("$match is null.");
+			assert(!match, "$match is nullptr.");
 
 			for (int i = 0; i < arr._Size; ++i)
 			{
@@ -290,20 +275,16 @@ namespace LiongPlus
 
 		static Array<T> FindAll(Array<T>& arr, Predicate<T>& match)
 		{
-			if (!match)
-				throw ArgumentNullException("$match is null.");
+			assert(!match, "$match is nullptr.");
 
 			throw NotImplementedException("[FindAll] is not implemented yet.");
 		}
 
 		static int FindIndex(Array<T>& arr, int startIndex, int count, Predicate<T>& match)
 		{
-			if (startIndex < 0)
-				throw ArgumentOutOfRangeException("Need non-negative number.");
-			if (startIndex + count > arr._Size)
-				throw ArgumentOutOfRangeException("Bound exceeded.");
-			if (!match)
-				throw ArgumentNullException("$match is null.");
+			assert(startIndex < 0, "Need non-negative number.");
+			assert(startIndex + count > arr._Size, "Bound exceeded.");
+			assert(!match, "$match is nullptr.");
 
 			for (int i = 0; i < count; ++i)
 			{
@@ -323,8 +304,7 @@ namespace LiongPlus
 
 		static T FindLast(Array<T>& arr, Predicate<T>& match)
 		{
-			if (!match)
-				throw ArgumentNullException("$match is null.");
+			assert(!match, "$match is nullptr.");
 
 			for (int i = arr._Size - 1; i >= 0; --i)
 			{
@@ -336,12 +316,9 @@ namespace LiongPlus
 
 		static int FindLastIndex(Array<T>& arr, int startIndex, int count, Predicate<T>& match)
 		{
-			if (startIndex < 0)
-				throw ArgumentOutOfRangeException("Need non-negative number.");
-			if (startIndex + count > arr._Size)
-				throw ArgumentOutOfRangeException("Bound exceeded.");
-			if (!match)
-				throw ArgumentNullException("$match is null.");
+			assert(startIndex < 0, "Need non-negative number.");
+			assert(startIndex + count > arr._Size, "Bound exceeded.");
+			assert(!match, "$match is nullptr.");
 
 			for (int i = arr._Size - 1; i >= 0; --i)
 			{
@@ -361,8 +338,7 @@ namespace LiongPlus
 
 		static void ForEach(Action<T>& action)
 		{
-			if (!match)
-				throw ArgumentNullException("$action is null.");
+			assert(!match, "$action is nullptr.");
 
 			for (int i = 0; i < _Size; ++i)
 				action(_Ptr[i]);
@@ -379,31 +355,27 @@ namespace LiongPlus
 		/// <param name="items">
 		/// The [LiongPlus::Collections::Array] that contains the items that correspond to each of the keys in [this].
 		/// -or-
-		/// null to sort only the keys Array.
+		/// nullptr to sort only the keys Array.
 		/// </param>
 		/// <param name="index">The starting index of the range to sort.</param>
 		/// <param name="length">The number of elements in the range to sort.</param>
 		/// <param name="comparer">
 		/// The [LiongPlus::Collections::IComparer] implementation to use when comparing elements.
 		/// -or-
-		/// null to use the default implementation of each element.
+		/// nullptr to use the default implementation of each element.
 		/// </param>
 		/// <typeparam name="TValue">The type of the elements of the items array.</typeparam>
 		template<typename TValue>
 		static void Sort(Array<T>& keys, Array<TValue>& items, int index, int length, Ptr<IComparer<T>> comparer)
 		{
 			int itemsLength = 0;
-			if (items != null)
+			if (items != nullptr)
 				itemsLength = items.Length();
 
-			if (index < 0 || length < 0)
-				throw ArgumentOutOfRangeException("Need non-negative number.");
-			if (index + length > keys._Size)
-				throw ArgumentOutOfRangeException("Bound exceeded.");
-			if (itemsLength && itemsLength < index + length) // Sort for pairs
-				throw ArgumentException("$items is too short.");
-			if (comparer == null)
-				throw ArgumentNullException("Null comparer.");
+			assert(index < 0 || length < 0, "Need non-negative number.");
+			assert(index + length > keys._Size, "Bound exceeded.");
+			assert(itemsLength && itemsLength < index + length, "$items is too short."); // Sort for pairs
+			assert(comparer == nullptr, "Null comparer.");
 
 			SortImpl(keys, items, index, length, comparer, !itemsLength);
 		}
@@ -413,7 +385,7 @@ namespace LiongPlus
 		/// <param name="items">
 		/// The [LiongPlus::Collections::Array] that contains the items that correspond to each of the keys in [this].
 		/// -or-
-		/// null to sort only the keys Array.
+		/// nullptr to sort only the keys Array.
 		/// </param>
 		/// <param name="index">The starting index of the range to sort.</param>
 		/// <param name="length">The number of elements in the range to sort.</param>
@@ -429,12 +401,12 @@ namespace LiongPlus
 		/// <param name="items">
 		/// The [LiongPlus::Collections::Array] that contains the items that correspond to each of the keys in [this].
 		/// -or-
-		/// null to sort only the keys Array.
+		/// nullptr to sort only the keys Array.
 		/// </param>
 		/// <param name="comparer">
 		/// The [LiongPlus::Collections::IComparer] implementation to use when comparing elements.
 		/// -or-
-		/// null to use the default implementation of each element.
+		/// nullptr to use the default implementation of each element.
 		/// </param>
 		/// <typeparam name="TValue">The type of the elements of the items array.</typeparam>
 		template<typename TValue>
@@ -448,7 +420,7 @@ namespace LiongPlus
 		/// <param name="items">
 		/// The [LiongPlus::Collections::Array] that contains the items that correspond to each of the keys in [this].
 		/// -or-
-		/// null to sort only the keys Array.
+		/// nullptr to sort only the keys Array.
 		/// </param>
 		/// <typeparam name="TValue">The type of the elements of the items array.</typeparam>
 		template<typename TValue>
@@ -464,10 +436,10 @@ namespace LiongPlus
 		/// <param name="comparer">
 		/// The [LiongPlus::Collections::IComparer] implementation to use when comparing elements.
 		/// -or-
-		/// null to use the default implementation of each element..</param>
+		/// nullptr to use the default implementation of each element..</param>
 		static void Sort(Array<T>& arr, int index, int length, Ptr<IComparer<T>> comparer)
 		{
-			Sort(arr, Array<T>(null), index, length, comparer);
+			Sort(arr, Array<T>(nullptr), index, length, comparer);
 		}
 		/// <summary>
 		/// Sorts the elements in a range of elements.
@@ -495,8 +467,7 @@ namespace LiongPlus
 
 		static bool TrueForAll(Array<T>& arr, Predicate<T> match)
 		{
-			if (arr == null || match == null)
-				throw ArgumentNullException("$arr or(and) $match is(are) null.");
+			assert(arr == nullptr || match == nullptr, "$arr or(and) $match is(are) nullptr.");
 
 			for (int i = 0; i < arr._Size; ++i)
 			{

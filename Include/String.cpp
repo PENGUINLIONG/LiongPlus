@@ -230,8 +230,7 @@ namespace LiongPlus
 	
 	String String::Remove(int index)
 	{
-		if (index + 1 >= _Length)
-			throw ArgumentOutOfRangeException("index");
+		assert(index + 1 >= _Length, "index");
 		
 		_L_Char* c_str = new _L_Char[index + 1];
 		Buffer::Wcscpy(c_str, _Field, index);
@@ -240,8 +239,7 @@ namespace LiongPlus
 	}
 	String String::Remove(int index, int count)
 	{
-		if (index + count >= _Length)
-			throw ArgumentOutOfRangeException("index or count");
+		assert(index + count >= _Length, "index or count");
 		
 		_L_Char* c_str = new _L_Char[_Length - count];
 		Buffer::Wcscpy(c_str, _Field, index);
@@ -314,8 +312,7 @@ namespace LiongPlus
 	
 	String Substring(int index)
 	{
-		if (index < 0 || index + 1 >= _Length)
-			throw ArgumentOutOfRangeException("index");
+		assert(index < 0 || index + 1 >= _Length, "index");
 			
 		_L_Char* c_str = new _L_Char[_Length - index];
 		Wcscpy(c_str, _Field + index, _Length - index - 1);
@@ -324,8 +321,7 @@ namespace LiongPlus
 	}
 	String String::Substring(int index, int count)
 	{
-		if (index < 0 || index + count >= _Length)
-			throw ArgumentOutOfRangeException("index or count");
+		assert(index < 0 || index + count >= _Length, "index or count");
 			
 		_L_Char* c_str = new _L_Char[count + 1];
 		Wcscpy(c_str, _Field + index, count);
@@ -487,10 +483,8 @@ namespace LiongPlus
 
 	String String::Join(String& separator, Array<String>& values, int index, int count)
 	{
-		if (index < 0 || count < 0)
-			throw ArgumentOutOfRangeException("Need non-negative number.");
-		if (index + count > values.GetLength())
-			throw ArgumentOutOfRangeException("Bound exceeded.");
+		assert(index < 0 || count < 0, "Need non-negative number.");
+		assert(index + count > values.GetLength(), "Bound exceeded.");
 		if (count == 0)
 			return String::Empty;
 		

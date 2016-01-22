@@ -33,7 +33,7 @@ namespace LiongPlus
 			, _ShouldDelete(true)
 		{
 		}
-		Ptr(const nullptr_t null, bool shouldDelete = true)
+		Ptr(const nullptr_t nullptr, bool shouldDelete = true)
 			: _Counter(nullptr)
 			, _Ptr(nullptr)
 			, _ShouldDelete(true)
@@ -68,7 +68,7 @@ namespace LiongPlus
 			Clear();
 		}
 
-		TSelf& operator=(const nullptr_t null)
+		TSelf& operator=(const nullptr_t nullptr)
 		{
 			Clear();
 			return *this;
@@ -100,7 +100,7 @@ namespace LiongPlus
 			return *this;
 		}
 
-		inline bool operator==(const nullptr_t null) const
+		inline bool operator==(const nullptr_t nullptr) const
 		{
 			return !_Ptr;
 		}
@@ -112,7 +112,7 @@ namespace LiongPlus
 		{
 			return _Ptr == instance._Ptr;
 		}
-		inline bool operator!=(const nullptr_t null) const
+		inline bool operator!=(const nullptr_t nullptr) const
 		{
 			return _Ptr != nullptr;
 		}
@@ -126,14 +126,12 @@ namespace LiongPlus
 		}
 		inline T* operator->() const
 		{
-			if (!_Ptr)
-				throw NullReferenceException("Cannot access to null pointer.");
+			assert(!_Ptr, "Cannot access to nullptr pointer.");
 			return _Ptr;
 		}
 		inline T& operator*() const
 		{
-			if (!_Ptr)
-				throw NullReferenceException("Cannot access to null pointer.");
+			if (!_Ptr, "Cannot access to nullptr pointer.");
 			return *_Ptr;
 		}
 

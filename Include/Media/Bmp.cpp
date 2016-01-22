@@ -102,12 +102,9 @@ namespace LiongPlus
 
 		Bitmap Bmp::Init(Byte* buffer, int length, bool shouldDelete)
 		{
-			if (length < 54)
-				throw InvalidFormatException("Incomplete header.");
-			if (buffer[0] != 'B' || buffer[1] != 'M')
-				throw InvalidFormatException("Unsupported bmp format.");
-			if (*((unsigned short*)(buffer + 28)) != 24) // Bits per pixel.
-				throw InvalidFormatException("Unsupported pixel type.");
+			assert(length < 54, "Incomplete header.");
+			assert(buffer[0] != 'B' || buffer[1] != 'M', "Unsupported bmp format.");
+			assert(*((unsigned short*)(buffer + 28)) != 24, "Unsupported pixel type."); // Bits per pixel.
 
 			unsigned int offset = *((unsigned int*)(buffer + 10));
 			Size size = { *((int*)(buffer + 18)), *((int*)(buffer + 22)) };

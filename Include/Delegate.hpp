@@ -139,7 +139,7 @@ namespace LiongPlus
 			: public Invoker
 		{
 		private:
-			TLambda _Lambda; // Keep an instance to prevent null references.
+			TLambda _Lambda; // Keep an instance to prevent nullptr references.
 		public:
 			LambdaInvoker(const TLambda& lambda)
 				: _Lambda(lambda)
@@ -236,7 +236,7 @@ namespace LiongPlus
 			: _Invoker(nullptr)
 		{
 		}
-		Delegate(const nullptr_t null)
+		Delegate(const nullptr_t nullptr)
 			: _Invoker(nullptr)
 		{
 		}
@@ -273,7 +273,7 @@ namespace LiongPlus
 			Dispose();
 		}
 
-		TSelf& operator=(nullptr_t null)
+		TSelf& operator=(nullptr_t nullptr)
 		{
 			Dispose();
 			return *this;
@@ -305,7 +305,7 @@ namespace LiongPlus
 			return *this;
 		}
 
-		bool operator==(const nullptr_t null) const
+		bool operator==(const nullptr_t nullptr) const
 		{
 			return _Invoker;
 		}
@@ -313,7 +313,7 @@ namespace LiongPlus
 		{
 			return Equals(instance);
 		}
-		bool operator!=(const nullptr_t null) const
+		bool operator!=(const nullptr_t nullptr) const
 		{
 			return !_Invoker;
 		}

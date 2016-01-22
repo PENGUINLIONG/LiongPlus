@@ -203,8 +203,7 @@ namespace LiongPlus
 			}
 			virtual void CopyTo(Array<T>& array, int index) override
 			{
-				if (array.GetLength() < *_Count)
-					throw ArgumentException("array is not long enough");
+				assert(array.GetLength() < *_Count, "array is not long enough");
 				_Data.CopyTo(array, index);
 			}
 			virtual void Insert(int index, T& value) override
@@ -251,8 +250,7 @@ namespace LiongPlus
 			}
 			virtual void RemoveAt(int index) override
 			{
-				if (index < 0 || index > *_Count)
-					throw ArgumentException("index");
+				assert(index < 0 || index > *_Count, "index");
 				Array<T>::Copy(_Data, index + 1, _Data, index, *_Count - index);
 				_Data[(*_Count)--] = T();
 			}

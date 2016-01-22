@@ -28,6 +28,7 @@
     <ClInclude Include="..\..\Include\Collections\IEnumerable.hpp" />
     <ClInclude Include="..\..\Include\Collections\IEnumerator.hpp" />
     <ClInclude Include="..\..\Include\Collections\IList.hpp" />
+    <ClInclude Include="..\..\Include\Collections\LinkedList.hpp" />
     <ClInclude Include="..\..\Include\Collections\List.hpp" />
     <ClInclude Include="..\..\Include\Console.hpp" />
     <ClInclude Include="..\..\Include\DateTime.hpp" />

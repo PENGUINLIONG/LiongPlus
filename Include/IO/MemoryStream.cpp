@@ -135,8 +135,7 @@ namespace LiongPlus
 
 		Byte* MemoryStream::Read(int length)
 		{
-			if (!CanRead())
-				throw PermissionDeniedException("Cannot read from this instance");
+			assert(!CanRead(), "Cannot read from this instance");
 
 			Byte* buffer = new Byte[length];
 			Read(buffer, length);
@@ -145,8 +144,7 @@ namespace LiongPlus
 
 		void MemoryStream::Read(Byte* buffer, int length)
 		{
-			if (!CanRead())
-				throw PermissionDeniedException("Cannot read from this instance");
+			assert(!CanRead(), "Cannot read from this instance");
 
 			// If available data is less than which is requested, just copy the available part.
 			int available = length > (_Size - _Position) ? (_Size - _Position) : length;
@@ -155,16 +153,14 @@ namespace LiongPlus
 
 		Byte MemoryStream::ReadByte()
 		{
-			if (!CanRead())
-				throw PermissionDeniedException("Cannot read from this instance");
+			assert(!CanRead(), "Cannot read from this instance");
 
 			return _Buffer[_Position++];
 		}
 
 		void MemoryStream::Seek(int distance, SeekOrigin position)
 		{
-			if (!CanSeek())
-				throw PermissionDeniedException("Cannot seek in this instance");
+			assert(!CanSeek(), "Cannot seek in this instance");
 			switch (position)
 			{
 			case SeekOrigin::Begin:
@@ -203,8 +199,7 @@ namespace LiongPlus
 
 		int MemoryStream::Write(Byte* data, int length)
 		{
-			if (!CanWrite())
-				throw PermissionDeniedException("Cannot write to this instance");
+			assert(!CanWrite(), "Cannot write to this instance");
 			if (IsEndOfStream())
 				return false;
 			if (length > _Size - _Position)
@@ -215,8 +210,7 @@ namespace LiongPlus
 
 		bool MemoryStream::WriteByte(Byte data)
 		{
-			if (!CanWrite())
-				throw PermissionDeniedException("Cannot write to this instance");
+			assert(!CanWrite(), "Cannot write to this instance");
 			if (IsEndOfStream())
 				return false;
 

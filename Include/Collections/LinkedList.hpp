@@ -4,7 +4,7 @@
 #ifndef _L_LinkedList
 #define _L_LinkedList
 #include "Fundamental.hpp"
-#include "../Exeption.hpp"
+#include "../Exception.hpp"
 #include "IList.hpp"
 
 namespace LiongPlus
@@ -325,13 +325,11 @@ namespace LiongPlus
 			//	 C._Latter = F   D._Former = A
 			//	 E._Latter = B   F._Former = C
 			auto dstFormer = dst._Begin->GetNext(dstIndex);
-			if (dstFormer == nullptr)
-				throw ArgumentOutOfRangeException("$dst or $dstIndex");
+			assert(dstFormer == nullptr, "$dst or $dstIndex");
 			auto dstLatter = dstFormer->_Latter;
 			
 			auto srcFormer = src._Begin->GetNext(srcIndex);
-			if (srcFormer == nullptr)
-				throw ArgumentOutOfRangeException("$dst or $srcIndex");
+			assert(srcFormer == nullptr, "$dst or $srcIndex");
 			auto srcLatter = srcFormer->Latter;
 			
 			if (srcFormer == src._Begin) // If B is the beginning of the source:
@@ -419,6 +417,6 @@ namespace LiongPlus
 		LinkedListNode<T>* _Begin;
 		LinkedListNode<T>* _End;
 	};
-}
+};
 
 #endif

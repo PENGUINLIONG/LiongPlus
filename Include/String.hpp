@@ -22,7 +22,7 @@ namespace LiongPlus
 	{
 		None,
 		RemoveEmptyEntries
-	}
+	};
 	
 	/// <summary>
 	/// Represents text as a series of characters.
@@ -79,13 +79,13 @@ namespace LiongPlus
 		bool Equals(String& value);
 		const _L_Char* GetNativePointer();
 		int GetLength();
-		String Insert(int index, string value);
+		String Insert(int index, String value);
 		String Remove(int index);
 		String Remove(int index, int count);
 		Array<String> Split(_L_Char separator, StringSplitOptions option = StringSplitOptions::RemoveEmptyEntries);
-		Array<String> Split(_L_Char separator, int maxCount, StringSplitOptions option = SplitOptions::RemoveEmptyEntries);
+		Array<String> Split(_L_Char separator, int maxCount, StringSplitOptions option = StringSplitOptions::RemoveEmptyEntries);
 		Array<String> Split(Array<_L_Char>& separators, StringSplitOptions option);
-		Array<String> Split(Array<_L_Char>& separators, int maxCount, StringSplitOptions option = SplitOptions::RemoveEmptyEntries);
+		Array<String> Split(Array<_L_Char>& separators, int maxCount, StringSplitOptions option = StringSplitOptions::RemoveEmptyEntries);
 		//Array<String> Split(std::initializer_list<_L_Char> separators, StringSplitOptions option);
 		//Array<String> Split(std::initializer_list<_L_Char> separators, int maxCount, StringSplitOptions option = SplitOptions::RemoveEmptyEntries);
 		String Substring(int index);

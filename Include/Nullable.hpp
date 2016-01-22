@@ -8,7 +8,7 @@
 namespace LiongPlus
 {
 	/// <summary>
-	/// Help store optional object which can be null.
+	/// Help store optional object which can be nullptr.
 	/// </summary>
 	/// <typeparam name="T">Type of object</typeparam>
 	template<typename T>
@@ -55,7 +55,7 @@ namespace LiongPlus
 			Clear();
 		}
 
-		TSelf& operator=(Null null)
+		TSelf& operator=(Null nullptr)
 		{
 			Clear();
 		}
@@ -97,7 +97,7 @@ namespace LiongPlus
 		{
 			return Equals(*this, nullable);
 		}
-		bool operator==(const Null null) const
+		bool operator==(const Null nullptr) const
 		{
 			return !_Object;
 		}

@@ -118,21 +118,18 @@ namespace LiongPlus
 		}
 		DateTime(int year, int month, int date, int hour = 0, int minute = 0, int second = 0, int millisecond = 0, DateTimeKind kind = DateTimeKind::Local)
 		{
-			if (year < 0 || year > 9999)
-				throw Exception("Illegal DateTime Info.");
+			assert(year < 0 || year > 9999, "Illegal DateTime Info.");
 
 			_TimeData = (((year >> 2) - (year >> 2) * 3 / 100) + year * 365);
 			--month;
 
-			if (month < 0 || month > 11)
-				throw Exception("Illegal DateTime Info.");
+			assert(month < 0 || month > 11, "Illegal DateTime Info.");
 
 			_TimeData += (year % 4 && (!(year % 100) || year % 400)) ? _DaysToMonth_366[month] : _DaysToMonth_365[month];
 			_TimeData -= 31;
 			--date;
 
-			if (date < 0 || date > 30)
-				throw Exception("Illegal DateTime Info.");
+			assert(date < 0 || date > 30, "Illegal DateTime Info.");
 
 			_TimeData += date;
 			_TimeData *= _TicksPerDay;
