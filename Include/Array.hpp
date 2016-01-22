@@ -144,11 +144,6 @@ namespace LiongPlus
 			return Array<T>(*this);
 		}
 
-		int GetLength() const
-		{
-			return _Size;
-		}
-
 		int GetLowerBound() const
 		{
 			return 0;
@@ -170,16 +165,6 @@ namespace LiongPlus
 			assert(index > _Size, "Bound exceeded.");
 
 			return _Ptr[index];
-		}
-		T& GetValue(Array<int>& indices) const
-		{
-			assert(!TrueForAll([&](T value) -> bool { return value > 0 && value < _Size; }), "One(Some) elements of $indices is(are) nullptr.");
-
-			Array<T> output(indices._Size);
-			for (int i = 0; i < indices._Size; ++i)
-			{
-				output._Ptr[i] = _Ptr[indices._Ptr[i]];
-			}
 		}
 		
 		// Static Members
@@ -370,7 +355,7 @@ namespace LiongPlus
 		{
 			int itemsLength = 0;
 			if (items != nullptr)
-				itemsLength = items.Length();
+				itemsLength = items.GetCount();
 
 			assert(index < 0 || length < 0, "Need non-negative number.");
 			assert(index + length > keys._Size, "Bound exceeded.");

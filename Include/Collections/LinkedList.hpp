@@ -4,6 +4,7 @@
 #ifndef _L_LinkedList
 #define _L_LinkedList
 #include "Fundamental.hpp"
+#include "../Array.hpp"
 #include "../Exception.hpp"
 #include "IList.hpp"
 
@@ -395,10 +396,6 @@ namespace LiongPlus
 			return false;
 		}
 		
-		virtual 
-		
-		// IList<T>
-		
 		int GetCount()
 		{
 			auto ptr = _Begin;
@@ -412,6 +409,37 @@ namespace LiongPlus
 			
 			return count;
 		}
+
+		virtual void CopyTo(Array<T>& array, int index) override
+		{
+			assert(index > 0);
+			assert(GetCount() + index < array.GetCount());
+
+			auto ptr = _Begin;
+			while (index < array.GetCount())
+			{
+				array[index] = ptr->_Value;
+				++index;
+				ptr = ptr->_Latter;
+			}
+		}
+
+		virtual void Insert(int index, T& value) override
+		{
+			assert(index < GetCount());
+		}
+
+		virtual bool IsReadOnly() override
+		{
+
+		}
+
+		virtual void Remove(T& value) override
+		{
+
+		}
+
+		// IList<T>
 		
 	private:
 		LinkedListNode<T>* _Begin;
