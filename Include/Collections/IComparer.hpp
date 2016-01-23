@@ -25,7 +25,7 @@ namespace LiongPlus
 			/// <param name="x">The first object to compare.</param>
 			/// <param name="y">The second object to compare.</param>
 			/// <returns>A signed integer that indicates the relative items of x and y. It should be a value less than zero if x is less than y, zero if x is equal to y, or a value greater than zero if x is greater than y.</returns>
-			virtual int Compare(T& x, T& y) = 0;
+			virtual long Compare(T& x, T& y) = 0;
 		};
 
 		/// <summary>
@@ -42,7 +42,7 @@ namespace LiongPlus
 			{
 			}
 
-			virtual int Compare(T& x, T& y)
+			virtual long Compare(T& x, T& y)
 			{
 				return _Functor(x, y);
 			}

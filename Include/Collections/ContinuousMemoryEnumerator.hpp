@@ -18,10 +18,10 @@ namespace LiongPlus
 		{
 		private:
 			T* _Field;
-			int _Length, _Current;
+			long _Length, _Current;
 
 		public:
-			ContinuousMemoryEnumerator(T* field, int length, int current)
+			ContinuousMemoryEnumerator(T* field, long length, long current)
 				: _Field(field)
 				, _Length(length)
 				, _Current(current)

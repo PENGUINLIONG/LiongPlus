@@ -7,34 +7,38 @@ namespace LiongPlus
 {
 	// Public
 
+	DateTime::DateTime()
+		: _TimeData(0)
+	{
+	}
 	DateTime::DateTime(const DateTime& instance)
 		: _TimeData(instance._TimeData)
 	{
 	}
-	DateTime::DateTime(long tick, DateTimeKind kind = DateTimeKind::Local)
-		: _TimeData(tick & (kind == DateTimeKind::Utc ? _UtcMask : _LocalMask))
+	DateTime::DateTime(DateTime&& instance)
+		: _TimeData(0)
+	{
+		Swap(_TimeData, instance._TimeData);
+	}
+	DateTime::DateTime(long tick, DateTimeKind kind)
+		: _TimeData(tick | (kind == DateTimeKind::Utc ? _UtcMask : _LocalMask))
 	{
 	}
-	DateTime::DateTime(int year, int month, int date, int hour = 0, int minute = 0, int second = 0, int millisecond = 0, DateTimeKind kind = DateTimeKind::Local)
+	DateTime::DateTime(long year, long month, long date, long hour, long minute, long second, long millisecond, DateTimeKind kind)
 	{
-		assert(year < 0 || year > 9999, "Illegal DateTime Info.");
-
+		assert(year >= 0 && year <= 9999, "Illegal DateTime Info.");
 		_TimeData = (((year >> 2) - (year >> 2) * 3 / 100) + year * 365);
 		--month;
-
-		assert(month < 0 || month > 11, "Illegal DateTime Info.");
-
+		assert(month >= 0 && month <= 11, "Illegal DateTime Info.");
 		_TimeData += (year % 4 && (!(year % 100) || year % 400)) ? _DaysToMonth_366[month] : _DaysToMonth_365[month];
 		_TimeData -= 31;
 		--date;
-
-		assert(date < 0 || date > 30, "Illegal DateTime Info.");
-
+		assert(date >= 0 && date <= 30, "Illegal DateTime Info.");
 		_TimeData += date;
 		_TimeData *= _TicksPerDay;
-		if (hour < 0 || hour > 24 || minute < 0 || minute > 60 || second < 0 || second > 60 || millisecond < 0 || millisecond > 1000)
-			_TimeData += hour * _TicksPerHour + minute * _TicksPerMinute + second * _TicksPerSecond + millisecond * _TicksPerMillisecond;
-		_TimeData &= (kind == DateTimeKind::Utc ? _UtcMask : _LocalMask);
+		assert(hour >= 0 || hour < 24 || minute >= 0 || minute < 60 || second >= 0 || second < 60 || millisecond >= 0 || millisecond < 1000);
+		_TimeData += hour * _TicksPerHour + minute * _TicksPerMinute + second * _TicksPerSecond + millisecond * _TicksPerMillisecond;
+		_TimeData |= (kind == DateTimeKind::Utc ? _UtcMask : _LocalMask);
 	}
 
 	DateTime& DateTime::operator=(DateTime& instance)
@@ -54,20 +58,20 @@ namespace LiongPlus
 	{
 		return _TimeData != instance._TimeData;
 	}
-	DateTime DateTime::operator+(int value)
+	DateTime DateTime::operator+(long value)
 	{
 		return DateTime(_TimeData + value, Kind());
 	}
-	DateTime DateTime::operator-(int value)
+	DateTime DateTime::operator-(long value)
 	{
 		return DateTime(_TimeData - value, Kind());
 	}
-	DateTime& DateTime::operator+=(int value)
+	DateTime& DateTime::operator+=(long value)
 	{
 		_TimeData += value;
 		return *this;
 	}
-	DateTime& DateTime::operator-=(int value)
+	DateTime& DateTime::operator-=(long value)
 	{
 		_TimeData -= value;
 		return *this;
@@ -75,23 +79,23 @@ namespace LiongPlus
 
 	DateTime DateTime::Date() const
 	{
-		return DateTime(_TimeData - (_TimeData % _TicksPerDay), Kind());
+		return DateTime((_TimeData & _TickMask) - ((_TimeData & _TickMask) % _TicksPerDay), Kind());
 	}
-	int DateTime::Day() const
+	long DateTime::Day() const
 	{
 		return AnalyseDate(InfoType::Day);
 	}
 	LiongPlus::DayOfWeek DateTime::DayOfWeek() const
 	{
-		return (LiongPlus::DayOfWeek)((_TimeData / _TicksPerDay) % 7);
+		return (LiongPlus::DayOfWeek)(((_TimeData & _TickMask) / _TicksPerDay) % 7);
 	}
-	int DateTime::DayOfYear()
+	long DateTime::DayOfYear()
 	{
 		return AnalyseDate(InfoType::DayOfYear);
 	}
-	int DateTime::Hour() const
+	long DateTime::Hour() const
 	{
-		return ((_TimeData / _TicksPerHour) % 24);
+		return (((_TimeData & _TickMask) / _TicksPerHour) % 24);
 	}
 	bool DateTime::IsLeapYear() const
 	{
@@ -105,25 +109,25 @@ namespace LiongPlus
 			? DateTimeKind::Local
 			: DateTimeKind::Unspecified;
 	}
-	int DateTime::Millisecond() const
+	long DateTime::Millisecond() const
 	{
-		return((_TimeData / _TicksPerMillisecond) % 1000);
+		return(((_TimeData & _TickMask) / _TicksPerMillisecond) % 1000);
 	}
-	int DateTime::Minute() const
+	long DateTime::Minute() const
 	{
-		return((_TimeData / _TicksPerMinute) % 60);
+		return(((_TimeData & _TickMask) / _TicksPerMinute) % 60);
 	}
-	int DateTime::Month() const
+	long DateTime::Month() const
 	{
 		return AnalyseDate(InfoType::Month);
 	}
-	int DateTime::Second() const
+	long DateTime::Second() const
 	{
-		return ((_TimeData / _TicksPerSecond) % 60);
+		return (((_TimeData & _TickMask) / _TicksPerSecond) % 60);
 	}
-	int DateTime::Ticks() const
+	long DateTime::Ticks() const
 	{
-		return _TimeData;
+		return (_TimeData & _TickMask);
 	}
 	TimeSpan DateTime::TimeOfDay() const
 	{
@@ -131,12 +135,21 @@ namespace LiongPlus
 	}
 	String DateTime::ToString()
 	{
-		_L_Char buffer[32];
-		std::swprintf(buffer, 32, L"%ld/%ld/%ld %ld:%ld:%ld", Year(), DayOfYear(), Month(), Hour(), Minute(), Second());
-
-		return buffer;
+		LiongPlus::Text::StringBuilder sb;
+		sb.Append(String::FromValue(Year()));
+		sb.Append(_LT('/'));
+		sb.Append(String::FromValue(Month()));
+		sb.Append(_LT('/'));
+		sb.Append(String::FromValue(Day()));
+		sb.Append(_LT(' '));
+		sb.Append(String::FromValue(Hour()));
+		sb.Append(_LT(':'));
+		sb.Append(String::FromValue(Minute()));
+		sb.Append(_LT(':'));
+		sb.Append(String::FromValue(Second()));
+		return sb.ToString();
 	}
-	int DateTime::Year() const
+	long DateTime::Year() const
 	{
 		return AnalyseDate(InfoType::Year);
 	}
@@ -151,7 +164,7 @@ namespace LiongPlus
 			throw Exception("Failed in fetching time info.");
 
 		return DateTime
-			(timeinfo.tm_year
+			(timeinfo.tm_year + 1900
 				, timeinfo.tm_mon + 1
 				, timeinfo.tm_mday
 				, timeinfo.tm_hour
@@ -168,7 +181,7 @@ namespace LiongPlus
 			throw Exception("Failed in fetching time info.");
 
 		return DateTime
-			(timeinfo.tm_year
+			(timeinfo.tm_year + 1900
 				, timeinfo.tm_mon + 1
 				, timeinfo.tm_mday
 				, 0
@@ -186,7 +199,7 @@ namespace LiongPlus
 			throw Exception("Failed in fetching time info.");
 
 		return DateTime
-			(timeinfo.tm_year
+			(timeinfo.tm_year + 1900
 				, timeinfo.tm_mon + 1
 				, timeinfo.tm_mday
 				, timeinfo.tm_hour
@@ -199,27 +212,28 @@ namespace LiongPlus
 
 	// Private
 
-	const int64_t _UtcMask = 0x0100000000000000;
-	const int64_t _LocalMask = 0x0200000000000000;
+	const uint64_t DateTime::_TickMask = 0x3FFFFFFFFFFFFFFFULL;
+	const uint64_t DateTime::_UtcMask =  0x4000000000000000ULL;
+	const uint64_t DateTime::_LocalMask = 0x8000000000000000ULL;
 
-	const int64_t _TicksPerMillisecond = 10000;
-	const int64_t _TicksPerSecond = _TicksPerMillisecond * 1000;
-	const int64_t _TicksPerMinute = _TicksPerSecond * 60;
-	const int64_t _TicksPerHour = _TicksPerMinute * 60;
-	const int64_t _TicksPerDay = _TicksPerHour * 24;
+	const uint64_t DateTime::_TicksPerMillisecond = 10000;
+	const uint64_t DateTime::_TicksPerSecond = _TicksPerMillisecond * 1000;
+	const uint64_t DateTime::_TicksPerMinute = _TicksPerSecond * 60;
+	const uint64_t DateTime::_TicksPerHour = _TicksPerMinute * 60;
+	const uint64_t DateTime::_TicksPerDay = _TicksPerHour * 24;
 
-	const int64_t _DaysPerYear = 365;
-	const int64_t _DaysPerLeapYear = 366;
-	const int64_t _DaysPer4Years = (_DaysPerYear << 2) + 1;
-	const int64_t _DaysPer100Years = _DaysPer4Years * 25 - 1;
-	const int64_t _DaysPer400Years = (_DaysPer100Years << 2) + 1;
+	const uint64_t DateTime::_DaysPerYear = 365;
+	const uint64_t DateTime::_DaysPerLeapYear = 366;
+	const uint64_t DateTime::_DaysPer4Years = (_DaysPerYear << 2) + 1;
+	const uint64_t DateTime::_DaysPer100Years = _DaysPer4Years * 25 - 1;
+	const uint64_t DateTime::_DaysPer400Years = (_DaysPer100Years << 2) + 1;
 
-	const int DateTime::_DaysToMonth_365[12] = { 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 };
-	const int DateTime::_DaysToMonth_366[12] = { 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366 };
+	const long DateTime::_DaysToMonth_365[12] = { 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 };
+	const long DateTime::_DaysToMonth_366[12] = { 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366 };
 
-	int DateTime::AnalyseDate(const InfoType type) const
+	long DateTime::AnalyseDate(const InfoType type) const
 	{
-		int64_t days = _TimeData / _TicksPerDay;
+		int64_t days = (_TimeData & _TickMask) / _TicksPerDay;
 		int64_t year_400 = days / _DaysPer400Years;
 		days -= year_400 * _DaysPer400Years;
 		int64_t year_100 = days / _DaysPer100Years;
@@ -229,7 +243,7 @@ namespace LiongPlus
 			year_100 = 3;
 		days -= year_100 * _DaysPer100Years;
 		int64_t year_4 = days / _DaysPer4Years;
-		days -= year_4 << 2;
+		days -= year_4 * _DaysPer4Years;
 		int64_t year_1 = days / _DaysPerYear;
 		if (year_1 == 4) // The same reason.
 			year_1 = 3;
@@ -252,6 +266,6 @@ namespace LiongPlus
 			return ++months;
 
 		if (type == InfoType::Day)
-			return ++days - monthDict[months];
+			return ++days - (months == 0 ? 0 : monthDict[months]);
 	}
 }

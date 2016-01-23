@@ -40,7 +40,7 @@ namespace LiongPlus
 		String(const String& instance);
 		String(String&& instance);
 		String(const _L_Char* c_str);
-		String(_L_Char* field, int length);
+		String(_L_Char* field, long length);
 		String(Array<_L_Char>& arr);
 		~String();
 
@@ -53,12 +53,12 @@ namespace LiongPlus
 		bool operator!=(String& str) const;
 		String& operator+=(String& str);
 		String& operator+=(const _L_Char* str);
-		String& operator+=(const int str);
+		String& operator+=(const long str);
 		String& operator+=(const double str);
 		String& operator+=(const float str);
 		String operator+(String& str);
 		String operator+(const _L_Char* str);
-		String operator+(const int str);
+		String operator+(const long str);
 		String operator+(const double str);
 		String operator+(const float str);
 
@@ -74,29 +74,29 @@ namespace LiongPlus
 		EnumeratorParser<_L_Char> end();
 
 		Ptr<String> Clone();
-		int CompareTo(String& value);
+		long CompareTo(String& value);
 		bool Contains(String& value);
 		bool Equals(String& value);
 		const _L_Char* GetNativePointer();
-		int GetLength();
-		String Insert(int index, String value);
-		String Remove(int index);
-		String Remove(int index, int count);
+		long GetLength();
+		String Insert(long index, String& value);
+		String Remove(long index);
+		String Remove(long index, long count);
 		Array<String> Split(_L_Char separator, StringSplitOptions option = StringSplitOptions::RemoveEmptyEntries);
-		Array<String> Split(_L_Char separator, int maxCount, StringSplitOptions option = StringSplitOptions::RemoveEmptyEntries);
-		Array<String> Split(Array<_L_Char>& separators, StringSplitOptions option);
-		Array<String> Split(Array<_L_Char>& separators, int maxCount, StringSplitOptions option = StringSplitOptions::RemoveEmptyEntries);
+		Array<String> Split(_L_Char separator, long maxCount, StringSplitOptions option = StringSplitOptions::RemoveEmptyEntries);
+		Array<String> Split(Array<_L_Char>& separators, StringSplitOptions option = StringSplitOptions::RemoveEmptyEntries);
+		Array<String> Split(Array<_L_Char>& separators, long maxCount, StringSplitOptions option = StringSplitOptions::RemoveEmptyEntries);
 		//Array<String> Split(std::initializer_list<_L_Char> separators, StringSplitOptions option);
-		//Array<String> Split(std::initializer_list<_L_Char> separators, int maxCount, StringSplitOptions option = SplitOptions::RemoveEmptyEntries);
-		String Substring(int index);
-		String Substring(int index, int count);
+		//Array<String> Split(std::initializer_list<_L_Char> separators, long maxCount, StringSplitOptions option = SplitOptions::RemoveEmptyEntries);
+		String Substring(long index);
+		String Substring(long index, long count);
 		String& ToString();
 		String Trim();
 		String Trim(Array<_L_Char>& trimee);
 		String TrimEnd(Array<_L_Char>& trimee);
 		String TrimStart(Array<_L_Char>& trimee);
 
-		static int Compare(String& a, String& b);
+		static long Compare(String& a, String& b);
 		static String Concat(String& str1, String& str2);
 		static String Concat(std::initializer_list<String> strs);
 		static String Concat(Array<String> strs);
@@ -120,7 +120,7 @@ namespace LiongPlus
 		static String FromValue(float value);
 		static String FromValue(bool value);
 
-		static String Join(String& separator, Array<String>& values, int index, int count);
+		static String Join(String& separator, Array<String>& values, long index, long count);
 		static String Join(String& separator, Array<String>& values);
 
 		// IBuffer
@@ -134,15 +134,15 @@ namespace LiongPlus
 		virtual Ptr<IEnumerator<_L_Char>> GetEnumerator() override final;
 
 	private:
-		int _Length;
+		long _Length;
 		_L_Char* _Field;
 		ReferenceCounter* _Counter;
 
 		typedef ContinuousMemoryEnumerator<_L_Char> TEnumerator;
 
-		_L_Char GetValue(int index);
+		_L_Char GetValue(long index);
 
-		static int CompareSection(_L_Char* a, _L_Char* b, int length);
+		static long CompareSection(_L_Char* a, _L_Char* b, long length);
 
 		/// <summary>
 		/// Count the length of $floating which can be used in requesting dynamic memories.
@@ -150,10 +150,10 @@ namespace LiongPlus
 		/// <param name="floating">the interger to be counted.</param>
 		/// <returns>Count of chars, 'NUL' will be included.</returns>
 		template<typename T>
-		static int FractionWcsLength(T floating)
+		static long FractionWcsLength(T floating)
 		{
-			int len = 2; // '.' and 'NUL'.
-			floating -= (int)floating;
+			long len = 2; // '.' and 'NUL'.
+			floating -= (long)floating;
 
 			if (floating == 0)
 				return 0;
@@ -163,7 +163,7 @@ namespace LiongPlus
 			{
 				++len;
 				floating *= 10;
-				floating -= (int)floating;
+				floating -= (long)floating;
 			} while (floating - 0.000001 > 0); // For the low accuracy of floating point number culculation.
 
 			return len;
@@ -175,11 +175,11 @@ namespace LiongPlus
 		/// <param name="interger">the interger to be counted.</param>
 		/// <returns>Count of chars, 'NUL' will be included.</returns>
 		template<typename T>
-		static int IntergerWcsLength(T interger)
+		static long IntergerWcsLength(T interger)
 		{
 			if (interger == 0)
 				return 2;
-			int len = 1;
+			long len = 1;
 			if (interger < 0)
 				++len;
 
@@ -198,12 +198,12 @@ namespace LiongPlus
 		/// <param name="interger">the interger to be counted.</param>
 		/// <returns>Count of chars, 'NUL' will be included.</returns>
 		template<typename T>
-		static int UnsignedIntergerWcsLength(T interger)
+		static long UnsignedIntergerWcsLength(T interger)
 		{
 			if (interger < 10)
 				return 2;
 
-			int len = 1;
+			long len = 1;
 			while (interger != 0)
 			{
 				++len;
@@ -224,7 +224,7 @@ namespace LiongPlus
 				return String(c_str, 2);
 			}
 
-			int len = UnsignedIntergerWcsLength(value);
+			long len = UnsignedIntergerWcsLength(value);
 			String output(new _L_Char[len], len);
 			_L_Char* beg, *end;
 
@@ -262,7 +262,7 @@ namespace LiongPlus
 				return String(c_str, 2);
 			}
 
-			int len = IntergerWcsLength(value);
+			long len = IntergerWcsLength(value);
 			String output(new _L_Char[len], len);
 			_L_Char* beg, *end;
 			bool neg;
@@ -307,9 +307,9 @@ namespace LiongPlus
 				return String(c_str, 2);
 			}
 
-			int len = FractionWcsLength(value);
+			long len = FractionWcsLength(value);
 			String interger, fraction = String(new _L_Char[len], len);
-			if ((int)value == 0 && value < -0.000001)
+			if ((long)value == 0 && value < -0.000001)
 			{
 				_L_Char* c_str = new _L_Char[3];
 				c_str[0] = _LT('-');
@@ -318,19 +318,19 @@ namespace LiongPlus
 				interger = String(c_str, 3);
 			}
 			else
-				interger = FromValue((int)value);
+				interger = FromValue((long)value);
 			_L_Char* c_str = fraction._Field;
 			if (value < 0.0)
 				value = -value;
-			value -= (int)value;
+			value -= (long)value;
 
 			*(c_str) = _LT('.'); // Decimal point.
 
 			do
 			{
 				value *= 10;
-				*(++c_str) = (int)value + 0x30;
-				value -= (int)value;
+				*(++c_str) = (wchar_t)value + 0x30;
+				value -= (long)value;
 			} while (value - 0.000001 > 0); // For the low accuracy of floating point number culculation.
 
 			*(++c_str) = 0; // 'NUL'.
@@ -338,7 +338,7 @@ namespace LiongPlus
 			return interger + fraction;
 		}
 
-		virtual void CleanUp();
+		void CleanUp();
 	};
 }
 #endif

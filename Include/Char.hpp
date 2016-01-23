@@ -10,12 +10,9 @@ namespace LiongPlus
 {
 	class Char
 	{
-	private:
-		// Unicode category values from Unicode U+0000 ~ U+00FF. Store them in byte[] array to save space.
-		const static byte Char::_CategoryForLatin1[];
 	public:
-		const static _L_Char NextLine = _LT('\n');
-		const static _L_Char EndOfString = _LT('\0');
+		const static _L_Char NextLine;
+		const static _L_Char EndOfString;
 		/// <summary>
 		/// NOTICE: intStudio::_L_Char is a static class.
 		/// </summary>

@@ -10,7 +10,7 @@ namespace LiongPlus
 	struct ReferenceCounter
 	{
 	public:
-		volatile int _RefCount;
+		volatile long _RefCount;
 
 		ReferenceCounter()
 			: _RefCount(0)

@@ -39,14 +39,14 @@ namespace LiongPlus
 			, _Counter(nullptr)
 		{
 		}
-		Array(const int size)
+		Array(const long size)
 			: _Size(size)
 			, _Ptr(new T[size])
 			, _Counter(new ReferenceCounter())
 		{
 			_Counter->Inc();
 		}
-		Array(const T* pointer, int size)
+		Array(const T* pointer, long size)
 			: _Size(size)
 			, _Ptr(new T[size])
 			, _Counter(new ReferenceCounter())
@@ -75,7 +75,7 @@ namespace LiongPlus
 			, _Ptr(new T[initList.size()])
 			, _Counter(new ReferenceCounter())
 		{
-			int i = 0;
+			long i = 0;
 			for (auto t : initList)
 				_Ptr[i++] = t;
 		}
@@ -106,16 +106,16 @@ namespace LiongPlus
 			CleanUp();
 			_Size = initList.size();
 			T* field = new T[_Size];
-			int i = 0;
+			long i = 0;
 			for (auto t : initList)
 				field[i++] = t;
 			_Ptr = field;
 			return *this;
 		}
 
-		T& operator[](int index) const
+		T& operator[](long index) const
 		{
-			assert(index < 0 || index > _Size, "index");
+			assert(index >= 0 && index < _Size, "index");
 
 			return _Ptr[index];
 		}
@@ -144,7 +144,7 @@ namespace LiongPlus
 			return Array<T>(*this);
 		}
 
-		int GetLowerBound() const
+		long GetLowerBound() const
 		{
 			return 0;
 		}
@@ -154,34 +154,34 @@ namespace LiongPlus
 			return _Ptr;
 		}
 
-		int GetUpperBound() const
+		long GetUpperBound() const
 		{
 			return _Size - 1;
 		}
 
-		T& GetValue(int index) const
+		T& GetValue(long index) const
 		{
-			assert(index < 0, "Need non-negative number.");
-			assert(index > _Size, "Bound exceeded.");
+			assert(index >= 0, "Need non-negative number.");
+			assert(index < _Size, "Bound exceeded.");
 
 			return _Ptr[index];
 		}
 		
 		// Static Members
 
-		static int BinarySearch(Array<T>& arr, int index, int length, T value, Ptr<IComparer<T>> comparer)
+		static long BinarySearch(Array<T>& arr, long index, long length, T value, Ptr<IComparer<T>> comparer)
 		{
-			assert(index < 0 || length < 0, "Need non-negative number.");
-			assert(index + length > _Size,"Bound exceeded.");
-			assert(comparer == nullptr, "$comparer is nullptr.");
+			assert(index >= 0 && length >= 0, "Need non-negative number.");
+			assert(index + length <= _Size, "Bound exceeded.");
+			assert(comparer != nullptr, "$comparer is nullptr.");
 
 			return BinarySearchImpl(arr, index, length, value, comparer);
 		}
-		static int BinarySearch(Array<T>& arr, int index, int length, T value)
+		static long BinarySearch(Array<T>& arr, long index, long length, T value)
 		{
 			return BinarySearch(arr, index, length, value, new DefaultComparer());
 		}
-		static int BinarySearch(Array<T>& arr, T value, Ptr<IComparer<T>> comparer)
+		static long BinarySearch(Array<T>& arr, T value, Ptr<IComparer<T>> comparer)
 		{
 			return BinarySearch(arr, 0, _Size, value, comparer);
 		}
@@ -190,16 +190,16 @@ namespace LiongPlus
 		/// </summary>
 		/// <param name="value">The object to search for.</param>
 		/// <returns>The index of the specified value in the specified array, if value is found. If value is not found and value is less than one or more elements in array, a negative number which is the bitwise complement of the index of the first element that is larger than value. If value is not found and value is greater than any of the elements in array, a negative number which is the bitwise complement of (the index of the last element plus 1).</returns>
-		static int BinarySearch(Array<T>& arr, T value)
+		static long BinarySearch(Array<T>& arr, T value)
 		{
 			return BinarySearch(arr, 0, _Size, value, new DefaultComparer());
 		}
 
-		static void Clear(Array<T>& arr, int index, int length)
+		static void Clear(Array<T>& arr, long index, long length)
 		{
-			assert(arr == nullptr, "$arr is nullptr.");
-			assert(index < 0, "Need non-negative number.");
-			assert(index + length > arr._Size, "Bound exceeded.");
+			assert(arr != nullptr, "$arr is nullptr.");
+			assert(index >= 0, "Need non-negative number.");
+			assert(index + length <= arr._Size, "Bound exceeded.");
 
 			while (length-- > 0)
 				*((byte*)(arr._Ptr + index + length) - 1) = 0;
@@ -209,7 +209,7 @@ namespace LiongPlus
 		static Array<TOutput> ConvertAll(Array<T>& arr, Converter<T, TOutput> converter)
 		{
 			Array<TOutput> newArr(arr._Size);
-			int size = arr._Size;
+			long size = arr._Size;
 			while (size-- > 0)
 			{
 				*(newArr._Ptr + size) = *(dynamic_cast<TOutput*>(converter._Ptr + size));
@@ -217,15 +217,15 @@ namespace LiongPlus
 			return newArr;
 		}
 
-		static void Copy(const Array<T>& sourceArray, int sourceIndex, const Array<T>& destinationArray, int destinationIndex, int length)
+		static void Copy(const Array<T>& sourceArray, long sourceIndex, const Array<T>& destinationArray, long destinationIndex, long length)
 		{
-			assert(sourceIndex < 0 || destinationIndex < 0 || length < 0, "Need non-negative number.");
-			assert(sourceIndex + length > sourceArray._Size || destinationIndex + length > destinationArray._Size, "Bound exceeded.");
+			assert(sourceIndex >= 0 && destinationIndex >= 0 && length >= 0, "Need non-negative number.");
+			assert(sourceIndex + length <= sourceArray._Size && destinationIndex + length <= destinationArray._Size, "Bound exceeded.");
 
 			while (length-- > 0)
 				*(destinationArray._Ptr + length) = *(sourceArray._Ptr + length);
 		}
-		static void Copy(const Array<T>& sourceArray, const Array<T>& destinationArray, int length)
+		static void Copy(const Array<T>& sourceArray, const Array<T>& destinationArray, long length)
 		{
 			Copy(sourceArray, 0, destinationArray, 0, length);
 		}
@@ -238,7 +238,7 @@ namespace LiongPlus
 
 		static bool Exists(Array<T>& arr, Predicate<T>& match)
 		{
-			for (int i = 0; i < arr._Size; ++i)
+			for (long i = 0; i < arr._Size; ++i)
 			{
 				if (match(arr._Ptr[i]))
 					return true;
@@ -248,9 +248,9 @@ namespace LiongPlus
 
 		static T Find(Array<T>& arr, Predicate<T>& match)
 		{
-			assert(!match, "$match is nullptr.");
+			assert(match != nullptr, "$match is nullptr.");
 
-			for (int i = 0; i < arr._Size; ++i)
+			for (long i = 0; i < arr._Size; ++i)
 			{
 				if (match(arr._Ptr[i]))
 					return arr._Ptr[i];
@@ -260,38 +260,38 @@ namespace LiongPlus
 
 		static Array<T> FindAll(Array<T>& arr, Predicate<T>& match)
 		{
-			assert(!match, "$match is nullptr.");
+			assert(match != nullptr, "$match is nullptr.");
 
 			throw NotImplementedException("[FindAll] is not implemented yet.");
 		}
 
-		static int FindIndex(Array<T>& arr, int startIndex, int count, Predicate<T>& match)
+		static long FindIndex(Array<T>& arr, long startIndex, long count, Predicate<T>& match)
 		{
-			assert(startIndex < 0, "Need non-negative number.");
-			assert(startIndex + count > arr._Size, "Bound exceeded.");
-			assert(!match, "$match is nullptr.");
+			assert(startIndex >= 0, "Need non-negative number.");
+			assert(startIndex + count <= arr._Size, "Bound exceeded.");
+			assert(match != nullptr, "$match is nullptr.");
 
-			for (int i = 0; i < count; ++i)
+			for (long i = 0; i < count; ++i)
 			{
 				if (match(arr._Ptr[i]))
 					return i;
 			}
 			return -1;
 		}
-		static int FindIndex(Array<T>& arr, int startIndex, Predicate<T>& match)
+		static long FindIndex(Array<T>& arr, long startIndex, Predicate<T>& match)
 		{
 			FindIndex(startIndex, arr._Size - startIndex, match);
 		}
-		static int FindIndex(Array<T>& arr, Predicate<T>& match)
+		static long FindIndex(Array<T>& arr, Predicate<T>& match)
 		{
 			FindIndex(0, match);
 		}
 
 		static T FindLast(Array<T>& arr, Predicate<T>& match)
 		{
-			assert(!match, "$match is nullptr.");
+			assert(match != nullptr, "$match is nullptr.");
 
-			for (int i = arr._Size - 1; i >= 0; --i)
+			for (long i = arr._Size - 1; i >= 0; --i)
 			{
 				if (match(arr._Ptr[i]))
 					return arr._Ptr[i];
@@ -299,37 +299,37 @@ namespace LiongPlus
 			return T();
 		}
 
-		static int FindLastIndex(Array<T>& arr, int startIndex, int count, Predicate<T>& match)
+		static long FindLastIndex(Array<T>& arr, long startIndex, long count, Predicate<T>& match)
 		{
-			assert(startIndex < 0, "Need non-negative number.");
-			assert(startIndex + count > arr._Size, "Bound exceeded.");
-			assert(!match, "$match is nullptr.");
+			assert(startIndex >= 0, "Need non-negative number.");
+			assert(startIndex + count <= arr._Size, "Bound exceeded.");
+			assert(match != nullptr, "$match is nullptr.");
 
-			for (int i = arr._Size - 1; i >= 0; --i)
+			for (long i = arr._Size - 1; i >= 0; --i)
 			{
 				if (match(arr._Ptr[i]))
 					return i;
 			}
 			return -1;
 		}
-		static int FindLastIndex(Array<T>& arr, int startIndex, Predicate<T>& match)
+		static long FindLastIndex(Array<T>& arr, long startIndex, Predicate<T>& match)
 		{
 			FindIndex(startIndex, arr._Size - startIndex, match);
 		}
-		static int FindLastIndex(Array<T>& arr, Predicate<T>& match)
+		static long FindLastIndex(Array<T>& arr, Predicate<T>& match)
 		{
 			FindIndex(0, match);
 		}
 
 		static void ForEach(Action<T>& action)
 		{
-			assert(!match, "$action is nullptr.");
+			assert(match != nullptr, "$action is nullptr.");
 
-			for (int i = 0; i < _Size; ++i)
+			for (long i = 0; i < _Size; ++i)
 				action(_Ptr[i]);
 		}
 
-		static int IndexOf(Array<T> arr, T& value)
+		static long IndexOf(Array<T> arr, T& value)
 		{
 			throw NotImplementedException();
 		}
@@ -351,18 +351,14 @@ namespace LiongPlus
 		/// </param>
 		/// <typeparam name="TValue">The type of the elements of the items array.</typeparam>
 		template<typename TValue>
-		static void Sort(Array<T>& keys, Array<TValue>& items, int index, int length, Ptr<IComparer<T>> comparer)
+		static void Sort(Array<T>& keys, Array<TValue>& items, long index, long length, Ptr<IComparer<T>> comparer)
 		{
-			int itemsLength = 0;
-			if (items != nullptr)
-				itemsLength = items.GetCount();
+			assert(index >= 0 && length >= 0, "Need non-negative number.");
+			assert(index + length <= keys._Size, "Bound exceeded.");
+			assert(items.GetCount() != 0 && items.GetCount() >= index + length, "$items is too short."); // Sort for pairs
+			assert(comparer != nullptr, "Null comparer.");
 
-			assert(index < 0 || length < 0, "Need non-negative number.");
-			assert(index + length > keys._Size, "Bound exceeded.");
-			assert(itemsLength && itemsLength < index + length, "$items is too short."); // Sort for pairs
-			assert(comparer == nullptr, "Null comparer.");
-
-			SortImpl(keys, items, index, length, comparer, !itemsLength);
+			SortImpl(keys, items, index, length, comparer, !items.GetCount());
 		}
 		/// <summary>
 		/// Sorts a range of elements in $items based on [this].
@@ -376,7 +372,7 @@ namespace LiongPlus
 		/// <param name="length">The number of elements in the range to sort.</param>
 		/// <typeparam name="TValue">The type of the elements of the items array.</typeparam>
 		template<typename TValue>
-		static void Sort(Array<T>& keys, Array<TValue>& items, int index, int length)
+		static void Sort(Array<T>& keys, Array<TValue>& items, long index, long length)
 		{
 			Sort(keys, items, index, length, new DefaultComparer());
 		}
@@ -422,7 +418,7 @@ namespace LiongPlus
 		/// The [LiongPlus::Collections::IComparer] implementation to use when comparing elements.
 		/// -or-
 		/// nullptr to use the default implementation of each element..</param>
-		static void Sort(Array<T>& arr, int index, int length, Ptr<IComparer<T>> comparer)
+		static void Sort(Array<T>& arr, long index, long length, Ptr<IComparer<T>> comparer)
 		{
 			Sort(arr, Array<T>(nullptr), index, length, comparer);
 		}
@@ -431,7 +427,7 @@ namespace LiongPlus
 		/// </summary>
 		/// <param name="index">The starting index of the range to sort.</param>
 		/// <param name="length">The number of elements in the range to sort.</param>
-		static void Sort(Array<T>& arr, int index, int length)
+		static void Sort(Array<T>& arr, long index, long length)
 		{
 			Sort(arr, index, length, new DefaultComparer());
 		}
@@ -452,9 +448,9 @@ namespace LiongPlus
 
 		static bool TrueForAll(Array<T>& arr, Predicate<T> match)
 		{
-			assert(arr == nullptr || match == nullptr, "$arr or(and) $match is(are) nullptr.");
+			assert(arr != nullptr && match != nullptr, "$arr or(and) $match is(are) nullptr.");
 
-			for (int i = 0; i < arr._Size; ++i)
+			for (long i = 0; i < arr._Size; ++i)
 			{
 				if (!match(arr._Ptr[i]))
 					return false;
@@ -483,14 +479,14 @@ namespace LiongPlus
 
 		// ICollection<T>
 
-		virtual int Add(T& value) override final
+		virtual long Add(T& value) override final
 		{
 			throw NotSupportedException("Fixed size collection.");
 		}
 
 		virtual void Clear() override final
 		{
-			int size = _Size;
+			long size = _Size;
 			CleanUp();
 			_Size = size;
 			_Ptr = new T[size];
@@ -506,12 +502,12 @@ namespace LiongPlus
 			return false;
 		}
 
-		virtual int GetCount() override final
+		virtual long GetCount() override final
 		{
 			return _Size;
 		}
 
-		virtual void CopyTo(Array<T>& array, int index) override final
+		virtual void CopyTo(Array<T>& array, long index) override final
 		{
 			Copy(*this, 0, array, index, _Size);
 		}
@@ -530,9 +526,9 @@ namespace LiongPlus
 
 		// IList<T>.
 		
-		virtual int IndexOf(T& value) override final
+		virtual long IndexOf(T& value) override final
 		{
-			for (int i = 0; i < _Size; ++i)
+			for (long i = 0; i < _Size; ++i)
 			{
 				if (GetValue(i) == value)
 					return i;
@@ -540,12 +536,12 @@ namespace LiongPlus
 			return -1;
 		}
 
-		virtual void Insert(int index, T& value) override final
+		virtual void Insert(long index, T& value) override final
 		{
 			throw NotSupportedException("Fixed size collection.");
 		}
 
-		virtual void RemoveAt(int index) override final
+		virtual void RemoveAt(long index) override final
 		{
 			throw NotSupportedException("Fixed size collection.");
 		}
@@ -567,7 +563,7 @@ namespace LiongPlus
 			{
 			}
 
-			virtual int Compare(T& x, T& y) override
+			virtual long Compare(T& x, T& y) override
 			{
 				return x == y
 					? 0
@@ -577,11 +573,11 @@ namespace LiongPlus
 			}
 		};
 
-		int _Size;
+		long _Size;
 		T* _Ptr;
 		ReferenceCounter* _Counter;
 
-		static int BinarySearchImpl(Array<T>& arr, int index, int length, T& value, Ptr<IComparer<T>> comparer)
+		static long BinarySearchImpl(Array<T>& arr, long index, long length, T& value, Ptr<IComparer<T>> comparer)
 		{
 			if (arr._Ptr[index] == value)
 				return index;
@@ -589,7 +585,7 @@ namespace LiongPlus
 			if (length <= 1)
 				return -1;
 
-			int mid = length / 2;
+			long mid = length / 2;
 
 			if (comparer->Compare(value, arr._Ptr[index + mid]))
 				return BinarySearchImpl(arr, value, index, mid);
@@ -598,11 +594,11 @@ namespace LiongPlus
 		}
 
 		template<typename TValue>
-		static void SortImpl(Array<T>& keys, Array<TValue>& items, int index, int length, Ptr<IComparer<T>> comparer, bool itemsIsNull)
+		static void SortImpl(Array<T>& keys, Array<TValue>& items, long index, long length, Ptr<IComparer<T>> comparer, bool itemsIsNull)
 		{
 			if (--length < 1) return;
 
-			int left = index, right = index + length, pivot = left++;
+			long left = index, right = index + length, pivot = left++;
 			while (left != right)
 			{
 				if (comparer->Compare(keys._Ptr[left], keys._Ptr[pivot]) <= 0)

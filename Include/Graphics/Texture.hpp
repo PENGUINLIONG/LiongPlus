@@ -16,7 +16,7 @@ namespace LiongPlus
 {
 	namespace Graphics
 	{
-		typedef unsigned int TextureIndex;
+		typedef GLuint TextureIndex;
 
 		class Texture
 		{
@@ -41,23 +41,23 @@ namespace LiongPlus
 				LinearWithLinearMipmap = GL_NEAREST_MIPMAP_LINEAR
 			};
 
-			Texture(unsigned int count = 1);
-			Texture(Filter magFilter, Filter minFilter, unsigned int count = 1);
+			Texture(unsigned long count = 1);
+			Texture(Filter magFilter, Filter minFilter, unsigned long count = 1);
 			~Texture();
 
-			unsigned int GetIndex(unsigned int position);
-			void SetMagFilter(Filter filter, unsigned int position);
-			void SetMinFilter(Filter filter, unsigned int position);
+			TextureIndex GetIndex(unsigned long position);
+			void SetMagFilter(Filter filter, unsigned long position);
+			void SetMinFilter(Filter filter, unsigned long position);
 			/*
 			 * Update image data to texture of the specified position.
 			 */
-			void Update(Image& image, unsigned int position = 0);
+			void Update(Image& image, unsigned long position = 0);
 
 			// Static
 
 			static Texture FromFile(String& path);
 		private:
-			unsigned int _Count;
+			unsigned long _Count;
 			TextureIndex* _Index;
 			Filter _MagFilter, _MinFilter;
 		};

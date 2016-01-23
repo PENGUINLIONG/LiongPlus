@@ -9,7 +9,7 @@
 namespace LiongPlus
 {
 	/// <summary>
-	/// Base type of all int fundamental exceptions.
+	/// Base type of all long fundamental exceptions.
 	/// </summary>
 	class Exception
 		: public Object

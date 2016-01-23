@@ -18,7 +18,7 @@ namespace LiongPlus
 		{
 			_Counter->Inc();
 		}
-		StringBuilder::StringBuilder(int capacity)
+		StringBuilder::StringBuilder(long capacity)
 			: _Next(nullptr)
 			, _Counter(new ReferenceCounter())
 			, _Capacity(capacity)
@@ -99,14 +99,14 @@ namespace LiongPlus
 
 			ReachEndOfStringBuilderChain(ptr);
 			Expand(1);
-			ptr->_Data[ptr->_Length] = c;
+			ptr->_Data[ptr->_Length - 1] = c;
 		}
 		void StringBuilder::Append(String& str)
 		{
 			StringBuilder* ptr = this;
-			int length = str.GetLength() - 1;
+			long length = str.GetLength() - 1;
 			ReachEndOfStringBuilderChain(ptr);
-			int offset = ptr->_Length;
+			long offset = ptr->_Length;
 			Expand(length);
 
 			while (true)
@@ -151,11 +151,11 @@ namespace LiongPlus
 		{
 
 		}
-		void StringBuilder::Insert(int index, String& str)
+		void StringBuilder::Insert(long index, String& str)
 		{
 
 		}
-		void StringBuilder::Remove(int index, int length)
+		void StringBuilder::Remove(long index, long length)
 		{
 
 		}
@@ -163,7 +163,7 @@ namespace LiongPlus
 		{
 
 		}
-		void StringBuilder::Replace(_L_Char oldValue, _L_Char newValue, int from, int count)
+		void StringBuilder::Replace(_L_Char oldValue, _L_Char newValue, long from, long count)
 		{
 
 		}
@@ -171,14 +171,14 @@ namespace LiongPlus
 		{
 
 		}
-		void StringBuilder::Replace(String& oldValue, String& newValue, int from, int count)
+		void StringBuilder::Replace(String& oldValue, String& newValue, long from, long count)
 		{
 
 		}
 		String StringBuilder::ToString()
 		{
 			StringBuilder* ptr = this;
-			int length = 1; // Keep space for '\0'.
+			long length = 1; // Keep space for '\0'.
 			// Calculate the length of return string.
 			while (true)
 			{
@@ -206,7 +206,7 @@ namespace LiongPlus
 
 		// Private
 
-		StringBuilder::StringBuilder(const _L_Char* ptr, int length)
+		StringBuilder::StringBuilder(const _L_Char* ptr, long length)
 			: _Next(nullptr)
 			, _Counter(new ReferenceCounter())
 			, _Capacity(_InitialCapacity)
@@ -235,12 +235,12 @@ namespace LiongPlus
 			}
 		}
 
-		void StringBuilder::Expand(int length)
+		void StringBuilder::Expand(long length)
 		{
 			StringBuilder* ptr = this;
 			ReachEndOfStringBuilderChain(ptr);
 
-			int totalLength = ptr->_Length + length;
+			long totalLength = ptr->_Length + length;
 			// Check if expansion or reallocation is necessary.
 			if (totalLength > ptr->_Capacity)
 			{
@@ -249,7 +249,7 @@ namespace LiongPlus
 				{
 					// -1 to prevent the situation that the total number is a multiple of 8192 (and a useless node will be created).
 					// +1 to provide a extra node to spread remainders.
-					int subobjectCounter = ((totalLength - 1) >> _RShFrom8192To1) + 1;
+					long subobjectCounter = ((totalLength - 1) >> _RShFrom8192To1) + 1;
 					while (subobjectCounter-- > 0)
 					{
 						ptr->_Capacity = _MaxCapacity;

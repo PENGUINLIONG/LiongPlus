@@ -5,34 +5,34 @@
 namespace LiongPlus
 {
 	template <typename T>
-	void Buffer::BlockCopy(Array<T>& src, int srcOffset, Array<T>& dst, int dstOffset, int count)
+	void Buffer::BlockCopy(Array<T>& src, long srcOffset, Array<T>& dst, long dstOffset, long count)
 	{
 		Memcpy((Byte*)(dst.GetNativePointer() + dstOffset), (const Byte*)(src.GetNativePointer() + srcOffset), count * sizeof(T));
 	}
 
 	template <typename T>
-	int Buffer::ByteLength(Array<T>& array)
+	long Buffer::ByteLength(Array<T>& array)
 	{
 		return array.Length() * sizeof(T);
 	}
 
 	template <typename T>
-	void Buffer::SetByte(Array<T>& array, int index, Byte value)
+	void Buffer::SetByte(Array<T>& array, long index, Byte value)
 	{
 		*((Byte*)array.GetNativePointer() + index) = value;
 	}
 
-	void Buffer::Memcpy(Byte* dst, const Byte* src, int length)
+	void Buffer::Memcpy(Byte* dst, const Byte* src, long length)
 	{
 		memcpy(dst, src, length);
 	}
 
-	void Buffer::Memset(void * dst, Byte value, int size)
+	void Buffer::Memset(void * dst, Byte value, long size)
 	{
 		memset(dst, value, size);
 	}
 
-	int Buffer::Wcslen(const _L_Char * c_str)
+	long Buffer::Wcslen(const _L_Char * c_str)
 	{
 		_L_Char* end = (_L_Char*)c_str;
 
@@ -40,7 +40,7 @@ namespace LiongPlus
 		// at least on x86 and the current jit.
 
 		// First make sure our pointer is aligned on a dword boundary
-		while (((unsigned int)end & 3) != 0 && *end != 0)
+		while (((unsigned long)end & 3) != 0 && *end != 0)
 			end++;
 		if (*end != 0) {
 			// The loop condition below works because if "end[0] & end[1]" is non-zero, that means
@@ -59,10 +59,10 @@ namespace LiongPlus
 		while (*(end++) != 0)
 			;
 
-		return (int)(end - c_str);
+		return (long)(end - c_str);
 	}
 
-	void Buffer::Wcscpy(_L_Char* dmem, const _L_Char* smem, int charCount)
+	void Buffer::Wcscpy(_L_Char* dmem, const _L_Char* smem, long charCount)
 	{
 		Buffer::Memcpy((Byte*)dmem, (const Byte*)smem, charCount * sizeof(_L_Char));
 	}

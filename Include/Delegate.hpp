@@ -236,7 +236,7 @@ namespace LiongPlus
 			: _Invoker(nullptr)
 		{
 		}
-		Delegate(const nullptr_t nullptr)
+		Delegate(const nullptr_t)
 			: _Invoker(nullptr)
 		{
 		}
@@ -273,7 +273,7 @@ namespace LiongPlus
 			Dispose();
 		}
 
-		TSelf& operator=(nullptr_t nullptr)
+		TSelf& operator=(nullptr_t)
 		{
 			Dispose();
 			return *this;
@@ -305,7 +305,7 @@ namespace LiongPlus
 			return *this;
 		}
 
-		bool operator==(const nullptr_t nullptr) const
+		bool operator==(const nullptr_t) const
 		{
 			return _Invoker;
 		}
@@ -313,7 +313,7 @@ namespace LiongPlus
 		{
 			return Equals(instance);
 		}
-		bool operator!=(const nullptr_t nullptr) const
+		bool operator!=(const nullptr_t) const
 		{
 			return !_Invoker;
 		}
@@ -376,6 +376,6 @@ namespace LiongPlus
 	using Converter = Delegate<TOutput(const TInput)>;
 
 	template<typename T>
-	using Comparison = Delegate<int(T, T)>;
+	using Comparison = Delegate<long(T, T)>;
 }
 #endif

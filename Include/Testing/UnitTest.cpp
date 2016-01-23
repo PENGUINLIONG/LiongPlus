@@ -78,7 +78,9 @@ namespace LiongPlus
 
 		void UnitTest::Test(TestObject& obj)
 		{
+			obj.Prepare();
 			obj.Test();
+			obj.CleanUp();
 		}
 
 		void UnitTest::RunUnit(Delegate<void(void)> unit)
@@ -101,19 +103,19 @@ namespace LiongPlus
 
 		String UnitTest::Summary()
 		{
-			int passed = 0;
+			long passed = 0;
 			for (auto& result : _Results)
 			{
 				if (result.State == TestState::Passed)
 					++passed;
 			}
-			return String::FromValue(_Results.Count()) + _LT(" tests have been run and ") + String::FromValue(passed) + _LT(" of these passed.");
+			return String::FromValue(_Results.GetCount()) + _LT(" tests have been run and ") + String::FromValue(passed) + _LT(" of these passed.");
 		}
-		List<int> UnitTest::ListResultId(TestState state)
+		List<long> UnitTest::ListResultId(TestState state)
 		{
 			_Mutex.lock();
-			List<int> list;
-			for (int i = 0; i < _Results.GetCount(); ++i)
+			List<long> list;
+			for (long i = 0; i < _Results.GetCount(); ++i)
 			{
 				if (_Results[i].State == state)
 					list.Add(i);

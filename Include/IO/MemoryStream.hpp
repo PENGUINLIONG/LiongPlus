@@ -20,8 +20,8 @@ namespace LiongPlus
 			MemoryStream();
 			MemoryStream(const MemoryStream& stream);
 			MemoryStream(StreamAccessPermission permission);
-			MemoryStream(Byte* buffer, int length);
-			MemoryStream(Byte* buffer, int length, StreamAccessPermission permission);
+			MemoryStream(Byte* buffer, long length);
+			MemoryStream(Byte* buffer, long length, StreamAccessPermission permission);
 			~MemoryStream();
 
 			// IBuffer
@@ -37,24 +37,24 @@ namespace LiongPlus
 			virtual bool CanSeek();
 			virtual void Close();
 			virtual void CopyTo(Stream& stream);
-			virtual void CopyTo(Stream& stream, int length);
+			virtual void CopyTo(Stream& stream, long length);
 			virtual void Flush();
-			virtual int GetCapacity();
-			virtual int GetLength();
-			virtual int GetPosition();
+			virtual long GetCapacity();
+			virtual long GetLength();
+			virtual long GetPosition();
 			virtual bool IsEndOfStream();
-			virtual Byte* Read(int length);
-			virtual void Read(Byte* buffer, int length);
+			virtual Byte* Read(long length);
+			virtual void Read(Byte* buffer, long length);
 			virtual Byte ReadByte();
-			virtual void Seek(int distance, SeekOrigin position);
-			virtual bool SetCapacity(int capacity);
-			virtual int Write(Byte* data, int length);
+			virtual void Seek(long distance, SeekOrigin position);
+			virtual bool SetCapacity(long capacity);
+			virtual long Write(Byte* data, long length);
 			virtual bool WriteByte(Byte data);
 		private:
-			const static int DEFAULT_BUFFER_CHUNK_SIZE = 4096;
+			const static long DEFAULT_BUFFER_CHUNK_SIZE = 4096;
 
-			int _Size;
-			int _Position;
+			long _Size;
+			long _Position;
 			Byte* _Buffer;
 			StreamAccessPermission _Permission;
 			bool _ShouldDeleteBuffer;

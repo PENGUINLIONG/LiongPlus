@@ -4,6 +4,9 @@
 
 namespace LiongPlus
 {
+	const _L_Char Char::NextLine = _LT('\n');
+	const _L_Char Char::EndOfString = _LT('\0');
+
 	/// <summary>
 	/// Converts a specified numeric Unicode character to a double-precision floating-point number.
 	/// </summary>

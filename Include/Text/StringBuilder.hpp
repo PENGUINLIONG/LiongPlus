@@ -18,7 +18,7 @@ namespace LiongPlus
 		{
 		public:
 			StringBuilder();
-			StringBuilder(int capacity);
+			StringBuilder(long capacity);
 			StringBuilder(String& str);
 			StringBuilder(const StringBuilder& instance);
 			StringBuilder(StringBuilder&& instance);
@@ -34,12 +34,12 @@ namespace LiongPlus
 			void AppendLine(String& str);
 			template<typename ... Args>
 			void AppendFormat(String& format, Args& ... args);
-			void Insert(int index, String& string);
-			void Remove(int index, int length);
+			void Insert(long index, String& string);
+			void Remove(long index, long length);
 			void Replace(_L_Char oldValue, _L_Char newValue);
-			void Replace(_L_Char oldValue, _L_Char newValue, int from, int count);
+			void Replace(_L_Char oldValue, _L_Char newValue, long from, long count);
 			void Replace(String& oldValue, String& newValue);
-			void Replace(String& oldValue, String& newValue, int from, int count);
+			void Replace(String& oldValue, String& newValue, long from, long count);
 			String ToString();
 		private:
 			class FormatHelper
@@ -52,22 +52,22 @@ namespace LiongPlus
 				void ImportParam(T value);
 				String ToString();
 			private:
-				int _Accumulator;
+				long _Accumulator;
 				List<String> _Builder;
 			};
 
 			StringBuilder* _Next;
 			ReferenceCounter* _Counter;
-			int _Capacity, _Length;
+			long _Capacity, _Length;
 			Array<_L_Char> _Data;
 
-			const static int _RShFrom8192To1 = 13;
-			const static int _RemainderOf8192Devision = 0x1FFF;
-			const static int _InitialCapacity = 32;
-			const static int _MaxCapacity = 8192;
+			const static long _RShFrom8192To1 = 13;
+			const static long _RemainderOf8192Devision = 0x1FFF;
+			const static long _InitialCapacity = 32;
+			const static long _MaxCapacity = 8192;
 
-			StringBuilder(const _L_Char* ptr, int length);
-			void Expand(int length);
+			StringBuilder(const _L_Char* ptr, long length);
+			void Expand(long length);
 
 			void ReachEndOfStringBuilderChain(StringBuilder*& origin);
 		};

@@ -36,11 +36,11 @@ namespace LiongPlus
 	{
 		Write(String::FromValue(value));
 	}
-	void Console::Write(int value)
+	void Console::Write(long value)
 	{
 		Write(String::FromValue(value));
 	}
-	void Console::Write(unsigned int value)
+	void Console::Write(unsigned long value)
 	{
 		Write(String::FromValue(value));
 	}
@@ -61,11 +61,11 @@ namespace LiongPlus
 	{
 		WriteLine(String::FromValue(value));
 	}
-	void Console::WriteLine(int value)
+	void Console::WriteLine(long value)
 	{
 		WriteLine(String::FromValue(value));
 	}
-	void Console::WriteLine(unsigned int value)
+	void Console::WriteLine(unsigned long value)
 	{
 		WriteLine(String::FromValue(value));
 	}

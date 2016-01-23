@@ -53,9 +53,18 @@
 /*|__________________________________________________________|*/
 
 #ifdef _L_WINDOWS
+#define WIN32_LEAN_AND_MEAN // To prevent the redefinition in winsocks lib.
 #include <Windows.h>
 #include <windowsx.h>
 #include <WinUser.h>
+#ifdef _L_NET
+#ifndef _WIN32_WINNT
+#define _WIN32_WINNT 0x0501
+#endif
+#include <WinSock2.h>
+#include <WS2tcpip.h>
+#pragma comment(lib, "ws2_32.lib")
+#endif
 
 #ifdef _L_GRAPHICS
 #include <gl\GL.h>
@@ -73,6 +82,12 @@
 #define _L_puts(str) _putws(str)
 #define _L_fputs(str, file) fputws(str, file)
 #else // _L_WINDOWS // !_L_WINDOWS
+#ifdef _L_NET
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <unistd.h>
+#endif
 #define _LT(x)
 #define _L_Char char
 
@@ -88,6 +103,7 @@
 
 #include <atomic>
 #include <cstdio>
+#include <cstdint>
 #include <cstdlib>
 #include <ctime>
 #include <cwchar>
@@ -113,17 +129,17 @@ namespace LiongPlus
 
 	struct Size
 	{
-		int Width, Height;
+		long Width, Height;
 	};
 
 	struct Point
 	{
-		int X, Y;
+		long X, Y;
 	};
 
 	struct Rect
 	{
-		int Left, Top, Right, Bottom;
+		long Left, Top, Right, Bottom;
 	};
 
 	template<typename T>
@@ -226,7 +242,7 @@ namespace LiongPlus
 
 ////////////////////////////////////////////////////////////////////////////////////////
 	/// <summary>
-	/// Base type of all int fundamental classes.
+	/// Base type of all long fundamental classes.
 	/// </summary>
 	class Object
 	{
@@ -254,7 +270,7 @@ namespace LiongPlus
 	};
 
 	/// <summary>
-	/// Base type of all int fundamental interfaces.
+	/// Base type of all long fundamental interfaces.
 	/// </summary>
 	class Interface
 		: protected DependentObject

@@ -28,7 +28,7 @@ namespace LiongPlus
 			/// </summary>
 			/// <param name="value">The object to add.</param>
 			/// <returns>The position into which the new element was inserted, or -1 to indicate that the item was not inserted into the collection.</returns>
-			virtual int Add(T& value) = 0;
+			virtual long Add(T& value) = 0;
 			/// <summary>
 			/// Removes all items.
 			/// </summary>
@@ -43,19 +43,19 @@ namespace LiongPlus
 			/// Gets the number of elements contained in this.
 			/// </summary>
 			/// <returns>The number of elements.</returns>
-			virtual int GetCount() = 0;
+			virtual long GetCount() = 0;
 			/// <summary>
 			/// Copies the elements to an [LiongPlus::Collections::Array], starting at a particular Array index.
 			/// </summary>
 			/// <param name="array">The [LiongPlus::Collections::Array] that is the destination of the elements copied from [this].</param>
 			/// <param name="index">The zero-based index in $array at which copying begins.</param>
-			virtual void CopyTo(Array<T>& array, int index) = 0;
+			virtual void CopyTo(Array<T>& array, long index) = 0;
 			/// <summary>
 			/// Inserts an item at the specified index.
 			/// </summary>
 			/// <param name="index">The zero-based index at which value should be inserted.</param>
 			/// <param name="value">The object to insert.</param>
-			virtual void Insert(int index, T& value) = 0;
+			virtual void Insert(long index, T& value) = 0;
 			/// <summary>
 			/// Removes the first occurrence of a specific object.
 			/// </summary>

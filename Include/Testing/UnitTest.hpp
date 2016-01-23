@@ -70,7 +70,7 @@ namespace LiongPlus
 			static class ResultsObject
 			{
 			public:
-				TestResult& operator[](int index)
+				TestResult& operator[](long index)
 				{
 					return _Results[index];
 				}
@@ -91,7 +91,7 @@ namespace LiongPlus
 			static void RunUnit(Delegate<void(void)> unit);
 
 			static String Summary();
-			static List<int> ListResultId(TestState state);
+			static List<long> ListResultId(TestState state);
 		private:
 			static std::mutex _Mutex;
 			static List<TestResult> _Results;

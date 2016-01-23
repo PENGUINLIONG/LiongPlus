@@ -13,17 +13,17 @@ namespace LiongPlus
 	{
 	public:
 		template<typename T>
-		static void BlockCopy(Array<T>& src, int srcOffset, Array<T>& dst, int dstOffset, int count);
+		static void BlockCopy(Array<T>& src, long srcOffset, Array<T>& dst, long dstOffset, long count);
 
 		template<typename T>
-		static int ByteLength(Array<T>& array);
+		static long ByteLength(Array<T>& array);
 
-		static void Memcpy(Byte* dst, const Byte* src, int len);
+		static void Memcpy(Byte* dst, const Byte* src, long len);
 
-		static void Memset(void* dst, const Byte value, int size);
+		static void Memset(void* dst, const Byte value, long size);
 		
 		template<typename T>
-		static void SetByte(Array<T>& array, int index, Byte value);
+		static void SetByte(Array<T>& array, long index, Byte value);
 
 		/// <summary>
 		/// Get the length of a C-String.
@@ -34,7 +34,7 @@ namespace LiongPlus
 		/// A surprising hack from .NET Framework source code.
 		/// Check this out: http://referencesource.microsoft.com/mscorlib/system/string.cs.html#a1560789e961359b
 		/// </remarks>
-		static int Wcslen(const _L_Char* c_str);
+		static long Wcslen(const _L_Char* c_str);
 
 		/// <summary>
 		/// Better wcscpy() with LiongPlus::Buffer class.
@@ -42,7 +42,7 @@ namespace LiongPlus
 		/// <param name="dmem">Destination memory.</param>
 		/// <param name="smem">Source memory.</param>
 		/// <param name="charCount">Count of chars to be copied.</param>
-		static void Wcscpy(_L_Char* dmem, const _L_Char* smem, int charCount);
+		static void Wcscpy(_L_Char* dmem, const _L_Char* smem, long charCount);
 	};
 }
 #endif

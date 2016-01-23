@@ -89,7 +89,7 @@ namespace LiongPlus
 		{
 			return _Latter;
 		}
-		LinkedListNode<T>* GetNext(int length)
+		LinkedListNode<T>* GetNext(long length)
 		{
 			auto ptr = this;
 			while (--length > 0 && ptr != nullptr)
@@ -101,7 +101,7 @@ namespace LiongPlus
 		{
 			return _Former;
 		}
-		LinkedListNode<T>* GetPrevious(int length)
+		LinkedListNode<T>* GetPrevious(long length)
 		{
 			auto ptr = this;
 			while (--length > 0 && ptr != nullptr)
@@ -232,7 +232,7 @@ namespace LiongPlus
 			, _End(nullptr)
 		{
 		}
-		LinkedList(int count)
+		LinkedList(long count)
 			: _Begin(nullptr)
 			, _End(nullptr)
 		{
@@ -310,12 +310,19 @@ namespace LiongPlus
 			return AddAfter(*_End, node);			
 		}
 		
-		int FindIndex()
-		LinkedListNode<T>& FindNode
+		LinkedListNode<T>& GetNode(long index)
+		{
+
+		}
+
+		T& GetValue(long index)
+		{
+
+		}
 		
 		// Static
 		
-		static void Splice(LinkedList<T>& dst, int dstIndex, LinkedList<T>& src, int srcIndex, int length)
+		static void Splice(LinkedList<T>& dst, long dstIndex, LinkedList<T>& src, long srcIndex, long length)
 		{
 			// The process is generally:
 			//	 INDEX ACCENDING DIRECTION >>>
@@ -326,11 +333,11 @@ namespace LiongPlus
 			//	 C._Latter = F   D._Former = A
 			//	 E._Latter = B   F._Former = C
 			auto dstFormer = dst._Begin->GetNext(dstIndex);
-			assert(dstFormer == nullptr, "$dst or $dstIndex");
+			assert(dstFormer != nullptr, "$dst or $dstIndex");
 			auto dstLatter = dstFormer->_Latter;
 			
 			auto srcFormer = src._Begin->GetNext(srcIndex);
-			assert(srcFormer == nullptr, "$dst or $srcIndex");
+			assert(srcFormer != nullptr, "$src or $srcIndex");
 			auto srcLatter = srcFormer->Latter;
 			
 			if (srcFormer == src._Begin) // If B is the beginning of the source:
@@ -358,10 +365,10 @@ namespace LiongPlus
 		
 		// ICollection<T>
 		
-		virtual int Add(T& value) override
+		virtual long Add(T& value) override
 		{
 			auto ptr = &AddLast(value);
-			int index = -1;
+			long index = -1;
 			
 			while (ptr != nullptr)
 			{
@@ -396,10 +403,10 @@ namespace LiongPlus
 			return false;
 		}
 		
-		int GetCount()
+		long GetCount()
 		{
 			auto ptr = _Begin;
-			int count = 0;
+			long count = 0;
 			
 			while (ptr != nullptr)
 			{
@@ -410,10 +417,10 @@ namespace LiongPlus
 			return count;
 		}
 
-		virtual void CopyTo(Array<T>& array, int index) override
+		virtual void CopyTo(Array<T>& array, long index) override
 		{
-			assert(index > 0);
-			assert(GetCount() + index < array.GetCount());
+			assert(index >= 0, "$index");
+			assert(GetCount() - index <= array.GetCount(), "$array is too short");
 
 			auto ptr = _Begin;
 			while (index < array.GetCount())
@@ -424,16 +431,26 @@ namespace LiongPlus
 			}
 		}
 
-		virtual void Insert(int index, T& value) override
+		virtual void Insert(long index, T& value) override
 		{
-			assert(index < GetCount());
+			assert(index >= 0 && GetCount() >= index, "$index");
 
-			value
+			auto ptr = _Begin;
+			while (index++ == 0)
+				;
+			AddBefore(*ptr, value);
 		}
 
 		virtual void Remove(T& value) override
 		{
-
+			auto ptr = _Begin;
+			while (!(ptr->_Value == value))
+				ptr = ptr->_Latter;
+			if (ptr->_Former != nullptr)
+				ptr->_Former->_Latter = ptr->_Latter;
+			if (ptr->_Latter != nullptr)
+				ptr->_Latter->_Former = ptr->_Former;
+			delete ptr;
 		}
 
 		// IList<T>

@@ -24,18 +24,18 @@ namespace LiongPlus
 			/// </summary>
 			/// <param name="item">The object to locate in the [this}.</param>
 			/// <returns>The index of item if found in the list; otherwise, -1.</returns>
-			virtual int IndexOf(T& item) = 0;
+			virtual long IndexOf(T& item) = 0;
 			/// <summary>
 			/// Inserts an item to the [this] at the specified index.
 			/// </summary>
 			/// <param name="index">The zero-based index at which $item should be inserted.</param>
 			/// <param name="item">The object to insert into [this].</param>
-			virtual void Insert(int index, T& item) = 0;
+			virtual void Insert(long index, T& item) = 0;
 			/// <summary>
 			/// Remove item at the specified index.
 			/// </summary>
 			/// <param name="index">The zero-based index of the item to remove.</param>
-			virtual void RemoveAt(int index) = 0;
+			virtual void RemoveAt(long index) = 0;
 			// Implement operator[].
 		};
 	}

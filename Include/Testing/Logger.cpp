@@ -15,19 +15,19 @@ namespace LiongPlus
 
 		void Logger::Info(String msg)
 		{
-			Log(_LT("[INFO]"), msg);
+			Log(_LT(" [INFO] "), msg);
 		}
 		void Logger::Warn(String msg)
 		{
-			Log(_LT("[WARN]"), msg);
+			Log(_LT(" [WARN] "), msg);
 		}
 		void Logger::Excp(String msg)
 		{
-			Log(_LT("[EXCP]"), msg);
+			Log(_LT(" [EXCP] "), msg);
 		}
 		void Logger::Sver(String msg)
 		{
-			Log(_LT("[SVER]"), msg);
+			Log(_LT("[SVER] "), msg);
 		}
 	}
 }

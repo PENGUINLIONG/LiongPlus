@@ -33,7 +33,7 @@ namespace LiongPlus
 			, _ShouldDelete(true)
 		{
 		}
-		Ptr(const nullptr_t nullptr, bool shouldDelete = true)
+		Ptr(const nullptr_t, bool shouldDelete = true)
 			: _Counter(nullptr)
 			, _Ptr(nullptr)
 			, _ShouldDelete(true)
@@ -68,7 +68,7 @@ namespace LiongPlus
 			Clear();
 		}
 
-		TSelf& operator=(const nullptr_t nullptr)
+		TSelf& operator=(const nullptr_t)
 		{
 			Clear();
 			return *this;
@@ -100,7 +100,7 @@ namespace LiongPlus
 			return *this;
 		}
 
-		inline bool operator==(const nullptr_t nullptr) const
+		inline bool operator==(const nullptr_t) const
 		{
 			return !_Ptr;
 		}
@@ -112,7 +112,7 @@ namespace LiongPlus
 		{
 			return _Ptr == instance._Ptr;
 		}
-		inline bool operator!=(const nullptr_t nullptr) const
+		inline bool operator!=(const nullptr_t) const
 		{
 			return _Ptr != nullptr;
 		}
@@ -126,12 +126,12 @@ namespace LiongPlus
 		}
 		inline T* operator->() const
 		{
-			assert(!_Ptr, "Cannot access to nullptr pointer.");
+			assert(_Ptr != nullptr, "Cannot access to nullptr pointer.");
 			return _Ptr;
 		}
 		inline T& operator*() const
 		{
-			if (!_Ptr, "Cannot access to nullptr pointer.");
+			assert(_Ptr != nullptr, "Cannot access to nullptr pointer.");
 			return *_Ptr;
 		}
 
@@ -156,10 +156,10 @@ namespace LiongPlus
 		}
 
 		/// <summary>
-		/// Get count of references to the object pointed by this [int::Ptr].
+		/// Get count of references to the object pointed by this [long::Ptr].
 		/// </summary>
-		/// <returns>Reference count if this [int::Ptr] is pointing to something. Otherwise, 0 will be returned.</returns>
-		int GetReferenceCount()
+		/// <returns>Reference count if this [long::Ptr] is pointing to something. Otherwise, 0 will be returned.</returns>
+		long GetReferenceCount()
 		{
 			return _Counter ? _Counter->_RefCount : 0;
 		}
@@ -167,7 +167,7 @@ namespace LiongPlus
 		/// <summary>
 		/// Get native C-style pointer to the object.
 		/// </summary>
-		/// <remarks>To prevent access violation, recreating/deleting/modifying the object outside [int::Ptr<T>] are not recommended.</remarks>
+		/// <remarks>To prevent access violation, recreating/deleting/modifying the object outside [long::Ptr<T>] are not recommended.</remarks>
 		/// <returns>Native C-style pointer to target object.</returns>
 		T* GetNativePointer()
 		{

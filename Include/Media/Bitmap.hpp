@@ -43,7 +43,7 @@ namespace LiongPlus
 			// Derived from [intFramework::Media::Image]
 
 			virtual Byte* GetChunk(Point position, Size size) const override;
-			virtual int GetInterpretedLength(PixelType pixelType) const override;
+			virtual long GetInterpretedLength(PixelType pixelType) const override;
 			virtual Byte* GetPixel(Point position) const override;
 			virtual PixelType GetPixelType() const override;
 			virtual Size GetSize() const override;
@@ -55,9 +55,9 @@ namespace LiongPlus
 			// [note] Image size information will be converted to ints, so they may become invalid if the number of height or height is too large.
 
 			// [architecture] The serialized form of this type of image is very simple as there is few information should be stored.
-			// [4] Width of image(int)
-			// [4] Height of image(int)
-			// [4] PixelType(int)
+			// [4] Width of image(long)
+			// [4] Height of image(long)
+			// [4] PixelType(long)
 			// [~] Pixels
 
 			virtual Array<Byte> Serialize() override;
@@ -65,7 +65,7 @@ namespace LiongPlus
 			Ptr<Bitmap> Bitmap::Deserialize(Array<Byte>& arr);
 		private:
 			Byte* _Data;
-			int _Length;
+			long _Length;
 			PixelType _PixelType;
 			Size _Size;
 
@@ -73,20 +73,20 @@ namespace LiongPlus
 			Byte* InterpretTriTo(PixelType pixelType) const;
 			Byte* InterpretQuadTo(PixelType pixelType) const;
 
-			Byte* InterpretMonoToTri(int factorOffset) const;
-			Byte* InterpretMonoToQuad(int factorOffset) const;
+			Byte* InterpretMonoToTri(long factorOffset) const;
+			Byte* InterpretMonoToQuad(long factorOffset) const;
 
-			Byte* InterpretTriToMono(int factorOffset) const;
+			Byte* InterpretTriToMono(long factorOffset) const;
 			Byte* InterpretTriToTri() const;
 			Byte* InterpretTriToQuad(bool shouldInverse) const;
 
-			Byte* InterpretQuadToMono(int factorOffset) const;
+			Byte* InterpretQuadToMono(long factorOffset) const;
 			Byte* InterpretQuadToTri(bool shouldInverse) const;
 
 			// Static
 
-			static int CalculatePixelLength(PixelType pixelType);
-			static int CalculateDataLength(Size size, PixelType pixelType);
+			static long CalculatePixelLength(PixelType pixelType);
+			static long CalculateDataLength(Size size, PixelType pixelType);
 		};
 	}
 }

@@ -43,7 +43,7 @@ namespace LiongPlus
 		if (_Counter != nullptr)
 			_Counter->Inc();
 	}
-	String::String(_L_Char* field, int length)
+	String::String(_L_Char* field, long length)
 		: _Length(length)
 		, _Field(field)
 		, _Counter(new ReferenceCounter())
@@ -51,8 +51,8 @@ namespace LiongPlus
 		_Counter->Inc();
 	}
 	String::String(Array<_L_Char>& arr)
-		: _Length(arr.GetLength())
-		, _Field(new _L_Char[arr.GetLength()])
+		: _Length(arr.GetCount())
+		, _Field(new _L_Char[arr.GetCount()])
 		, _Counter(new ReferenceCounter())
 	{
 		_Counter->Inc();
@@ -101,7 +101,7 @@ namespace LiongPlus
 	{
 		CleanUp();
 
-		_Length = arr.GetLength();
+		_Length = arr.GetCount();
 		_Field = new _L_Char[_Length];
 		Buffer::Wcscpy(_Field, arr.GetNativePointer(), _Length);
 		--_Length;
@@ -134,7 +134,7 @@ namespace LiongPlus
 		*this = Concat(*this, String(str));
 		return *this;
 	}
-	String& String::operator+=(const int str)
+	String& String::operator+=(const long str)
 	{
 		*this = Concat(*this, FromValue(str));
 		return *this;
@@ -157,7 +157,7 @@ namespace LiongPlus
 	{
 		return Concat(*this, String(str));
 	}
-	String String::operator+(const int str)
+	String String::operator+(const long str)
 	{
 		return Concat(*this, FromValue(str));
 	}
@@ -184,7 +184,7 @@ namespace LiongPlus
 		return new String(_Field);
 	}
 
-	int String::CompareTo(String& value)
+	long String::CompareTo(String& value)
 	{
 		return Compare(*this, value);
 	}
@@ -194,7 +194,7 @@ namespace LiongPlus
 		if (_Length < value._Length)
 			return false; // A string can never contain a string which is inter than itself.
 
-		int toDo = _Length - value._Length, lengthToCompare = value._Length - 1;
+		long toDo = _Length - value._Length, lengthToCompare = value._Length - 1;
 		while (--toDo >= 0)
 		{
 			if (CompareSection(_Field, value._Field, lengthToCompare) == 0)
@@ -214,32 +214,33 @@ namespace LiongPlus
 		return _Field;
 	}
 
-	int String::GetLength()
+	long String::GetLength()
 	{
 		return _Length;
 	}
 	
-	String String::Insert(int index, String& value)
+	String String::Insert(long index, String& value)
 	{
 		_L_Char* c_str = new _L_Char[_Length + value._Length - 1];
 		Buffer::Wcscpy(c_str, _Field, index);
 		Buffer::Wcscpy(c_str + index, value._Field, value._Length - 1);
 		Buffer::Wcscpy(c_str + index + value._Length - 1, _Field + index, _Length - index);
-		c_str[_Length + value._Length - 1] = Char::EndOfString;
+		c_str[_Length + value._Length - 2] = Char::EndOfString;
+		return String(c_str, _Length + value._Length - 1);
 	}
 	
-	String String::Remove(int index)
+	String String::Remove(long index)
 	{
-		assert(index + 1 >= _Length, "index");
+		assert(index + 1 <= _Length, "index");
 		
 		_L_Char* c_str = new _L_Char[index + 1];
 		Buffer::Wcscpy(c_str, _Field, index);
 		c_str[index] = Char::EndOfString;
 		return String(c_str, index + 1);
 	}
-	String String::Remove(int index, int count)
+	String String::Remove(long index, long count)
 	{
-		assert(index + count >= _Length, "index or count");
+		assert(index + count <= _Length, "index or count");
 		
 		_L_Char* c_str = new _L_Char[_Length - count];
 		Buffer::Wcscpy(c_str, _Field, index);
@@ -247,84 +248,152 @@ namespace LiongPlus
 		return String(c_str, _Length - count);
 	}
 	
-	Array<String> Split(_L_Char separator, StringSplitOptions option = StringSplitOptions::RemoveEmptyEntries)
-	{
-		List<int> indecies;
-		for (int i = 0; i < _Length; ++i)
-			indecies.Add(i);
-		
-		Array<String> arr(indecies.GetCount() + 1);
-		
-	}
-	Array<String> Split(_L_Char separator, int maxCount, StringSplitOptions option = SplitOptions::RemoveEmptyEntries);
-	Array<String> Split(Array<_L_Char>& separators, StringSplitOptions option)
+	Array<String> String::Split(_L_Char separator, StringSplitOptions option)
 	{
 		List<String> list;
-		
-		_L_Char* begin = _Field;
-		int pos = 0;
-		while (pos != _Length)
+
+		long index = 0;
+		_L_Char* base = _Field;
+		while (true)
 		{
-			if (separators.Contains(_Field[pos]))
+			if (base[index] == separator || base[index] == Char::EndOfString)
 			{
-				++pos;
-				_L_Char* c_str = new _L_Char[pos + 1];
-				Buffer::Wcscpy(c_str, begin, pos);
-				_L_Char[pos] = Char::EndOfString;
-				list.Add(String(c_str, pos + 1));
-				begin = _Field + pos;
-				pos = 0;
+				if (option != StringSplitOptions::RemoveEmptyEntries || index != 0)
+				{
+					_L_Char* c_str = new _L_Char[index + 1];
+					Buffer::Wcscpy(c_str, base, index);
+					c_str[index] = Char::EndOfString;
+					list.Add(String(c_str, index + 1));
+				}
+				base += index;
+				index = 0;
+				if (base[index] == Char::EndOfString)
+					return list.ToArray();
+				++base;
 			}
-			else
-				++pos;
+			else ++index;
+		}
+	}
+	Array<String> String::Split(_L_Char separator, long maxCount, StringSplitOptions option)
+	{
+		List<String> list;
+
+		long index = 0;
+		_L_Char* base = _Field;
+		while (maxCount > 1)
+		{
+			if (base[index] == separator || base[index] == Char::EndOfString)
+			{
+				if (option != StringSplitOptions::RemoveEmptyEntries || index != 0)
+				{
+					_L_Char* c_str = new _L_Char[index + 1];
+					Buffer::Wcscpy(c_str, base, index);
+					c_str[index] = Char::EndOfString;
+					list.Add(String(c_str, index + 1));
+					--maxCount;
+				}
+				base += index;
+				index = 0;
+				if (base[index] == Char::EndOfString)
+					return list.ToArray();
+				++base;
+			}
+			else ++index;
+		}
+
+		// Process the remain part entirely as the final string.
+		{
+			while (base[index] != Char::EndOfString)
+				++index;
+
+			_L_Char* c_str = new _L_Char[index + 1];
+			Buffer::Wcscpy(c_str, base, index);
+			c_str[index] = Char::EndOfString;
+			list.Add(String(c_str, index + 1));
 		}
 		return list.ToArray();
 	}
-	Array<String> Split(Array<_L_Char>& separators, int maxCount, StringSplitOptions option = SplitOptions::RemoveEmptyEntries)
+	Array<String> String::Split(Array<_L_Char>& separators, StringSplitOptions option)
+	{
+		List<String> list;
+
+		long index = 0;
+		_L_Char* base = _Field;
+		while (true)
+		{
+			if (separators.Contains(base[index]) || base[index] == Char::EndOfString)
+			{
+				if (option != StringSplitOptions::RemoveEmptyEntries || index != 0)
+				{
+					_L_Char* c_str = new _L_Char[index + 1];
+					Buffer::Wcscpy(c_str, base, index);
+					c_str[index] = Char::EndOfString;
+					list.Add(String(c_str, index + 1));
+				}
+				base += index;
+				index = 0;
+				if (base[index] == Char::EndOfString)
+					return list.ToArray();
+				++base;
+			}
+			else ++index;
+		}
+	}
+	Array<String> String::Split(Array<_L_Char>& separators, long maxCount, StringSplitOptions option)
 	{
 		List<String> list;
 		
-		_L_Char* begin = _Field;
-		int pos = 0;
-		--maxCount;
-		for (int i = 0; i < _Length; ++i)
+		long index = 0;
+		_L_Char* base = _Field;
+		while (maxCount > 1)
 		{
-			if (separators.Contains(_Field[pos]))
+			if (separators.Contains(base[index]) || base[index] == Char::EndOfString)
 			{
-				++pos;
-				_L_Char* c_str = new _L_Char[pos + 1];
-				Buffer::Wcscpy(c_str, begin, pos);
-				_L_Char[pos] = Char::EndOfString;
-				list.Add(String(c_str, pos + 1));
-				begin += pos;
-				pos = 0;
-				
-				if (--maxCount > 0)
+				if (option != StringSplitOptions::RemoveEmptyEntries || index != 0)
 				{
-					
+					_L_Char* c_str = new _L_Char[index + 1];
+					Buffer::Wcscpy(c_str, base, index);
+					c_str[index] = Char::EndOfString;
+					list.Add(String(c_str, index + 1));
+					--maxCount;
 				}
+				base += index;
+				index = 0;
+				if (base[index] == Char::EndOfString)
+					return list.ToArray();
+				++base;
 			}
-			else
-				++pos;
+			else ++index;
+		}
+
+		// Process the remain part entirely as the final string.
+		{
+			while (base[index] != Char::EndOfString)
+				++index;
+
+			_L_Char* c_str = new _L_Char[index + 1];
+			Buffer::Wcscpy(c_str, base, index);
+			c_str[index] = Char::EndOfString;
+			list.Add(String(c_str, index + 1));
 		}
 		return list.ToArray();
 	}
 	
-	String Substring(int index)
+	String String::Substring(long index)
 	{
-		assert(index < 0 || index + 1 >= _Length, "index");
+		assert(index >= 0 && index + 1 <= _Length, "index");
 			
 		_L_Char* c_str = new _L_Char[_Length - index];
-		Wcscpy(c_str, _Field + index, _Length - index - 1);
+		Buffer::Wcscpy(c_str, _Field + index, _Length - index - 1);
 		c_str[_Length - index - 1] = Char::EndOfString;
 		return String(c_str, _Length - index);
 	}
-	String String::Substring(int index, int count)
+	String String::Substring(long index, long count)
 	{
-		assert(index < 0 || index + count >= _Length, "index or count");
+		assert(index >= 0 && index + count <= _Length, "index or count");
 			
 		_L_Char* c_str = new _L_Char[count + 1];
-		Wcscpy(c_str, _Field + index, count);
+		Buffer::Wcscpy(c_str, _Field + index, count);
 		c_str[count] = Char::EndOfString;
 		return String(c_str, count + 1);
 	}
@@ -336,7 +405,7 @@ namespace LiongPlus
 
 	String String::Trim()
 	{
-		return Trim({ _LT(' '), _LT('\n'), _LT('\t'), _LT('\r') });
+		return Trim(Array<_L_Char>{ _LT(' '), _LT('\n'), _LT('\t'), _LT('\r') });
 	}
 	String String::Trim(Array<_L_Char>& trimee)
 	{
@@ -345,11 +414,12 @@ namespace LiongPlus
 			;
 		++ptrEnd;
 		_L_Char* ptrStart = _Field;
-		while (!trimee.Contains(*(ptr++)))
+		while (!trimee.Contains(*(ptrStart++)))
 			;
 		_L_Char* c_str = new _L_Char[ptrEnd - ptrStart + 1];
 		Buffer::Wcscpy(c_str, _Field, ptrEnd - ptrStart);
 		c_str[ptrEnd - ptrStart] = Char::EndOfString;
+		return String(c_str, ptrEnd - ptrStart + 1);
 	}
 	String String::TrimEnd(Array<_L_Char>& trimee)
 	{
@@ -360,7 +430,7 @@ namespace LiongPlus
 		_L_Char* c_str = new _L_Char[ptr - _Field + 1];
 		Buffer::Wcscpy(c_str, _Field, ptr - _Field);
 		c_str[ptr - _Field] = Char::EndOfString;
-		return (c_str, ptr - _Field + 1);
+		return String(c_str, ptr - _Field + 1);
 	}
 	String String::TrimStart(Array<_L_Char>& trimee)
 	{
@@ -369,14 +439,14 @@ namespace LiongPlus
 			;
 		_L_Char* c_str = new _L_Char[_Field + _Length - ptr];
 		Buffer::Wcscpy(c_str, ptr, _Field + _Length - ptr);
-		return (c_str, _Field + _Length - ptr);
+		return String(c_str, _Field + _Length - ptr);
 	}
 
 	// Static
 
-	int String::Compare(String& a, String& b)
+	long String::Compare(String& a, String& b)
 	{
-		int difference = CompareSection(a._Field, b._Field, a._Length < b._Length ? a._Length : b._Length);
+		long difference = CompareSection(a._Field, b._Field, a._Length < b._Length ? a._Length : b._Length);
 
 		if (difference == 0)
 			return a._Length == b._Length ? 0 : a._Length - b._Length;
@@ -386,7 +456,7 @@ namespace LiongPlus
 
 	String String::Concat(String& str1, String& str2)
 	{
-		int size = str1._Length + str2._Length - 1;
+		long size = str1._Length + str2._Length - 1;
 		_L_Char* c_str = new _L_Char[size];
 		Buffer::Wcscpy(c_str, str1._Field, str1._Length - 1);
 		Buffer::Wcscpy(c_str + str1._Length - 1, str2._Field, str2._Length);
@@ -395,7 +465,7 @@ namespace LiongPlus
 	}
 	String String::Concat(std::initializer_list<String> strs)
 	{
-		int size = 0;
+		long size = 0;
 		for (auto& str : strs)
 		{
 			size += str._Length - 1;
@@ -413,7 +483,7 @@ namespace LiongPlus
 	}
 	String String::Concat(Array<String> strs)
 	{
-		int length = 0;
+		long length = 0;
 		for (auto& str : strs)
 			length += str._Length- 1;
 		_L_Char* c_str = new _L_Char[length + 1];
@@ -481,16 +551,16 @@ namespace LiongPlus
 		return String(value ? _LT("true") : _LT("false"));
 	}
 
-	String String::Join(String& separator, Array<String>& values, int index, int count)
+	String String::Join(String& separator, Array<String>& values, long index, long count)
 	{
-		assert(index < 0 || count < 0, "Need non-negative number.");
-		assert(index + count > values.GetLength(), "Bound exceeded.");
+		assert(index >= 0 && count > 0, "Need non-negative number.");
+		assert(index + count <= values.GetCount(), "Bound exceeded.");
 		if (count == 0)
 			return String::Empty;
 		
 		StringBuilder str;
 		--count;
-		for (int i = 0; i < count; ++i)
+		for (long i = 0; i < count; ++i)
 		{
 			str.Append(values[index + i]);
 			str.Append(separator);
@@ -501,7 +571,7 @@ namespace LiongPlus
 	}
 	String String::Join(String& separator, Array<String>& values)
 	{
-		return Join(separator, values, 0, values.GetLength());
+		return Join(separator, values, 0, values.GetCount());
 	}
 	
 	
@@ -537,7 +607,7 @@ namespace LiongPlus
 
 	// Private
 
-	int String::CompareSection(_L_Char* a, _L_Char* b, int length)
+	long String::CompareSection(_L_Char* a, _L_Char* b, long length)
 	{
 		while (--length >= 0)
 		{
@@ -550,7 +620,7 @@ namespace LiongPlus
 		return 0;
 	}
 
-	_L_Char String::GetValue(int index)
+	_L_Char String::GetValue(long index)
 	{
 		return *(_Field + index);
 	}

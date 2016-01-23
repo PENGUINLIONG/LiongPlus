@@ -35,7 +35,7 @@ namespace LiongPlus
 			 * [note] You should not use this method to retrieve a chunk of pixels. Alternatively, use [intFramework::IO::Image::GetChunk] instead.
 			 */
 			virtual Byte* GetChunk(Point position, Size size) const = 0;
-			virtual int GetInterpretedLength(PixelType pixelType) const = 0;
+			virtual long GetInterpretedLength(PixelType pixelType) const = 0;
 			/*
 			 * Retrieve a single pixel in the image.
 			 * [return] A pointer to a newly allocated buffer which stores a single pixel.

@@ -9,19 +9,6 @@
 #include "../IDisposable.hpp"
 #include <mutex>
 
-#ifdef _L_WINDOWS
-#ifndef _WIN32_WINNT
-#define _WIN32_WINNT 0x0501
-#endif
-#include <WinSock2.h>
-#include <WS2tcpip.h>
-#else // !_L_WINDOWS
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#include <unistd.h>
-#endif
-
 namespace LiongPlus
 {
 	namespace Net
@@ -39,7 +26,7 @@ namespace LiongPlus
 		/// <remarks>
 		/// It's suggested that to quote this when you want to use socket-associated functionalities. Use this class as following code.
 		/// <c>
-		/// int main()
+		/// long main()
 		/// {
 		///		SocketInitialization init;
 		///		// Use of socket...
