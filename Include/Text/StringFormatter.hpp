@@ -22,7 +22,7 @@ namespace LiongPlus
 		/// A template-based string formatter. CT for Compile time as the insertion 'sites' are decided in compile time.
 		/// </summary>
 		/// <typeparam name="TArgs">The type list of insertion values.</typeparam>
-		/// <note>This is suitable for formatting with a few and non-repeated params. If not so, please use [LiongPlus::Text::RTFormatter] instead.</note>
+		/// <note>No runtime analytic time-cost for this formatter! This is suitable for formatting with a few and non-repeated params. If not so, please use [LiongPlus::Text::RTFormatter] instead.</note>
 		template<typename ... TArgs>
 		class CTFormatter
 			: public Object
