@@ -29,8 +29,28 @@ namespace LiongPlus
 			StringBuilder& operator=(StringBuilder&& instance);
 
 			void Append(_L_Char c);
+			void Append(signed char value);
+			void Append(unsigned char value);
+			void Append(signed short value);
+			void Append(unsigned short value);
+			void Append(signed int value);
+			void Append(unsigned int value);
+			void Append(signed long value);
+			void Append(unsigned long value);
+			void Append(signed long long value);
+			void Append(unsigned long long value);
 			void Append(String& str);
 			void AppendLine(_L_Char c);
+			void AppendLine(signed char value);
+			void AppendLine(unsigned char value);
+			void AppendLine(signed short value);
+			void AppendLine(unsigned short value);
+			void AppendLine(signed int value);
+			void AppendLine(unsigned int value);
+			void AppendLine(signed long value);
+			void AppendLine(unsigned long value);
+			void AppendLine(signed long long value);
+			void AppendLine(unsigned long long value);
 			void AppendLine(String& str);
 			template<typename ... Args>
 			void AppendFormat(String& format, Args& ... args);
@@ -42,20 +62,6 @@ namespace LiongPlus
 			void Replace(String& oldValue, String& newValue, long from, long count);
 			String ToString();
 		private:
-			class FormatHelper
-			{
-			public:
-				FormatHelper();
-				~FormatHelper();
-
-				template<typename T>
-				void ImportParam(T value);
-				String ToString();
-			private:
-				long _Accumulator;
-				List<String> _Builder;
-			};
-
 			StringBuilder* _Next;
 			ReferenceCounter* _Counter;
 			long _Capacity, _Length;

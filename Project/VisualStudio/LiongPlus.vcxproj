@@ -57,6 +57,7 @@
     <ClInclude Include="..\..\Include\Testing\Logger.hpp" />
     <ClInclude Include="..\..\Include\Testing\UnitTest.hpp" />
     <ClInclude Include="..\..\Include\Text\StringBuilder.hpp" />
+    <ClInclude Include="..\..\Include\Text\StringFormatter.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Include\Fundamental.cpp" />
@@ -76,6 +77,7 @@
     <ClCompile Include="..\..\Include\Testing\Logger.cpp" />
     <ClCompile Include="..\..\Include\Testing\UnitTest.cpp" />
     <ClCompile Include="..\..\Include\Text\StringBuilder.cpp" />
+    <ClCompile Include="..\..\Include\Text\StringFormatter.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F7B8D8F6-627C-476F-9461-DA3A6316B45D}</ProjectGuid>

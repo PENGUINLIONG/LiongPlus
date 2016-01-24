@@ -136,7 +136,6 @@ namespace LiongPlus
 	private:
 		long _Length;
 		_L_Char* _Field;
-		ReferenceCounter* _Counter;
 
 		typedef ContinuousMemoryEnumerator<_L_Char> TEnumerator;
 

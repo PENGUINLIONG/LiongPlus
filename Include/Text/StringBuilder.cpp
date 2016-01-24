@@ -101,6 +101,46 @@ namespace LiongPlus
 			Expand(1);
 			ptr->_Data[ptr->_Length - 1] = c;
 		}
+		void StringBuilder::Append(signed char value)
+		{
+			Append(String::FromValue(value));
+		}
+		void StringBuilder::Append(unsigned char value)
+		{
+			Append(String::FromValue(value));
+		}
+		void StringBuilder::Append(signed short value)
+		{
+			Append(String::FromValue(value));
+		}
+		void StringBuilder::Append(unsigned short value)
+		{
+			Append(String::FromValue(value));
+		}
+		void StringBuilder::Append(signed int value)
+		{
+			Append(String::FromValue(value));
+		}
+		void StringBuilder::Append(unsigned int value)
+		{
+			Append(String::FromValue(value));
+		}
+		void StringBuilder::Append(signed long value)
+		{
+			Append(String::FromValue(value));
+		}
+		void StringBuilder::Append(unsigned long value)
+		{
+			Append(String::FromValue(value));
+		}
+		void StringBuilder::Append(signed long long value)
+		{
+			Append(String::FromValue(value));
+		}
+		void StringBuilder::Append(unsigned long long value)
+		{
+			Append(String::FromValue(value));
+		}
 		void StringBuilder::Append(String& str)
 		{
 			StringBuilder* ptr = this;
@@ -140,6 +180,46 @@ namespace LiongPlus
 		{
 			Append(c);
 			Append(_LT('\n'));
+		}
+		void StringBuilder::AppendLine(signed char value)
+		{
+			AppendLine(String::FromValue(value));
+		}
+		void StringBuilder::AppendLine(unsigned char value)
+		{
+			AppendLine(String::FromValue(value));
+		}
+		void StringBuilder::AppendLine(signed short value)
+		{
+			AppendLine(String::FromValue(value));
+		}
+		void StringBuilder::AppendLine(unsigned short value)
+		{
+			AppendLine(String::FromValue(value));
+		}
+		void StringBuilder::AppendLine(signed int value)
+		{
+			AppendLine(String::FromValue(value));
+		}
+		void StringBuilder::AppendLine(unsigned int value)
+		{
+			AppendLine(String::FromValue(value));
+		}
+		void StringBuilder::AppendLine(signed long value)
+		{
+			AppendLine(String::FromValue(value));
+		}
+		void StringBuilder::AppendLine(unsigned long value)
+		{
+			AppendLine(String::FromValue(value));
+		}
+		void StringBuilder::AppendLine(signed long long value)
+		{
+			AppendLine(String::FromValue(value));
+		}
+		void StringBuilder::AppendLine(unsigned long long value)
+		{
+			AppendLine(String::FromValue(value));
 		}
 		void StringBuilder::AppendLine(String& str)
 		{

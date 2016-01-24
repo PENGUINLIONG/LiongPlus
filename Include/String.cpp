@@ -12,50 +12,39 @@ namespace LiongPlus
 	String::String()
 		: _Length(1)
 		, _Field(new _L_Char[1])
-		, _Counter(new ReferenceCounter())
 	{
-		_Counter->Inc();
 		*_Field = Char::EndOfString;
 	}
 	String::String(const String& instance)
 		: _Length(instance._Length)
-		, _Field(instance._Field)
-		, _Counter(instance._Counter)
+		, _Field(new _L_Char[_Length])
 	{
-		_Counter->Inc();
+		Buffer::Wcscpy(_Field, instance._Field, _Length);
 	}
 	String::String(String&& instance)
 		: _Length(0)
 		, _Field(nullptr)
-		, _Counter(nullptr)
 	{
 		Swap(_Length, instance._Length);
 		Swap(_Field, instance._Field);
-		Swap(_Counter, instance._Counter);
 	}
 	String::String(const _L_Char* c_str)
 		: _Length(Buffer::Wcslen(c_str))
 		, _Field(new _L_Char[_Length])
-		, _Counter(new ReferenceCounter())
 	{
 		Buffer::Wcscpy(_Field, c_str, _Length);
-
-		if (_Counter != nullptr)
-			_Counter->Inc();
 	}
 	String::String(_L_Char* field, long length)
 		: _Length(length)
 		, _Field(field)
-		, _Counter(new ReferenceCounter())
 	{
-		_Counter->Inc();
 	}
 	String::String(Array<_L_Char>& arr)
 		: _Length(arr.GetCount())
 		, _Field(new _L_Char[arr.GetCount()])
-		, _Counter(new ReferenceCounter())
 	{
-		_Counter->Inc();
+		Buffer::Wcscpy(_Field, arr.GetNativePointer(), _Length);
+
 	}
 	String::~String()
 	{
@@ -66,10 +55,7 @@ namespace LiongPlus
 		CleanUp();
 
 		_Length = instance._Length;
-		_Field = instance._Field;
-		_Counter = instance._Counter;
-		if (_Counter != nullptr)
-			_Counter->Inc();
+		_Field = new _L_Char[_Length];
 		Buffer::Wcscpy(_Field, instance._Field, _Length);
 
 		return *this;
@@ -80,7 +66,6 @@ namespace LiongPlus
 
 		Swap(_Length, instance._Length);
 		Swap(_Field, instance._Field);
-		Swap(_Counter, instance._Counter);
 
 		return *this;
 	}
@@ -92,8 +77,6 @@ namespace LiongPlus
 		_Field = new _L_Char[_Length];
 		Buffer::Wcscpy(_Field, c_str, _Length);
 		_Field[_Length] = 0x00;
-		_Counter = new ReferenceCounter();
-		_Counter->Inc();
 
 		return *this;
 	}
@@ -104,9 +87,7 @@ namespace LiongPlus
 		_Length = arr.GetCount();
 		_Field = new _L_Char[_Length];
 		Buffer::Wcscpy(_Field, arr.GetNativePointer(), _Length);
-		--_Length;
-		_Counter = new ReferenceCounter();
-		_Counter->Inc();
+
 		return *this;
 	}
 
@@ -218,7 +199,7 @@ namespace LiongPlus
 	{
 		return _Length;
 	}
-	
+
 	String String::Insert(long index, String& value)
 	{
 		_L_Char* c_str = new _L_Char[_Length + value._Length - 1];
@@ -228,11 +209,11 @@ namespace LiongPlus
 		c_str[_Length + value._Length - 2] = Char::EndOfString;
 		return String(c_str, _Length + value._Length - 1);
 	}
-	
+
 	String String::Remove(long index)
 	{
 		assert(index + 1 <= _Length, "index");
-		
+
 		_L_Char* c_str = new _L_Char[index + 1];
 		Buffer::Wcscpy(c_str, _Field, index);
 		c_str[index] = Char::EndOfString;
@@ -241,13 +222,13 @@ namespace LiongPlus
 	String String::Remove(long index, long count)
 	{
 		assert(index + count <= _Length, "index or count");
-		
+
 		_L_Char* c_str = new _L_Char[_Length - count];
 		Buffer::Wcscpy(c_str, _Field, index);
 		Buffer::Wcscpy(c_str + index, _Field + index + count, _Length - index - count);
 		return String(c_str, _Length - count);
 	}
-	
+
 	Array<String> String::Split(_L_Char separator, StringSplitOptions option)
 	{
 		List<String> list;
@@ -342,7 +323,7 @@ namespace LiongPlus
 	Array<String> String::Split(Array<_L_Char>& separators, long maxCount, StringSplitOptions option)
 	{
 		List<String> list;
-		
+
 		long index = 0;
 		_L_Char* base = _Field;
 		while (maxCount > 1)
@@ -378,11 +359,11 @@ namespace LiongPlus
 		}
 		return list.ToArray();
 	}
-	
+
 	String String::Substring(long index)
 	{
 		assert(index >= 0 && index + 1 <= _Length, "index");
-			
+
 		_L_Char* c_str = new _L_Char[_Length - index];
 		Buffer::Wcscpy(c_str, _Field + index, _Length - index - 1);
 		c_str[_Length - index - 1] = Char::EndOfString;
@@ -391,13 +372,13 @@ namespace LiongPlus
 	String String::Substring(long index, long count)
 	{
 		assert(index >= 0 && index + count <= _Length, "index or count");
-			
+
 		_L_Char* c_str = new _L_Char[count + 1];
 		Buffer::Wcscpy(c_str, _Field + index, count);
 		c_str[count] = Char::EndOfString;
 		return String(c_str, count + 1);
 	}
-	
+
 	String& String::ToString()
 	{
 		return *this;
@@ -409,7 +390,7 @@ namespace LiongPlus
 	}
 	String String::Trim(Array<_L_Char>& trimee)
 	{
-		 _L_Char* ptrEnd = _Field + _Length - 1;
+		_L_Char* ptrEnd = _Field + _Length - 1;
 		while (!trimee.Contains(*(--ptrEnd)))
 			;
 		++ptrEnd;
@@ -460,7 +441,7 @@ namespace LiongPlus
 		_L_Char* c_str = new _L_Char[size];
 		Buffer::Wcscpy(c_str, str1._Field, str1._Length - 1);
 		Buffer::Wcscpy(c_str + str1._Length - 1, str2._Field, str2._Length);
-		
+
 		return String(c_str, size);
 	}
 	String String::Concat(std::initializer_list<String> strs)
@@ -485,7 +466,7 @@ namespace LiongPlus
 	{
 		long length = 0;
 		for (auto& str : strs)
-			length += str._Length- 1;
+			length += str._Length - 1;
 		_L_Char* c_str = new _L_Char[length + 1];
 		length = 0;
 		for (auto& str : strs)
@@ -557,7 +538,7 @@ namespace LiongPlus
 		assert(index + count <= values.GetCount(), "Bound exceeded.");
 		if (count == 0)
 			return String::Empty;
-		
+
 		StringBuilder str;
 		--count;
 		for (long i = 0; i < count; ++i)
@@ -573,8 +554,8 @@ namespace LiongPlus
 	{
 		return Join(separator, values, 0, values.GetCount());
 	}
-	
-	
+
+
 
 	// IBuffer
 
@@ -628,15 +609,8 @@ namespace LiongPlus
 	void String::CleanUp()
 	{
 		_Length = 0;
-		if (_Counter && !_Counter->Dec())
-		{
-			if (_Field)
-			{
-				delete[] _Field;
-			}
-			delete _Counter;
-		}
+		if (_Field)
+			delete[] _Field;
 		_Field = nullptr;
-		_Counter = nullptr;
-}
 	}
+}
