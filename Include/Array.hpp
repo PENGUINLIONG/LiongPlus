@@ -460,9 +460,9 @@ namespace LiongPlus
 
 		// IBuffer
 
-		const Byte* AbandonBuffer()
+		Byte* AbandonBuffer()
 		{
-			const Byte* ptr = reinterpret_cast<const Byte*>(_Ptr);
+			Byte* ptr = reinterpret_cast<Byte*>(_Ptr);
 			_Ptr = new T[_Size];
 			return ptr;
 		}

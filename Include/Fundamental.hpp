@@ -102,6 +102,7 @@
 #endif
 
 #include <atomic>
+#include <cmath>
 #include <cstdio>
 #include <cstdint>
 #include <cstdlib>

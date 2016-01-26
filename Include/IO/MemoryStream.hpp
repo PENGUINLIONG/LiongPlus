@@ -26,7 +26,7 @@ namespace LiongPlus
 
 			// IBuffer
 
-			virtual const Byte* AbandonBuffer();
+			virtual Byte* AbandonBuffer();
 			virtual const Byte* AccessBuffer();
 			virtual bool IsBufferAccessable();
 

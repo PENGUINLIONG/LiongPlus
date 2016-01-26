@@ -93,55 +93,56 @@ namespace LiongPlus
 			return *this;
 		}
 
-		void StringBuilder::Append(_L_Char c)
+		StringBuilder& StringBuilder::Append(_L_Char c)
 		{
 			StringBuilder* ptr = this;
 
 			ReachEndOfStringBuilderChain(ptr);
 			Expand(1);
 			ptr->_Data[ptr->_Length - 1] = c;
+			return *this;
 		}
-		void StringBuilder::Append(signed char value)
+		StringBuilder& StringBuilder::Append(signed char value)
 		{
-			Append(String::FromValue(value));
+			return Append(String::FromValue(value));
 		}
-		void StringBuilder::Append(unsigned char value)
+		StringBuilder& StringBuilder::Append(unsigned char value)
 		{
-			Append(String::FromValue(value));
+			return Append(String::FromValue(value));
 		}
-		void StringBuilder::Append(signed short value)
+		StringBuilder& StringBuilder::Append(short value)
 		{
-			Append(String::FromValue(value));
+			return Append(String::FromValue(value));
 		}
-		void StringBuilder::Append(unsigned short value)
+		StringBuilder& StringBuilder::Append(unsigned short value)
 		{
-			Append(String::FromValue(value));
+			return Append(String::FromValue(value));
 		}
-		void StringBuilder::Append(signed int value)
+		StringBuilder& StringBuilder::Append(int value)
 		{
-			Append(String::FromValue(value));
+			return Append(String::FromValue(value));
 		}
-		void StringBuilder::Append(unsigned int value)
+		StringBuilder& StringBuilder::Append(unsigned int value)
 		{
-			Append(String::FromValue(value));
+			return Append(String::FromValue(value));
 		}
-		void StringBuilder::Append(signed long value)
+		StringBuilder& StringBuilder::Append(long value)
 		{
-			Append(String::FromValue(value));
+			return Append(String::FromValue(value));
 		}
-		void StringBuilder::Append(unsigned long value)
+		StringBuilder& StringBuilder::Append(unsigned long value)
 		{
-			Append(String::FromValue(value));
+			return Append(String::FromValue(value));
 		}
-		void StringBuilder::Append(signed long long value)
+		StringBuilder& StringBuilder::Append(long long value)
 		{
-			Append(String::FromValue(value));
+			return Append(String::FromValue(value));
 		}
-		void StringBuilder::Append(unsigned long long value)
+		StringBuilder& StringBuilder::Append(unsigned long long value)
 		{
-			Append(String::FromValue(value));
+			return Append(String::FromValue(value));
 		}
-		void StringBuilder::Append(String& str)
+		StringBuilder& StringBuilder::Append(String& str)
 		{
 			StringBuilder* ptr = this;
 			long length = str.GetLength() - 1;
@@ -175,85 +176,88 @@ namespace LiongPlus
 				}
 				else break;
 			}
+			return *this;
 		}
-		void StringBuilder::AppendLine(_L_Char c)
+		StringBuilder& StringBuilder::AppendLine(_L_Char c)
 		{
 			Append(c);
 			Append(_LT('\n'));
+			return *this;
 		}
-		void StringBuilder::AppendLine(signed char value)
+		StringBuilder& StringBuilder::AppendLine(signed char value)
 		{
-			AppendLine(String::FromValue(value));
+			return AppendLine(String::FromValue(value));
 		}
-		void StringBuilder::AppendLine(unsigned char value)
+		StringBuilder& StringBuilder::AppendLine(unsigned char value)
 		{
-			AppendLine(String::FromValue(value));
+			return AppendLine(String::FromValue(value));
 		}
-		void StringBuilder::AppendLine(signed short value)
+		StringBuilder& StringBuilder::AppendLine(short value)
 		{
-			AppendLine(String::FromValue(value));
+			return AppendLine(String::FromValue(value));
 		}
-		void StringBuilder::AppendLine(unsigned short value)
+		StringBuilder& StringBuilder::AppendLine(unsigned short value)
 		{
-			AppendLine(String::FromValue(value));
+			return AppendLine(String::FromValue(value));
 		}
-		void StringBuilder::AppendLine(signed int value)
+		StringBuilder& StringBuilder::AppendLine(int value)
 		{
-			AppendLine(String::FromValue(value));
+			return AppendLine(String::FromValue(value));
 		}
-		void StringBuilder::AppendLine(unsigned int value)
+		StringBuilder& StringBuilder::AppendLine(unsigned int value)
 		{
-			AppendLine(String::FromValue(value));
+			return AppendLine(String::FromValue(value));
 		}
-		void StringBuilder::AppendLine(signed long value)
+		StringBuilder& StringBuilder::AppendLine(long value)
 		{
-			AppendLine(String::FromValue(value));
+			return AppendLine(String::FromValue(value));
 		}
-		void StringBuilder::AppendLine(unsigned long value)
+		StringBuilder& StringBuilder::AppendLine(unsigned long value)
 		{
-			AppendLine(String::FromValue(value));
+			return AppendLine(String::FromValue(value));
 		}
-		void StringBuilder::AppendLine(signed long long value)
+		StringBuilder& StringBuilder::AppendLine(long long value)
 		{
-			AppendLine(String::FromValue(value));
+			return AppendLine(String::FromValue(value));
 		}
-		void StringBuilder::AppendLine(unsigned long long value)
+		StringBuilder& StringBuilder::AppendLine(unsigned long long value)
 		{
-			AppendLine(String::FromValue(value));
+			return AppendLine(String::FromValue(value));
 		}
-		void StringBuilder::AppendLine(String& str)
+		StringBuilder& StringBuilder::AppendLine(String& str)
 		{
 			Append(str);
 			Append(_LT('\n'));
+			return *this;
 		}
 		template<typename ... Args>
-		void StringBuilder::AppendFormat(String& format, Args& ... args)
+		StringBuilder& StringBuilder::AppendFormat(String& format, Args& ... args)
 		{
 
 		}
-		void StringBuilder::Insert(long index, String& str)
+		StringBuilder& StringBuilder::Insert(long index, String& str)
 		{
-
+			throw NotImplementedException();
 		}
-		void StringBuilder::Remove(long index, long length)
+		StringBuilder& StringBuilder::Remove(long index, long length)
 		{
-
+			throw NotImplementedException();
 		}
-		void StringBuilder::Replace(_L_Char oldValue, _L_Char newValue)
+		StringBuilder& StringBuilder::Replace(_L_Char oldValue, _L_Char newValue)
 		{
-
+			throw NotImplementedException();
 		}
-		void StringBuilder::Replace(_L_Char oldValue, _L_Char newValue, long from, long count)
+		StringBuilder& StringBuilder::Replace(_L_Char oldValue, _L_Char newValue, long from, long count)
 		{
-
+			throw NotImplementedException();
 		}
-		void StringBuilder::Replace(String& oldValue, String& newValue)
+		StringBuilder& StringBuilder::Replace(String& oldValue, String& newValue)
 		{
-
+			throw NotImplementedException();
 		}
-		void StringBuilder::Replace(String& oldValue, String& newValue, long from, long count)
+		StringBuilder& StringBuilder::Replace(String& oldValue, String& newValue, long from, long count)
 		{
-
+			throw NotImplementedException();
 		}
 		String StringBuilder::ToString()
 		{

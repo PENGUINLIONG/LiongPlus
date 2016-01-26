@@ -4,11 +4,11 @@
 #ifndef _L_String
 #define _L_String
 #include "Fundamental.hpp"
-#include "Array.hpp"
+#include "IO/IBuffer.hpp"
 #include "Buffer.hpp"
 #include "Char.hpp"
-#include "Collections\ContinuousMemoryEnumerator.hpp"
-#include "Collections\List.hpp"
+#include "Collections/ContinuousMemoryEnumerator.hpp"
+#include "Collections/List.hpp"
 #include "Delegate.hpp"
 #include "Exception.hpp"
 #include "Ptr.hpp"
@@ -61,6 +61,7 @@ namespace LiongPlus
 		String operator+(const long str);
 		String operator+(const double str);
 		String operator+(const float str);
+		_L_Char operator[](long index);
 
 		/// <summary>
 		/// Take the advantage of C++11 range-based loop. Never call this method, please call GetEnumerator for [LiongPlus::Collections::IEnumerator].
@@ -80,6 +81,7 @@ namespace LiongPlus
 		const _L_Char* GetNativePointer();
 		long GetLength();
 		String Insert(long index, String& value);
+		bool IsNumber();
 		String Remove(long index);
 		String Remove(long index, long count);
 		Array<String> Split(_L_Char separator, StringSplitOptions option = StringSplitOptions::RemoveEmptyEntries);
@@ -105,7 +107,7 @@ namespace LiongPlus
 		{
 			return format;
 		}
-
+		
 		static String FromValue(unsigned long long value);
 		static String FromValue(long long value);
 		static String FromValue(unsigned long value);
@@ -115,7 +117,7 @@ namespace LiongPlus
 		static String FromValue(unsigned short value);
 		static String FromValue(short value);
 		static String FromValue(unsigned char value);
-		static String FromValue(char value);
+		static String FromValue(signed char value);
 		static String FromValue(double value);
 		static String FromValue(float value);
 		static String FromValue(bool value);
@@ -123,9 +125,22 @@ namespace LiongPlus
 		static String Join(String& separator, Array<String>& values, long index, long count);
 		static String Join(String& separator, Array<String>& values);
 
+		static unsigned long long ToUlonglong(String& str) { return ToNumber<unsigned long long>(str); }
+		static long long ToLonglong(String& str) { return ToNumber<long long>(str); }
+		static unsigned long ToUlong(String& str) { return ToNumber<unsigned long>(str); }
+		static long ToLong(String& str) { return ToNumber<long>(str); }
+		static unsigned int ToUint(String& str) { return ToNumber<unsigned int>(str); }
+		static int ToInt(String& str) { return ToNumber<int>(str); }
+		static unsigned short ToUshort(String& str) { return ToNumber<unsigned short>(str); }
+		static short ToShort(String& str) { return ToNumber<short>(str); }
+		static unsigned char ToUchar(String& str) { return ToNumber<unsigned char>(str); }
+		static signed char ToChar(String& str) { return ToNumber<signed char>(str); }
+		static double ToDouble(String& str) { return ToNumber<double>(str); }
+		static float ToFloat(String& str) { return ToNumber<float>(str); }
+
 		// IBuffer
 
-		virtual const Byte* AbandonBuffer();
+		virtual Byte* AbandonBuffer();
 		virtual const Byte* AccessBuffer();
 		virtual bool IsBufferAccessable();
 
@@ -335,6 +350,120 @@ namespace LiongPlus
 			*(++c_str) = 0; // 'NUL'.
 
 			return interger + fraction;
+		}
+
+		template<typename T>
+		static T ToNumber(String& str)
+		{
+			if (str._Length <= 1)
+				return false;
+			const _L_Char* beg = str._Field;
+			const _L_Char* end = beg + str._Length - 1;
+
+			TrimRange(beg, end);
+			// Now, there should not be any ' ' in range.
+			if (*beg == _LT('e') || *end == _LT('e'))
+				return false;
+
+			// Split exponential part.
+			const _L_Char* ePos = beg;
+			const _L_Char* dotPos = nullptr;
+			while (*(++ePos) != _LT('e'))
+			{
+				if (*ePos == _LT('.'))
+					dotPos = ePos;
+				if (ePos == end && IsNumberImpl(beg, end))
+				{
+					if (dotPos == nullptr)
+						return (T)ToInteger(beg, end);
+					else
+					{
+						T dec = (T)ToInteger(dotPos + 1, end);
+						return (T)ToInteger(beg, dotPos - 1) + dec / (T)(IntergerWcsLength(dec) - 1);
+					}
+				}
+			}
+
+			if (ePos != end - 1)
+			{
+				if (IsNumberImpl(beg, ePos - 1) && IsNumberImplE(ePos + 1, end))
+				{
+					T dec = (T)ToInteger(dotPos + 1, ePos - 1);
+					if (dotPos != nullptr)
+						return std::pow((T)ToInteger(beg, dotPos - 1) + dec / (T)(IntergerWcsLength(dec) - 1), (T)ToInteger(ePos + 1, end));
+					else
+						return std::pow((T)ToInteger(beg, ePos - 1), (T)ToInteger(ePos + 1, end));
+				}
+			}
+			throw ArgumentException("Not a number string.($str)");
+		}
+
+		inline static bool IsNumberImpl(const _L_Char* beg, const _L_Char* end)
+		{
+			long dotCount = 0;
+
+			// Omit signs.
+			if (*beg == _LT('-') || *beg == _LT('+'))
+				++beg;
+
+			// Check the first char in range.
+			// If the first char is not a numeric char or a dot, the string is absolutely not a number.
+			if (Char::IsDigit(*beg));
+			else if (*beg == '.' && beg < end) // If the dot is the only char in range, the string is not a number.
+				++dotCount;
+			else return false;
+
+			while (++beg <= end)
+			{
+				if (Char::IsDigit(*beg));
+				else if (*beg == _LT('.'))
+					++dotCount;
+				else
+					break;
+			}
+			return beg > end && dotCount <= 1;
+		}
+		
+		inline static bool IsNumberImplE(const _L_Char* beg, const _L_Char* end)
+		{
+			if (*beg == _LT('-') || *beg == _LT('+'))
+				++beg;
+
+			while (Char::IsDigit(*beg))
+			{
+				if (++beg > end)
+					return true;
+			}
+			return false;
+		}
+
+		inline static long ToInteger(const _L_Char* beg, const _L_Char* end)
+		{
+			bool neg = false;
+			long rv = 0;
+			if (*beg == _LT('+'))
+				++beg;
+			if (*beg == _LT('-'))
+			{
+				++beg;
+				neg = true;
+			}
+
+			while (beg <= end)
+			{
+				rv += *beg - _LT('0');
+				rv *= 10;
+				++beg;
+			}
+			return neg ? rv * -1 : rv;
+		}
+		
+		inline static void TrimRange(const _L_Char*& beg, const _L_Char*& end)
+		{
+			while ((*(beg++) == _LT(' ') || *beg == _LT('\r') || *beg == _LT('\n')) && beg <= end);
+			--beg;
+			while ((*(--end) == _LT(' ') || *end == _LT('\r') || *end == _LT('\n')) && end >= beg); // --end, because the end is at '\0'.
+			++end;
 		}
 
 		void CleanUp();

@@ -14,7 +14,7 @@ namespace LiongPlus
 			/// <summary>
 			/// Release the control to buffer and then reallocate new memory of the same size.
 			/// </summary>
-			virtual const Byte* AbandonBuffer() = 0;
+			virtual Byte* AbandonBuffer() = 0;
 			virtual const Byte* AccessBuffer() = 0;
 			virtual bool IsBufferAccessable() = 0;
 		};

@@ -10,10 +10,9 @@ namespace LiongPlus
 	// Public
 
 	String::String()
-		: _Length(1)
-		, _Field(new _L_Char[1])
+		: _Length(0)
+		, _Field(nullptr)
 	{
-		*_Field = Char::EndOfString;
 	}
 	String::String(const String& instance)
 		: _Length(instance._Length)
@@ -150,6 +149,10 @@ namespace LiongPlus
 	{
 		return Concat(*this, FromValue(str));
 	}
+	inline _L_Char String::operator[](long index)
+	{
+		return _Field[index];
+	}
 
 	EnumeratorParser<_L_Char> String::begin()
 	{
@@ -208,6 +211,28 @@ namespace LiongPlus
 		Buffer::Wcscpy(c_str + index + value._Length - 1, _Field + index, _Length - index);
 		c_str[_Length + value._Length - 2] = Char::EndOfString;
 		return String(c_str, _Length + value._Length - 1);
+	}
+
+	bool String::IsNumber()
+	{
+		if (_Length <= 1)
+			return false;
+		const _L_Char* beg = _Field;
+		const _L_Char* end = _Field + _Length - 1;
+
+		TrimRange(beg, end);
+		// Now, there should not be any ' ' in range.
+		if (*beg == _LT('e') || *end == _LT('e'))
+			return false;
+
+		// Split exponential part.
+		const _L_Char* ePos = beg;
+		while (*(++ePos) != _LT('e'))
+		{
+			if (ePos == end)
+				return IsNumberImpl(beg, end);
+		}
+		return IsNumberImpl(beg, ePos - 1) && IsNumberImplE(ePos + 1, end);
 	}
 
 	String String::Remove(long index)
@@ -483,7 +508,7 @@ namespace LiongPlus
 	{
 		return FromUnsignedInterger(value);
 	}
-	String String::FromValue(long long value)
+	String String::FromValue(signed long long value)
 	{
 		return FromSignedInterger(value);
 	}
@@ -491,7 +516,7 @@ namespace LiongPlus
 	{
 		return FromUnsignedInterger(value);
 	}
-	String String::FromValue(long value)
+	String String::FromValue(signed long value)
 	{
 		return FromSignedInterger(value);
 	}
@@ -499,7 +524,7 @@ namespace LiongPlus
 	{
 		return FromUnsignedInterger(value);
 	}
-	String String::FromValue(int value)
+	String String::FromValue(signed int value)
 	{
 		return FromSignedInterger(value);
 	}
@@ -507,7 +532,7 @@ namespace LiongPlus
 	{
 		return FromUnsignedInterger(value);
 	}
-	String String::FromValue(short value)
+	String String::FromValue(signed short value)
 	{
 		return FromSignedInterger(value);
 	}
@@ -515,7 +540,7 @@ namespace LiongPlus
 	{
 		return FromUnsignedInterger(value);
 	}
-	String String::FromValue(char value)
+	String String::FromValue(signed char value)
 	{
 		return FromSignedInterger(value);
 	}
@@ -559,11 +584,11 @@ namespace LiongPlus
 
 	// IBuffer
 
-	const Byte* String::AbandonBuffer()
+	Byte* String::AbandonBuffer()
 	{
-		const Byte* ptr = reinterpret_cast<const Byte*>(_Field);
-		_Field = new _L_Char[_Length + 1];
-		_Field[_Length + 1] = 1;
+		Byte* ptr = reinterpret_cast<Byte*>(_Field);
+		_Length = 0;
+		_Field = nullptr;
 		return ptr;
 	}
 

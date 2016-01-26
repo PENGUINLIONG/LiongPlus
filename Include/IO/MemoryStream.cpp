@@ -54,9 +54,9 @@ namespace LiongPlus
 
 		// IBuffer
 
-		const Byte* MemoryStream::AbandonBuffer()
+		Byte* MemoryStream::AbandonBuffer()
 		{
-			const Byte* ptr = _Buffer;
+			Byte* ptr = _Buffer;
 			_Buffer = new Byte[_Size];
 			_Position = 0;
 			_ShouldDeleteBuffer = true;
