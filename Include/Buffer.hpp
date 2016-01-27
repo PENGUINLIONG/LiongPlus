@@ -21,6 +21,8 @@ namespace LiongPlus
 		static void Memcpy(Byte* dst, const Byte* src, long len);
 
 		static void Memset(void* dst, const Byte value, long size);
+
+		static void Memxchg(Byte* dst, Byte* src, long size);
 		
 		template<typename T>
 		static void SetByte(Array<T>& array, long index, Byte value);

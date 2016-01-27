@@ -134,9 +134,13 @@ namespace LiongPlus
 						if (pos < end && c == _LT('{'))
 						{
 							if (*pos == _LT('{')) // Skip {{.
+							{
+
 								++pos;
+							}
 							else
 							{
+								*(pos - 1) = Char::EndOfString;
 								if (pos - beg - 1 > 0)
 									_Tokens.Add(Token(beg, pos - beg - 1)); // Pure string section.
 								break;
@@ -194,6 +198,21 @@ namespace LiongPlus
 					else
 						throw ArgumentException("$format");
 				}
+			}
+
+			template<typename ... TArgs>
+			String ToString(TArgs ... args)
+			{
+				StringBuilder sb;
+				long index;
+				SubstituteArg(sb, arg, index);
+			}
+
+			template<typename T>
+			Token SubstituteArg(StringBuilder& builder, T arg, long index)
+			{
+
+				builder.Append();
 			}
 
 		private:

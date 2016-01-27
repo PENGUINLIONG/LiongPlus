@@ -40,15 +40,31 @@ namespace LiongPlus
 
 		static void Write(String& value);
 		static void Write(bool value);
+		static void Write(signed char value);
+		static void Write(unsigned char value);
+		static void Write(short value);
+		static void Write(unsigned short value);
+		static void Write(int value);
+		static void Write(unsigned int value);
 		static void Write(long value);
 		static void Write(unsigned long value);
+		static void Write(long long value);
+		static void Write(unsigned long long value);
 		static void Write(const _L_Char* c_str);
 
 		static void WriteLine();
 		static void WriteLine(String& value);
 		static void WriteLine(bool value);
+		static void WriteLine(signed char value);
+		static void WriteLine(unsigned char value);
+		static void WriteLine(short value);
+		static void WriteLine(unsigned short value);
+		static void WriteLine(int value);
+		static void WriteLine(unsigned int value);
 		static void WriteLine(long value);
 		static void WriteLine(unsigned long value);
+		static void WriteLine(long long value);
+		static void WriteLine(unsigned long long value);
 		static void WriteLine(const _L_Char* c_str);
 	};
 }

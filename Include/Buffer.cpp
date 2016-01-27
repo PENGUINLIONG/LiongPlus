@@ -32,6 +32,50 @@ namespace LiongPlus
 		memset(dst, value, size);
 	}
 
+	void Buffer::Memxchg(Byte* a, Byte* b, long size)
+	{
+		long blockCopyTimes = size / sizeof(long);
+		long remains = size % sizeof(long);
+
+		while (blockCopyTimes-- > 0)
+		{
+			Swap(((long*)a)[blockCopyTimes], ((long*)b)[blockCopyTimes]);
+		}
+		switch (remains)
+		{
+			case 1:
+				Swap(((Byte*)a)[size - 1], ((Byte*)b)[size - 1]);
+				break;
+			case 2:
+				Swap(((short*)a)[size - 1], ((short*)b)[size - 1]);
+				break;
+			case 3:
+				Swap(((Byte*)a)[size - 1], ((Byte*)b)[size - 1]);
+				Swap(((short*)(a - 1))[size - 1], ((short*)(b - 1))[size - 1]);
+				break;
+#ifdef _L_X64
+			case 4:
+				Swap(((int*)a)[size - 1], ((int*)b)[size - 1]);
+				break;
+			case 5:
+				Swap(((Byte*)a)[size - 1], ((Byte*)b)[size - 1]);
+				Swap(((int*)(a - 1))[size - 1], ((int*)(b - 1))[size - 1]);
+				break;
+			case 6:
+				Swap(((short*)a)[size - 1], ((short*)b)[size - 1]);
+				Swap(((int*)(a - 2))[size - 1], ((int*)(b - 2))[size - 1]);
+				break;
+			case 7:
+				Swap(((Byte*)a)[size - 1], ((Byte*)b)[size - 1]);
+				Swap(((short*)(a - 1))[size - 1], ((short*)(b - 1))[size - 1]);
+				Swap(((int*)(a - 3))[size - 1], ((int*)(b - 3))[size - 1]);
+				break;
+#endif
+			default:
+				break;
+		}
+	}
+
 	long Buffer::Wcslen(const _L_Char * c_str)
 	{
 		_L_Char* end = (_L_Char*)c_str;

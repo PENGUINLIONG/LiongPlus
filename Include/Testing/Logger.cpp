@@ -1,4 +1,4 @@
-// File: Logger.hpp
+// File: Logger.cpp
 // Author: Rendong Liang (Liong)
 #include "Logger.hpp"
 

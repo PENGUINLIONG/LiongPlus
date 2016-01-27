@@ -36,9 +36,7 @@
 /*|__________________________________________________________|*/
 /*|*/                    #define _L_DEBUG                  /*|*/
 /*|*/                   #define _L_RELEASE                 /*|*/
-/*|*/                #define _L_EFFICIENT_IO               /*|*/
 /*|*/                    #define _L_LINQ                   /*|*/
-/*|*/               #define _L_STABILITY_CHECK             /*|*/
 /*|*/                   #define _L_SYNTAX                  /*|*/
 /*|*/                  #define _L_GRAPHICS                 /*|*/
 /*|*/                    #define _L_NET                    /*|*/
@@ -234,7 +232,7 @@ namespace LiongPlus
 	}
 
 	template<typename T>
-	void Swap(T& x, T& y)
+	inline void Swap(T& x, T& y)
 	{
 		T temp = x;
 		x = y;
