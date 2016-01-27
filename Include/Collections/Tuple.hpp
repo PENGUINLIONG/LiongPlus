@@ -9,19 +9,6 @@ namespace LiongPlus
 {
 	namespace Collections
 	{
-		template<typename T>
-		struct TupleElement
-		{
-		public:
-			T Value;
-
-			TupleElement() = default;
-			TupleElement(const T& value)
-				: Value(value)
-			{
-			}
-		};
-
 		template<typename ... Ts>
 		class Tuple
 			: public Object
@@ -31,22 +18,52 @@ namespace LiongPlus
 
 			Tuple()
 			{
-				void** pos = _Values;
-				long i[] = { 0, (*(pos++) = new TupleElement<Ts>, 0)... };
+				_Anchors[0] = new Byte[GetDataLength()];
+				Byte** pos = reinterpret_cast<Byte**>(_Anchors);
+				Byte* fieldPos = reinterpret_cast<Byte*>(_Anchors[0]);
+				long i[] = { 0, (*(pos++) = fieldPos, fieldPos += sizeof(Ts), *(reinterpret_cast<Ts*>(fieldPos)) = args, 0)... };
 			}
 			Tuple(const Ts& ... args)
 			{
-				void** pos = _Values;
-				long i[] = { 0, (*(pos++) = new TupleElement<Ts>(args), 0)... };
+				_Anchors[0] = new Byte[GetDataLength()];
+				Byte** pos = reinterpret_cast<Byte**>(_Anchors);
+				Byte* fieldPos = reinterpret_cast<Byte*>(_Anchors[0]);
+				long i[] = { 0, (*(pos++) = fieldPos, *(reinterpret_cast<Ts*>(fieldPos)) = args, fieldPos += sizeof(Ts), 0)... };
 			}
-			Tuple(const TSelf& instance) = delete;
-			Tuple(TSelf&& instance) = delete;
+			Tuple(const TSelf& instance)
+			{
+				Buffer::Memcpy(_Anchors[0], instance._Anchors[0], GetDataLength());
+			}
+			Tuple(TSelf&& instance)
+			{
+				Buffer::Memxchg(_Anchors[0], instance._Anchors[0], GetDataLength());
+			}
 			~Tuple()
 			{
+				delete [] (Byte*)(_Anchors[0]);
 			}
 
-			TSelf operator=(const TSelf& instance) = delete;
-			TSelf operator=(TSelf&& instance) = delete;
+			TSelf operator=(const TSelf& instance)
+			{
+				Buffer::Memcpy(_Anchors[0], instance._Anchors[0], GetDataLength());
+				return *this;
+			}
+			TSelf operator=(TSelf&& instance)
+			{
+				Buffer::Memxchg(_Anchors[0], instance._Anchors[0], GetDataLength());
+				return *this;
+			}
+			bool operator=(TSelf& value)
+			{
+				return std::memcmp(_Anchors[0], value._Anchors[0], GetDataLength()) == 0;
+			}
+
+			long GetDataLength() const
+			{
+				long len = 0;
+				long i[] = { 0, (len += sizeof(Ts), 0)... };
+				return len;
+			}
 
 			template<typename T>
 			bool IsCorrectType(long index)
@@ -60,15 +77,13 @@ namespace LiongPlus
 			template<typename T>
 			T& GetValue(long index)
 			{
-				assert(index < index, "$index");
-#ifdef _L_DEBUG
-				assert(IsCorrectType<T>(), "$index");
-#endif
+				assert(index < sizeof...(Ts), "$index");
+				assert(IsCorrectType<T>(index), "$index");
 				
-				return reinterpret_cast<TupleElement<T>*>(_Value[index])->Value;
+				return *reinterpret_cast<T*>(_Anchors[index]);
 			}
 			
-			void* _Values[sizeof...(Ts)];
+			void* _Anchors[sizeof...(Ts)];
 		};
 	}
 }
