@@ -49,7 +49,7 @@ namespace LiongPlus
 			TSelf operator=(TSelf&& instance) = delete;
 
 			template<typename T>
-			bool isCorrectType(long index)
+			bool IsCorrectType(long index)
 			{
 				bool flag = false;
 				long pos = 0;
@@ -62,7 +62,7 @@ namespace LiongPlus
 			{
 				assert(index < index, "$index");
 #ifdef _L_DEBUG
-				assert(isCorrectType<T>(), "$index");
+				assert(IsCorrectType<T>(), "$index");
 #endif
 				
 				return reinterpret_cast<TupleElement<T>*>(_Value[index])->Value;
