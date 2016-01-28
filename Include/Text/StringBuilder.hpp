@@ -40,6 +40,7 @@ namespace LiongPlus
 			StringBuilder& Append(long long value);
 			StringBuilder& Append(unsigned long long value);
 			StringBuilder& Append(String& str);
+			StringBuilder& Append(const _L_Char* c_str, long length);
 			StringBuilder& AppendLine(_L_Char c);
 			StringBuilder& AppendLine(signed char value);
 			StringBuilder& AppendLine(unsigned char value);

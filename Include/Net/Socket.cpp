@@ -20,7 +20,7 @@ namespace LiongPlus
 
 		SocketInitialization::~SocketInitialization()
 		{
-
+			WSACleanup();
 		}
 	}
 }

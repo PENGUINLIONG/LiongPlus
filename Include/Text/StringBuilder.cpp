@@ -144,8 +144,11 @@ namespace LiongPlus
 		}
 		StringBuilder& StringBuilder::Append(String& str)
 		{
+			return Append(str.GetNativePointer(), str.GetLength() - 1);
+		}
+		StringBuilder& StringBuilder::Append(const _L_Char* c_str, long length)
+		{
 			StringBuilder* ptr = this;
-			long length = str.GetLength() - 1;
 			ReachEndOfStringBuilderChain(ptr);
 			long offset = ptr->_Length;
 			Expand(length);
@@ -157,13 +160,13 @@ namespace LiongPlus
 				if (length < ptr->_Capacity - offset)
 				{
 					// There is enough space for new data, write them and return.
-					Buffer::Wcscpy(ptr->_Data.GetNativePointer() + offset, str.GetNativePointer(), length);
+					Buffer::Wcscpy(ptr->_Data.GetNativePointer() + offset, c_str, length);
 					length = 0;
 				}
 				else
 				{
 					// There is not enough space in this node, write a part and then move to next node.
-					Buffer::Wcscpy(ptr->_Data.GetNativePointer() + offset, str.GetNativePointer(), ptr->_Capacity - offset);
+					Buffer::Wcscpy(ptr->_Data.GetNativePointer() + offset, c_str, ptr->_Capacity - offset);
 					length -= ptr->_Capacity - offset;
 				}
 

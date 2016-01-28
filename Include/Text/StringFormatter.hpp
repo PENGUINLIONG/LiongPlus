@@ -14,92 +14,99 @@ namespace LiongPlus
 {
 	namespace Text
 	{
-		struct Token
+		/* [Abolished]
+		class IFormatProvider
+			: public Interface
 		{
 		public:
-			Token()
-			{
-				Buffer::Memset(this, 0, sizeof(Token));
-			}
-			Token(const Token& instance)
-				: IsString(instance.IsString)
-			{
-				if (IsString)
-					Str = instance.Str;
-				else
-					InsSite = instance.InsSite;
-			}
-			Token(Token&& instance)
-				: IsString(true)
-				, InsSite{ String(), 0, 0 }
-				, Str{ 0, nullptr }
-			{
-				Swap(IsString, instance.IsString);
-				if (sizeof(InsSite) > sizeof(Str))
-					Swap(InsSite, instance.InsSite);
-				else
-					Swap(Str, instance.Str);
-			}
-			Token(_L_Char* c_str, long length)
-				: Token()
-			{
-				IsString = true;
-				Str.Length = length;
-				Str.Field = c_str;
-			}
-			Token(long index)
-				: Token()
-			{
-				IsString = false;
-				InsSite.Index = index;
-			}
-			~Token()
-			{
-			}
-
-			Token& operator=(const Token& instance)
-			{
-				IsString = instance.IsString;
-				if (IsString)
-					Str = instance.Str;
-				else
-					InsSite = instance.InsSite;
-				return *this;
-			}
-			Token& operator=(Token&& instance)
-			{
-				Swap(IsString, instance.IsString);
-				if (sizeof(InsSite) > sizeof(Str))
-					Swap(InsSite, instance.InsSite);
-				else
-					Swap(Str, instance.Str);
-				return *this;
-			}
-			bool operator==(Token& value)
-			{
-				return false;
-			}
-
-			bool IsString;
-			union
-			{
-				struct
-				{
-					long Length;
-					_L_Char* Field;
-				} Str;
-				struct
-				{
-					String Args;
-					long Index;
-					long MinLength;
-				} InsSite;
-			};
+			
 		};
 
 		class RTFormatter
 			: public Object
 		{
+		private:
+			struct Token
+			{
+			public:
+				Token()
+				{
+					Buffer::Memset(this, 0, sizeof(Token));
+				}
+				Token(const Token& instance)
+					: IsString(instance.IsString)
+				{
+					if (IsString)
+						Str = instance.Str;
+					else
+						InsSite = instance.InsSite;
+				}
+				Token(Token&& instance)
+					: IsString(true)
+					, InsSite{ String(), 0, 0 }
+					, Str{ 0, nullptr }
+				{
+					Swap(IsString, instance.IsString);
+					if (sizeof(InsSite) > sizeof(Str))
+						Swap(InsSite, instance.InsSite);
+					else
+						Swap(Str, instance.Str);
+				}
+				Token(_L_Char* c_str, long length)
+					: Token()
+				{
+					IsString = true;
+					Str.Length = length;
+					Str.Field = c_str;
+				}
+				Token(long index)
+					: Token()
+				{
+					IsString = false;
+					InsSite.Index = index;
+				}
+				~Token()
+				{
+				}
+
+				Token& operator=(const Token& instance)
+				{
+					IsString = instance.IsString;
+					if (IsString)
+						Str = instance.Str;
+					else
+						InsSite = instance.InsSite;
+					return *this;
+				}
+				Token& operator=(Token&& instance)
+				{
+					Swap(IsString, instance.IsString);
+					if (sizeof(InsSite) > sizeof(Str))
+						Swap(InsSite, instance.InsSite);
+					else
+						Swap(Str, instance.Str);
+					return *this;
+				}
+				bool operator==(Token& value)
+				{
+					return false;
+				}
+
+				bool IsString;
+				union
+				{
+					struct
+					{
+						long Length;
+						_L_Char* Field;
+					} Str;
+					struct
+					{
+						String Args;
+						long MinLength;
+					} InsSite;
+				};
+			};
 		public:
 			RTFormatter(String& format)
 				: _Length(format.GetLength())
@@ -203,15 +210,22 @@ namespace LiongPlus
 			template<typename ... TArgs>
 			String ToString(TArgs ... args)
 			{
+				assert(sizeof...(args) == _Tokens.GetCount());
 				StringBuilder sb;
-				long index;
-				SubstituteArg(sb, arg, index);
+				long index = 0;
+				long i[] = { 0, (SubstituteArg(sb, args, index++), 0) ... };
 			}
 
 			template<typename T>
 			Token SubstituteArg(StringBuilder& builder, T arg, long index)
 			{
-
+				for (auto& token : _Tokens)
+				{
+					if (token.IsString)
+						builder.Append(token.Str.Field, token.Str.Length);
+					else
+						builder.Append(token.)
+				}
 				builder.Append();
 			}
 
@@ -220,6 +234,7 @@ namespace LiongPlus
 			long _Length;
 			_L_Char* _Field;
 		};
+		*/
 
 		/*
 		* To use CTFormatter like this:
