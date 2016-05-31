@@ -91,13 +91,6 @@ namespace LiongPlus
 			return _Bitmap.Interpret(pixelType);
 		}
 
-		// Derived from [LiongPlus::Serialization::ISerializable]
-
-		Array<Byte> Bmp::Serialize()
-		{
-			return Array<Byte>(1);
-		}
-
 		// Private
 
 		Bitmap Bmp::Init(Byte* buffer, int length, bool shouldDelete)

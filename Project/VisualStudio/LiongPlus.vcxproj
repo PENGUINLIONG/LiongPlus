@@ -36,7 +36,6 @@
     <ClInclude Include="..\..\Include\Exception.hpp" />
     <ClInclude Include="..\..\Include\Fundamental.hpp" />
     <ClInclude Include="..\..\Include\Graphics\Texture.hpp" />
-    <ClInclude Include="..\..\Include\IDisposable.hpp" />
     <ClInclude Include="..\..\Include\IObservable.hpp" />
     <ClInclude Include="..\..\Include\IObserver.hpp" />
     <ClInclude Include="..\..\Include\IO\IBuffer.hpp" />
@@ -50,7 +49,6 @@
     <ClInclude Include="..\..\Include\Nullable.hpp" />
     <ClInclude Include="..\..\Include\Ptr.hpp" />
     <ClInclude Include="..\..\Include\ReferenceCounter.hpp" />
-    <ClInclude Include="..\..\Include\Serialization\ISerializable.hpp" />
     <ClInclude Include="..\..\Include\String.hpp" />
     <ClInclude Include="..\..\Include\Testing\Assert.hpp" />
     <ClInclude Include="..\..\Include\Testing\Assume.hpp" />

@@ -214,7 +214,7 @@ namespace LiongPlus
 		}
 		
 	private:
-		Ptr<LazyObjectCaller> _Value;
+		unique_ptr<LazyObjectCaller> _Value;
 	};
 }
 #endif

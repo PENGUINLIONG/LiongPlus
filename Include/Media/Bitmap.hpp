@@ -6,7 +6,6 @@
 #include "Fundamental.hpp"
 #include "Buffer.hpp"
 #include "Image.hpp"
-#include "Serialization/ISerializable.hpp"
 
 using namespace LiongPlus;
 using namespace LiongPlus::Serialization;
@@ -20,7 +19,6 @@ namespace LiongPlus
 		 */
 		class Bitmap
 			: public Image
-			, public ISerializable<Bitmap>
 		{
 		public:
 			Bitmap(const Image& image);
@@ -50,19 +48,6 @@ namespace LiongPlus
 			virtual bool IsEmpty() const override;
 			virtual Byte* Interpret(PixelType pixelType) const override;
 
-			// Derived from [intFramework::Serialization::ISerializable<Bitmap>]
-
-			// [note] Image size information will be converted to ints, so they may become invalid if the number of height or height is too large.
-
-			// [architecture] The serialized form of this type of image is very simple as there is few information should be stored.
-			// [4] Width of image(int)
-			// [4] Height of image(int)
-			// [4] PixelType(int)
-			// [~] Pixels
-
-			virtual Array<Byte> Serialize() override;
-
-			Ptr<Bitmap> Bitmap::Deserialize(Array<Byte>& arr);
 		private:
 			Byte* _Data;
 			int _Length;

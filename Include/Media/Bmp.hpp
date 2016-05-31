@@ -7,7 +7,6 @@
 #include "Bitmap.hpp"
 #include "Image.hpp"
 #include "Exception.hpp"
-#include "../Serialization/ISerializable.hpp"
 
 using namespace LiongPlus::Serialization;
 
@@ -42,7 +41,6 @@ namespace LiongPlus
 		 */
 		class Bmp
 			: public Image
-			, public ISerializable<Bmp>
 		{
 		public:
 			Bmp(Image& instance);
@@ -61,9 +59,6 @@ namespace LiongPlus
 
 			// TextureRef ToTexture(_L_Char *path, Flag option = FileReadOption::None);
 
-			// Derived from [LiongPlus::Serialization::ISerializable]
-
-			virtual Array<Byte> Serialize() override;
 		private:
 			Bitmap _Bitmap;
 

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 47;
 	objects = {
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -19,7 +19,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		D4B07DEC1C42B001000E2F0C /* LiongPlus */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = LiongPlus; sourceTree = BUILT_PRODUCTS_DIR; };
+		D4B07DEC1C42B001000E2F0C /* LiongPlus */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = LiongPlus; path = /Users/Liong/LiongPlus/Project/Xcode/build/Debug/LiongPlus; sourceTree = "<absolute>"; };
 		D4B07DF91C42B1E4000E2F0C /* Include */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Include; path = ../../Include; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -38,16 +38,7 @@
 			isa = PBXGroup;
 			children = (
 				D4B07DEE1C42B001000E2F0C /* LiongPlus */,
-				D4B07DED1C42B001000E2F0C /* Products */,
 			);
-			sourceTree = "<group>";
-		};
-		D4B07DED1C42B001000E2F0C /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				D4B07DEC1C42B001000E2F0C /* LiongPlus */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		D4B07DEE1C42B001000E2F0C /* LiongPlus */ = {
@@ -55,8 +46,9 @@
 			children = (
 				D4B07DF91C42B1E4000E2F0C /* Include */,
 			);
-			path = LiongPlus;
-			sourceTree = "<group>";
+			name = LiongPlus;
+			path = ../../../../Users/Liong/LiongPlus/Project/Xcode/LiongPlus;
+			sourceTree = DEVELOPER_DIR;
 		};
 /* End PBXGroup section */
 
@@ -93,14 +85,14 @@
 				};
 			};
 			buildConfigurationList = D4B07DE71C42B001000E2F0C /* Build configuration list for PBXProject "LiongPlus" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 6.3";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 			);
 			mainGroup = D4B07DE31C42B001000E2F0C;
-			productRefGroup = D4B07DED1C42B001000E2F0C /* Products */;
+			productRefGroup = D4B07DE31C42B001000E2F0C;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (

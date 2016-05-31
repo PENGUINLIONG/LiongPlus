@@ -152,33 +152,6 @@ namespace LiongPlus
 			return nullptr;
 		}
 
-		// Derived from [LiongFramework::Serialization::ISerializable<Bitmap>]
-
-		Array<Byte> Bitmap::Serialize()
-		{
-			Byte* buffer = new Byte[_Length + 3 * sizeof(int32_t)];
-			((int32_t*)buffer)[0] = (int32_t)_Size.Width;
-			((int32_t*)buffer)[1] = (int32_t)_Size.Height;
-			((int32_t*)buffer)[2] = _PixelType;
-			memcpy(buffer + 3 * sizeof(int32_t), _Data, _Length);
-			return Array<Byte>(buffer, _Length + 3 * sizeof(int32_t));
-		}
-
-		// Static
-
-		Ptr<Bitmap> Bitmap::Deserialize(Array<Byte>& arr)
-		{
-			if (arr.GetLength() < 3)
-				return nullptr;
-			Size size = { ((int32_t*)arr.GetNativePointer())[0], ((int32_t*)arr.GetNativePointer())[1] };
-			PixelType pixelType = (PixelType)((int32_t*)arr.GetNativePointer())[2];
-			auto length = arr.GetLength() - 3 * sizeof(int32_t); // Omit the information bytes.
-			if (length != CalculateDataLength(size, pixelType))
-				return nullptr;
-			Byte* buffer = new Byte[length];
-			return new Bitmap(buffer, size, pixelType);
-		}
-
 		// Private
 
 		Byte* Bitmap::InterpretMonoTo(PixelType pixelType) const
