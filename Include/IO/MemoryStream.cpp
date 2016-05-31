@@ -52,27 +52,6 @@ namespace LiongPlus
 			Close();
 		}
 
-		// IBuffer
-
-		const Byte* MemoryStream::AbandonBuffer()
-		{
-			const Byte* ptr = _Buffer;
-			_Buffer = new Byte[_Size];
-			_Position = 0;
-			_ShouldDeleteBuffer = true;
-			return ptr;
-		}
-
-		const Byte* MemoryStream::AccessBuffer()
-		{
-			return _Buffer;
-		}
-
-		bool MemoryStream::IsBufferAccessable()
-		{
-			return true;
-		}
-
 		bool MemoryStream::CanRead()
 		{
 			return _Permission != StreamAccessPermission::WriteOnly && _IsClosed;
@@ -161,6 +140,7 @@ namespace LiongPlus
 		void MemoryStream::Seek(int distance, SeekOrigin position)
 		{
 			assert(!CanSeek(), "Cannot seek in this instance");
+			
 			switch (position)
 			{
 			case SeekOrigin::Begin:

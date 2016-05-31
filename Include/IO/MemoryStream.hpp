@@ -14,21 +14,16 @@ namespace LiongPlus
 	{
 		class  MemoryStream
 			: public Object
-			, public IBuffer
 		{
 		public:
 			MemoryStream();
 			MemoryStream(const MemoryStream& stream);
 			MemoryStream(StreamAccessPermission permission);
-			MemoryStream(Byte* buffer, int length);
-			MemoryStream(Byte* buffer, int length, StreamAccessPermission permission);
+			MemoryStream(unsigned char* buffer, long length);
+			MemoryStream(unsigned char* buffer, long length, StreamAccessPermission permission);
 			~MemoryStream();
 
-			// IBuffer
-
-			virtual const Byte* AbandonBuffer();
-			virtual const Byte* AccessBuffer();
-			virtual bool IsBufferAccessable();
+			unsigned char* ToArray();
 
 			// Stream
 
@@ -37,25 +32,25 @@ namespace LiongPlus
 			virtual bool CanSeek();
 			virtual void Close();
 			virtual void CopyTo(Stream& stream);
-			virtual void CopyTo(Stream& stream, int length);
+			virtual void CopyTo(Stream& stream, long length);
 			virtual void Flush();
-			virtual int GetCapacity();
-			virtual int GetLength();
-			virtual int GetPosition();
+			virtual long GetCapacity();
+			virtual long GetLength();
+			virtual long GetPosition();
 			virtual bool IsEndOfStream();
-			virtual Byte* Read(int length);
-			virtual void Read(Byte* buffer, int length);
-			virtual Byte ReadByte();
-			virtual void Seek(int distance, SeekOrigin position);
-			virtual bool SetCapacity(int capacity);
-			virtual int Write(Byte* data, int length);
-			virtual bool WriteByte(Byte data);
+			virtual unsigned char* Read(long length);
+			virtual void Read(unsigned char* buffer, long length);
+			virtual unsigned char ReadByte();
+			virtual void Seek(long distance, SeekOrigin position);
+			virtual bool SetCapacity(long capacity);
+			virtual long Write(unsigned char* data, long length);
+			virtual bool WriteByte(unsigned char data);
 		private:
-			const static int DEFAULT_BUFFER_CHUNK_SIZE = 4096;
+			static const long DEFAULT_BUFFER_CHUNK_SIZE = 4096;
 
-			int _Size;
-			int _Position;
-			Byte* _Buffer;
+			long _Size;
+			long _Position;
+			unsigned char* _Buffer;
 			StreamAccessPermission _Permission;
 			bool _ShouldDeleteBuffer;
 			bool _IsClosed;

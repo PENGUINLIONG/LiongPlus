@@ -61,7 +61,7 @@ namespace LiongPlus
 		{
 			if (nullable._Object == nullptr)
 			{
-				Clear();
+				CleanUp();
 				_Object = nullptr;
 			}
 			else
@@ -80,12 +80,12 @@ namespace LiongPlus
 		}
 		~Nullable()
 		{
-			Clear();
+			CleanUp();
 		}
 
 		TSelf& operator=(nullptr_t)
 		{
-			Clear();
+			CleanUp();
 		}
 		TSelf& operator=(const T& obj)
 		{
@@ -107,7 +107,7 @@ namespace LiongPlus
 		{
 			if (nullable._Object == nullptr)
 			{
-				Clear();
+				CleanUp();
 				_Object = nullptr;
 			}
 			else
@@ -148,7 +148,7 @@ namespace LiongPlus
 			return _Object != nullptr;
 		}
 
-		void Clear()
+		void CleanUp()
 		{
 			if (_Object != nullptr)
 			{

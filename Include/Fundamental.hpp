@@ -93,6 +93,7 @@
 #include <cwchar>
 #include <cassert>
 #include <initializer_list>
+#include <functional>
 
 #ifdef _L_MSVC
 #pragma warning(disable: 4584)
@@ -100,7 +101,7 @@
 
 #ifdef _L_SYNTAX
 
-#define delegate(x) using x = Delegate
+#define delegate(x) using x = std::function
 #define foreach for
 #define in :
 #define var auto
@@ -236,33 +237,25 @@ namespace LiongPlus
 		}
 		virtual ~Object() = 0;
 	};
+	
+		// This is an example of delegate announcement with special syntax of LiongPlus.
+#ifdef _L_SYNTAX
+	template<typename ... Ts>
+	delegate(Action) < void(Ts ...) >;
+#else
+	template<typename ... Ts>
+	using Action = std::function<void(Ts ...)>;
+#endif
+	template<typename TResult, typename ... TArgs>
+	using Func = std::function<TResult(TArgs ...)>;
 
-	/// <summary>
-	/// Disable copy constructor and operator= as it is depended on another object.
-	/// </summary>
-	class DependentObject
-		: public Object
-	{
-	public:
-		DependentObject(const DependentObject&) = delete;
-		DependentObject(DependentObject&&) = delete;
-		DependentObject& operator=(const DependentObject&) = delete;
-		DependentObject& operator=(DependentObject&&) = delete;
-		DependentObject()
-		{
-		}
-	};
+	template<typename T>
+	using Predicate = std::function<bool(T)>;
 
-	/// <summary>
-	/// Base type of all int fundamental interfaces.
-	/// </summary>
-	class Interface
-		: protected DependentObject
-	{
-	protected:
-		virtual ~Interface()
-		{
-		}
-	};
+	template<typename TInput, typename TOutput>
+	using Converter = std::function<TOutput(const TInput)>;
+
+	template<typename T>
+	using Comparison = std::function<int(T, T)>;
 }
 #endif
