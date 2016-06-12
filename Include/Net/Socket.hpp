@@ -2,49 +2,66 @@
 // Author: Rendong Liang (Liong)
 
 #pragma once
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
+#include "../Fundamental.hpp"
+#include "../Buffer.hpp"
+#include "SocketAddress.hpp"
 
-template<int TAddressFamily, int TType, int TProtpocal>
-class Socket
+namespace LiongPlus
 {
-private:
-	int _HSocket = -1;
-public:
-	Socket()
+	namespace Net
 	{
-	}
-	~Socket()
-	{
-		if (_HSocket >= 0)
-			shutdown(_HSocket, SHUT_RDWR);
-	}
-	
-	void Bind()
-	{
-		bind(_HSocket);
-	}
-	void Create()
-	{
-		_HSocket = socket(TAddressFamily, TType, TProtpocal);
-	}
-	Listen()
-	{
-		
-	}
-	Send();
-	Receive();
-	Disconnect();
-}
+		using namespace LiongPlus;
 
-template<int TAddressFamily, int TProtpocal>
-class Socket<TAddressFamily, SOCK_DGRAM, TProtpocal>
-{
-private:
-	int _HSocket = -1;
-public:
-	SendTo();
-	ReceiveFrom();
+		class StartUpNetModule
+		{
+		private:
+#ifdef _L_WINDOWS
+			WSADATA _Data;
+#else
+			bool _Trash;
+#endif
+		public:
+			StartUpNetModule();
+			StartUpNetModule(StartUpNetModule&) = delete;
+			StartUpNetModule(StartUpNetModule&&) = delete;
+			~StartUpNetModule();
+		};
+
+		class Socket
+		{
+		private:
+#ifdef _L_WINDOWS
+			typedef SOCKET HSocket;
+#else
+			typedef int HSocket;
+#endif
+			HSocket _HSocket;
+
+			Socket();
+			Socket(HSocket hSocket);
+
+			bool IsErrorOccured(int code);
+		public:
+			Socket(int addressFamily, int type, int protocal);
+			Socket(const Socket&) = delete;
+			Socket(Socket&& instance);
+			~Socket();
+
+			Socket& operator=(Socket&& instance);
+			
+			Socket Accept(SocketAddress& addr);
+			void Bind(const SocketAddress& addr);
+			void Close();
+			void Connect(const SocketAddress& addr);
+			void Listen(int backlog);
+			void Send(const Buffer& buffer);
+			void Send(const Buffer& buffer, int flags);
+			void Receive(Buffer& buffer);
+			void Receive(Buffer& buffer, int flags);
+			void SendTo(Buffer& buffer, const SocketAddress& addr);
+			void SendTo(Buffer& buffer, const SocketAddress& addr, int flags);
+			void ReceiveFrom(Buffer& buffer, SocketAddress& addr);
+			void ReceiveFrom(Buffer& buffer, SocketAddress& addr, int flags);
+		};
+	}
 }

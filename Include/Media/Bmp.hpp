@@ -6,9 +6,6 @@
 #include "../Fundamental.hpp"
 #include "Bitmap.hpp"
 #include "Image.hpp"
-#include "Exception.hpp"
-
-using namespace LiongPlus::Serialization;
 
 namespace LiongPlus
 {
@@ -44,25 +41,25 @@ namespace LiongPlus
 		{
 		public:
 			Bmp(Image& instance);
-			Bmp(Byte* buffer, int length, bool shouldDelete = true);
+			Bmp(Buffer& buffer);
 			~Bmp();
 
 			// Derived from [LiongPlus::Media::Image]
 
-			virtual Byte* GetChunk(Point position, Size size) const override;
-			virtual int GetInterpretedLength(PixelType pixelType) const override;
-			virtual Byte* GetPixel(Point position) const override;
+			virtual Buffer GetChunk(Point position, Size size) const override;
+			virtual size_t GetInterpretedLength(PixelType pixelType) const override;
+			virtual Buffer GetPixel(Point position) const override;
 			virtual Size GetSize() const override;
 			virtual PixelType GetPixelType() const override;
 			virtual bool IsEmpty() const override;
-			virtual Byte* Interpret(PixelType pixelType) const override;
+			virtual Buffer Interpret(PixelType pixelType) const override;
 
 			// TextureRef ToTexture(_L_Char *path, Flag option = FileReadOption::None);
 
 		private:
 			Bitmap _Bitmap;
 
-			Bitmap Init(Byte* buffer, int length, bool shouldDelete);
+			Bitmap Init(Buffer& buffer);
 		};
 	}
 }

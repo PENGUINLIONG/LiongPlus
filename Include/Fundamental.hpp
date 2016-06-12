@@ -53,9 +53,13 @@
 /*|__________________________________________________________|*/
 
 #ifdef _L_WINDOWS
+#include <WinSock2.h>
+#include <Ws2tcpip.h>
 #include <Windows.h>
 #include <windowsx.h>
 #include <WinUser.h>
+
+#pragma comment (lib, "ws2_32.lib")
 
 #ifdef _L_GRAPHICS
 #include <gl\GL.h>
@@ -65,21 +69,12 @@
 #pragma comment (lib, "glu32.lib")
 #endif // _L_GRAPHICS
 
-#define _LT(x) L##x
-#define _L_Char wchar_t
-
-#define _L_putchar(c) putwchar(c)
-#define _L_getchar() reinterpret_cast<wchar_t>(getwchar())
-#define _L_puts(str) _putws(str)
-#define _L_fputs(str, file) fputws(str, file)
 #else // _L_WINDOWS // !_L_WINDOWS
-#define _LT(x)
-#define _L_Char char
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
 
-#define _L_putchar(c) putchar(c)
-#define _L_getchar(c) getchar(c)
-#define _L_puts(str) puts(str)
-#define _L_fputs(str, file) fputs(str, file)
 #endif // !_L_WINDOWS
 
 #ifndef _L_DEBUG
@@ -87,16 +82,24 @@
 #endif
 
 #include <atomic>
+#include <cstdint>
 #include <cstdio>
 #include <cstdlib>
 #include <ctime>
 #include <cwchar>
 #include <cassert>
-#include <initializer_list>
+#include <exception>
 #include <functional>
+#include <initializer_list>
+#include <memory>
+#include <stdexcept>
+#include <string>
+#include <sstream>
+#include <vector>
 
 #ifdef _L_MSVC
 #pragma warning(disable: 4584)
+#pragma warning(disable: 4002) // Too many actual params for 'assert'.
 #endif
 
 #ifdef _L_SYNTAX
@@ -107,6 +110,8 @@
 #define var auto
 
 #endif
+
+#define _L_ABSTRACT
 
 namespace LiongPlus
 {
@@ -199,46 +204,9 @@ namespace LiongPlus
 		typedef T Type;
 	};
 
-	template<typename T>
-	typename RemoveRef<T>::Type&& Move(T&& obj)
-	{
-		return (typename RemoveRef<T>::Type&&)obj;
-	}
-
-	template<typename T>
-	typename T&& Forward(typename RemoveRef<T>::Type& obj)
-	{
-		return (T&&)obj;
-	}
-
-	template<typename T>
-	typename T&& Forward(typename RemoveRef<T>::Type&& obj)
-	{
-		return (T&&)obj;
-	}
-
-	template<typename T>
-	void Swap(T& x, T& y)
-	{
-		T temp = x;
-		x = y;
-		y = temp;
-	}
-
 ////////////////////////////////////////////////////////////////////////////////////////
-	/// <summary>
-	/// Base type of all int fundamental classes.
-	/// </summary>
-	class Object
-	{
-	public:
-		Object()
-		{
-		}
-		virtual ~Object() = 0;
-	};
 	
-		// This is an example of delegate announcement with special syntax of LiongPlus.
+// This is an example of delegate announcement with special syntax of LiongPlus.
 #ifdef _L_SYNTAX
 	template<typename ... Ts>
 	delegate(Action) < void(Ts ...) >;

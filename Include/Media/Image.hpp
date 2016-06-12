@@ -6,7 +6,6 @@
 
 #include "../Fundamental.hpp"
 #include "../IO/MemoryStream.hpp"
-#include "../Exception.hpp"
 
 using namespace LiongPlus::IO;
 
@@ -34,15 +33,15 @@ namespace LiongPlus
 			 * [warning] You should delete the pointer when you will not use it anymore.
 			 * [note] You should not use this method to retrieve a chunk of pixels. Alternatively, use [intFramework::IO::Image::GetChunk] instead.
 			 */
-			virtual Byte* GetChunk(Point position, Size size) const = 0;
-			virtual int GetInterpretedLength(PixelType pixelType) const = 0;
+			virtual Buffer GetChunk(Point position, Size size) const = 0;
+			virtual size_t GetInterpretedLength(PixelType pixelType) const = 0;
 			/*
 			 * Retrieve a single pixel in the image.
 			 * [return] A pointer to a newly allocated buffer which stores a single pixel.
 			 * [warning] You should delete the pointer when you will not use it anymore.
 			 * [note] You should not use this method to retrieve a chunk of pixels. Alternatively, use [intFramework::IO::Image::GetChunk] instead.
 			 */
-			virtual Byte* GetPixel(Point position) const = 0;
+			virtual Buffer GetPixel(Point position) const = 0;
 			virtual Size GetSize() const = 0;
 			virtual PixelType GetPixelType() const = 0;
 			virtual bool IsEmpty() const = 0;
@@ -51,7 +50,7 @@ namespace LiongPlus
 			 * [return] A pointer to a newly allocated which stores sequence of pixels of the same specified type.
 			 * [warning] You should delete the pointer when you will not use it anymore.
 			 */
-			virtual Byte* Interpret(PixelType pixelType) const = 0;
+			virtual Buffer Interpret(PixelType pixelType) const = 0;
 
 			// Static
 

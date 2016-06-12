@@ -4,9 +4,6 @@
 #ifndef _L_DateTime
 #define _L_DateTime
 #include "Fundamental.hpp"
-#include "Exception.hpp"
-#include "String.hpp"
-#include <cstdint>
 
 #pragma warning(push)
 #pragma warning(disable : 4244)
@@ -37,37 +34,36 @@ namespace LiongPlus
 	};
 
 	struct DateTime
-		: public Object
 	{
 	public:
 		DateTime(const DateTime& instance);
-		DateTime(long tick, DateTimeKind kind = DateTimeKind::Local);
-		DateTime(int year, int month, int date, int hour = 0, int minute = 0, int second = 0, int millisecond = 0, DateTimeKind kind = DateTimeKind::Local);
+		DateTime(uint64_t tick, DateTimeKind kind = DateTimeKind::Local);
+		DateTime(long year, long month, long date, long hour = 0, long minute = 0, long second = 0, long millisecond = 0, DateTimeKind kind = DateTimeKind::Local);
 
 		DateTime& operator=(DateTime& instance);
 		bool operator==(DateTime& instance);
 		bool operator!();
 		bool operator!=(DateTime& instance);
-		DateTime operator+(int value);
-		DateTime operator-(int value);
-		DateTime& operator+=(int value);
-		DateTime& operator-=(int value);
+		DateTime operator+(long value);
+		DateTime operator-(long value);
+		DateTime& operator+=(long value);
+		DateTime& operator-=(long value);
 
 		DateTime Date() const;
 		int Day() const;
 		LiongPlus::DayOfWeek DayOfWeek() const;
-		int DayOfYear();
-		int Hour() const;
+		long DayOfYear();
+		long Hour() const;
 		bool IsLeapYear() const;
 		DateTimeKind Kind() const;
-		int Millisecond() const;
-		int Minute() const;
-		int Month() const;
-		int Second() const;
-		int Ticks() const;
+		long Millisecond() const;
+		long Minute() const;
+		long Month() const;
+		long Second() const;
+		uint64_t Ticks() const;
 		TimeSpan TimeOfDay() const;
-		String ToString();
-		int Year() const;
+		std::string ToString();
+		long Year() const;
 
 		static DateTime Now();
 		static DateTime Today();
@@ -76,20 +72,20 @@ namespace LiongPlus
 	private:
 		uint64_t _TimeData;
 
-		const static uint64_t _UtcMask;
-		const static uint64_t _LocalMask;
+		const int64_t _UtcMask = 0x0100000000000000;
+		const int64_t _LocalMask = 0x0200000000000000;
 
-		const static uint64_t _TicksPerMillisecond;
-		const static uint64_t _TicksPerSecond;
-		const static uint64_t _TicksPerMinute;
-		const static uint64_t _TicksPerHour;
-		const static uint64_t _TicksPerDay;
+		const int64_t _TicksPerMillisecond = 10000;
+		const int64_t _TicksPerSecond = _TicksPerMillisecond * 1000;
+		const int64_t _TicksPerMinute = _TicksPerSecond * 60;
+		const int64_t _TicksPerHour = _TicksPerMinute * 60;
+		const int64_t _TicksPerDay = _TicksPerHour * 24;
 
-		const static uint64_t _DaysPerYear;
-		const static uint64_t _DaysPerLeapYear;
-		const static uint64_t _DaysPer4Years;
-		const static uint64_t _DaysPer100Years;
-		const static uint64_t _DaysPer400Years;
+		const int64_t _DaysPerYear = 365;
+		const int64_t _DaysPerLeapYear = 366;
+		const int64_t _DaysPer4Years = (_DaysPerYear << 2) + 1;
+		const int64_t _DaysPer100Years = _DaysPer4Years * 25 - 1;
+		const int64_t _DaysPer400Years = (_DaysPer100Years << 2) + 1;
 
 		const static int _DaysToMonth_365[12];
 		const static int _DaysToMonth_366[12];

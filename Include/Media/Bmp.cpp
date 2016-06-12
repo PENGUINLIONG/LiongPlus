@@ -10,11 +10,11 @@ namespace LiongPlus
 		// Public
 
 		Bmp::Bmp(Image& instance)
-			: _Bitmap(instance.Interpret(PixelType::Bgr), instance.GetSize(), instance.GetPixelType(), false)
+			: _Bitmap(instance.Interpret(PixelType::Bgr), instance.GetSize(), instance.GetPixelType())
 		{
 		}
-		Bmp::Bmp(Byte* buffer, int length, bool shouldDelete)
-			: _Bitmap(Init(buffer, length, shouldDelete))
+		Bmp::Bmp(Buffer& buffer)
+			: _Bitmap(Init(buffer))
 		{
 		}
 		Bmp::~Bmp()
@@ -56,17 +56,17 @@ namespace LiongPlus
 
 			// Derived from [intFramework::Media::Image]
 
-		Byte* Bmp::GetChunk(Point position, Size size) const
+		Buffer Bmp::GetChunk(Point position, Size size) const
 		{
 			return _Bitmap.GetChunk(position, size);
 		}
 
-		int Bmp::GetInterpretedLength(PixelType pixelType) const
+		size_t Bmp::GetInterpretedLength(PixelType pixelType) const
 		{
 			return _Bitmap.GetInterpretedLength(pixelType);
 		}
 
-		Byte* Bmp::GetPixel(Point position) const
+		Buffer Bmp::GetPixel(Point position) const
 		{
 			return _Bitmap.GetPixel(position);
 		}
@@ -86,26 +86,27 @@ namespace LiongPlus
 			return _Bitmap.IsEmpty();
 		}
 
-		Byte* Bmp::Interpret(PixelType pixelType) const
+		Buffer Bmp::Interpret(PixelType pixelType) const
 		{
 			return _Bitmap.Interpret(pixelType);
 		}
 
 		// Private
 
-		Bitmap Bmp::Init(Byte* buffer, int length, bool shouldDelete)
+		Bitmap Bmp::Init(Buffer& buffer)
 		{
-			assert(length < 54, "Incomplete header.");
+			assert(buffer.Length() < 54, "Incomplete header.");
 			assert(buffer[0] != 'B' || buffer[1] != 'M', "Unsupported bmp format.");
-			assert(*((unsigned short*)(buffer + 28)) != 24, "Unsupported pixel type."); // Bits per pixel.
+			assert(*((unsigned short*)(buffer.Field() + 28)) != 24, "Unsupported pixel type."); // Bits per pixel.
 
-			unsigned int offset = *((unsigned int*)(buffer + 10));
-			Size size = { *((int*)(buffer + 18)), *((int*)(buffer + 22)) };
+			unsigned int offset = *((unsigned int*)(buffer.Field() + 10));
+			Size size = { *((int*)(buffer.Field() + 18)), *((int*)(buffer.Field() + 22)) };
+			size_t length = buffer.Length() - offset;
+			
+			Buffer pixels(length);
+			memcpy(pixels.Field(), buffer.Field() + offset, buffer.Length() - offset);
 
-			return Bitmap(buffer + offset, size, PixelType::Bgr);
-
-			if (shouldDelete)
-				delete[] buffer;
+			return Bitmap(buffer.Field() + offset, size, PixelType::Bgr);
 		}
 	}
 }

@@ -9,7 +9,6 @@ namespace LiongPlus
 {
 	template<typename T>
 	class Array
-		: public Object
 	{
 	public:
 		Array()
@@ -36,9 +35,10 @@ namespace LiongPlus
 			Copy(instance, *this, 0);
 		}
 		Array(Array<T>&& instance)
+			: Array()
 		{
-			Swap(_Size, instance._Size);
-			Swap(_Ptr, instance._Ptr);
+			swap(_Size, instance._Size);
+			swap(_Ptr, instance._Ptr);
 		}
 		Array(const std::initializer_list<T> initList)
 			: _Size(initList.size())
@@ -62,8 +62,8 @@ namespace LiongPlus
 		}
 		Array<T>& operator=(Array<T>&& instance)
 		{
-			Swap(_Size, instance._Size);
-			Swap(_Ptr, instance._Ptr);
+			swap(_Size, instance._Size);
+			swap(_Ptr, instance._Ptr);
 			return *this;
 		}
 		Array<T>& operator=(std::initializer_list<T>& initList)
@@ -429,18 +429,18 @@ namespace LiongPlus
 				{
 					while (left != right && (keys._Ptr[pivot] <= keys._Ptr[right])
 						--right;
-					Swap(keys._Ptr[left], keys._Ptr[right]);
+					swap(keys._Ptr[left], keys._Ptr[right]);
 					if (!itemsIsNull)
-						Swap(items._Ptr[left], items._Ptr[right]);
+						swap(items._Ptr[left], items._Ptr[right]);
 				}
 			}
 
 			if (keys._Ptr[pivot] <= keys._Ptr[left])
 				--left;
 
-			Swap(keys._Ptr[left], keys._Ptr[pivot]);
+			swap(keys._Ptr[left], keys._Ptr[pivot]);
 			if (!itemsIsNull)
-				Swap(items._Ptr[left], items._Ptr[pivot]);
+				swap(items._Ptr[left], items._Ptr[pivot]);
 
 			SortImpl(keys, items, index, left - index + 1, comparer, itemsIsNull);
 			SortImpl(keys, items, right, length - right + 1, comparer, itemsIsNull);

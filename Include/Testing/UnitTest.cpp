@@ -6,8 +6,10 @@ namespace LiongPlus
 {
 	namespace Testing
 	{
+		using std::swap;
+
 		std::mutex UnitTest::_Mutex;
-		List<TestResult> UnitTest::_Results;
+		std::vector<TestResult> UnitTest::_Results;
 		UnitTest::ResultsObject UnitTest::Results;
 
 		TestObject::TestObject()
@@ -28,11 +30,11 @@ namespace LiongPlus
 
 		TestResult::TestResult()
 			: Log()
-			, Name(String())
+			, Name(std::string())
 			, State(TestState::Waiting)
 		{
 		}
-		TestResult::TestResult(String name)
+		TestResult::TestResult(std::string name)
 			: Log()
 			, Name(name)
 			, State(TestState::Waiting)
@@ -45,13 +47,11 @@ namespace LiongPlus
 		{
 		}
 		TestResult::TestResult(TestResult&& instance)
-			: Log()
-			, Name(String())
-			, State(TestState::Waiting)
+			: TestResult()
 		{
-			Swap(Log, instance.Log);
-			Swap(Name, instance.Name);
-			Swap(State, instance.State);
+			swap(Log, instance.Log);
+			swap(Name,  instance.Name);
+			swap(State, instance.State);
 		}
 
 		TestResult& TestResult::operator=(const TestResult& instance)
@@ -63,9 +63,9 @@ namespace LiongPlus
 		}
 		TestResult& TestResult::operator=(TestResult&& instance)
 		{
-			Swap(Log, instance.Log);
-			Swap(Name, instance.Name);
-			Swap(State, instance.State);
+			swap(Log, instance.Log);
+			swap(Name, instance.Name);
+			swap(State, instance.State);
 			return *this;
 		}
 
@@ -81,7 +81,7 @@ namespace LiongPlus
 			obj.Test();
 		}
 
-		void UnitTest::RunUnit(Delegate<void(void)> unit)
+		void UnitTest::RunUnit(std::function<void(void)> unit)
 		{
 			UnitTest::_Mutex.lock();
 			try
@@ -90,16 +90,16 @@ namespace LiongPlus
 			}
 			catch (...)
 			{
-				_Results.Last().Log.AppendLine(String(_LT("[Exception occured, please debug this test]")));
-				_Results.Last().State = TestState::Failed;
+				*_Results.back().Log << "[Exception occured, please debug this test]";
+				_Results.back().State = TestState::Failed;
 				return;
 			}
-			if (_Results.Last().State == TestState::Waiting)
-				_Results.Last().State = TestState::Passed;
+			if (_Results.back().State == TestState::Waiting)
+				_Results.back().State = TestState::Passed;
 			UnitTest::_Mutex.unlock();
 		}
 
-		String UnitTest::Summary()
+		std::string UnitTest::Summary()
 		{
 			int passed = 0;
 			for (auto& result : _Results)
@@ -107,16 +107,16 @@ namespace LiongPlus
 				if (result.State == TestState::Passed)
 					++passed;
 			}
-			return String::FromValue(_Results.Count()) + _LT(" tests have been run and ") + String::FromValue(passed) + _LT(" of these passed.");
+			return std::to_string(_Results.size()) + " tests have been run and " + std::to_string(passed) + " of these passed.";
 		}
-		List<int> UnitTest::ListResultId(TestState state)
+		std::vector<int> UnitTest::ListResultId(TestState state)
 		{
 			_Mutex.lock();
-			List<int> list;
-			for (int i = 0; i < _Results.GetCount(); ++i)
+			std::vector<int> list;
+			for (int i = 0; i < _Results.size(); ++i)
 			{
 				if (_Results[i].State == state)
-					list.Add(i);
+					list.push_back(i);
 			}
 			_Mutex.unlock();
 			return list;

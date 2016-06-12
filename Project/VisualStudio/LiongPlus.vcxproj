@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -21,59 +21,42 @@
   <ItemGroup>
     <ClInclude Include="..\..\Include\Array.hpp" />
     <ClInclude Include="..\..\Include\Buffer.hpp" />
-    <ClInclude Include="..\..\Include\Char.hpp" />
-    <ClInclude Include="..\..\Include\Collections\ContinuousMemoryEnumerator.hpp" />
-    <ClInclude Include="..\..\Include\Collections\ICollection.hpp" />
-    <ClInclude Include="..\..\Include\Collections\IComparer.hpp" />
-    <ClInclude Include="..\..\Include\Collections\IEnumerable.hpp" />
-    <ClInclude Include="..\..\Include\Collections\IEnumerator.hpp" />
-    <ClInclude Include="..\..\Include\Collections\IList.hpp" />
-    <ClInclude Include="..\..\Include\Collections\LinkedList.hpp" />
-    <ClInclude Include="..\..\Include\Collections\List.hpp" />
-    <ClInclude Include="..\..\Include\Console.hpp" />
     <ClInclude Include="..\..\Include\DateTime.hpp" />
-    <ClInclude Include="..\..\Include\Delegate.hpp" />
     <ClInclude Include="..\..\Include\Exception.hpp" />
     <ClInclude Include="..\..\Include\Fundamental.hpp" />
     <ClInclude Include="..\..\Include\Graphics\Texture.hpp" />
     <ClInclude Include="..\..\Include\IObservable.hpp" />
     <ClInclude Include="..\..\Include\IObserver.hpp" />
-    <ClInclude Include="..\..\Include\IO\IBuffer.hpp" />
     <ClInclude Include="..\..\Include\IO\MemoryStream.hpp" />
     <ClInclude Include="..\..\Include\IO\Stream.hpp" />
     <ClInclude Include="..\..\Include\Lazy.hpp" />
     <ClInclude Include="..\..\Include\Media\Bitmap.hpp" />
     <ClInclude Include="..\..\Include\Media\Bmp.hpp" />
     <ClInclude Include="..\..\Include\Media\Image.hpp" />
+    <ClInclude Include="..\..\Include\Net\HttpHeader.hpp" />
+    <ClInclude Include="..\..\Include\Net\SocketAddress.hpp" />
     <ClInclude Include="..\..\Include\Net\Socket.hpp" />
     <ClInclude Include="..\..\Include\Nullable.hpp" />
-    <ClInclude Include="..\..\Include\Ptr.hpp" />
-    <ClInclude Include="..\..\Include\ReferenceCounter.hpp" />
-    <ClInclude Include="..\..\Include\String.hpp" />
     <ClInclude Include="..\..\Include\Testing\Assert.hpp" />
     <ClInclude Include="..\..\Include\Testing\Assume.hpp" />
     <ClInclude Include="..\..\Include\Testing\Logger.hpp" />
     <ClInclude Include="..\..\Include\Testing\UnitTest.hpp" />
-    <ClInclude Include="..\..\Include\Text\StringBuilder.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Include\Buffer.cpp" />
     <ClCompile Include="..\..\Include\Fundamental.cpp" />
     <ClCompile Include="..\..\Include\Graphics\Texture.cpp" />
-    <ClCompile Include="..\..\Include\Buffer.cpp" />
-    <ClCompile Include="..\..\Include\Char.cpp" />
-    <ClCompile Include="..\..\Include\Console.cpp" />
     <ClCompile Include="..\..\Include\DateTime.cpp" />
     <ClCompile Include="..\..\Include\Image.cpp" />
     <ClCompile Include="..\..\Include\IO\MemoryStream.cpp" />
     <ClCompile Include="..\..\Include\Media\Bitmap.cpp" />
     <ClCompile Include="..\..\Include\Media\Bmp.cpp" />
     <ClCompile Include="..\..\Include\Net\Socket.cpp" />
+    <ClCompile Include="..\..\Include\Net\SocketAddress.cpp" />
     <ClCompile Include="..\..\Include\source.cpp" />
-    <ClCompile Include="..\..\Include\String.cpp" />
     <ClCompile Include="..\..\Include\Testing\Assert.cpp" />
     <ClCompile Include="..\..\Include\Testing\Logger.cpp" />
     <ClCompile Include="..\..\Include\Testing\UnitTest.cpp" />
-    <ClCompile Include="..\..\Include\Text\StringBuilder.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F7B8D8F6-627C-476F-9461-DA3A6316B45D}</ProjectGuid>
@@ -85,26 +68,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -154,9 +137,10 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <GenerateDebugInformation>Debug</GenerateDebugInformation>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
       <GenerateMapFile>true</GenerateMapFile>
       <MapExports>true</MapExports>
     </Link>
@@ -167,9 +151,10 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <GenerateDebugInformation>Debug</GenerateDebugInformation>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
       <GenerateMapFile>true</GenerateMapFile>
       <MapExports>true</MapExports>
     </Link>
@@ -181,9 +166,10 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
@@ -195,9 +181,10 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>

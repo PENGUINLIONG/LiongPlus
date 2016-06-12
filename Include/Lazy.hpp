@@ -4,9 +4,6 @@
 #ifndef _L_Lazy
 #define _L_Lazy
 #include "Fundamental.hpp"
-#include "Delegate.hpp"
-#include "Exception.hpp"
-#include "Ptr.hpp"
 #include <mutex>
 #include <thread>
 
@@ -156,7 +153,7 @@ namespace LiongPlus
 		Lazy(Lazy<T>&& instance)
 			: _Value(nullptr)
 		{
-			Swap(_Value, instance._Value);
+			swap(_Value, instance._Value);
 		}
 		Lazy(LazyThreadSafetyMode mode)
 		{
@@ -172,7 +169,7 @@ namespace LiongPlus
 					_Value(new LazyThreadSafeOccupiedCaller(new Func<T*(void)>([] { return new T; })));
 					break;
 				default:
-					throw ArgumentOutOfRangeException("$mode");
+					throw std::runtime_error("Invalid $mode.");
 			}
 		}
 		Lazy(Func<T>& initializer)
@@ -193,14 +190,22 @@ namespace LiongPlus
 					_Value(new LazyThreadSafeOccupiedCaller(initializer));
 					break;
 				default:
-					throw ArgumentOutOfRangeException("$mode");
+					throw std::runtime_error("Invalid $mode.");
+			}
+		}
+		~Lazy()
+		{
+			if (_Value != nullptr)
+			{
+				delete _Value;
+				_Value = nullptr;
 			}
 		}
 		
 		Lazy<T>& operator=(const Lazy<T>& instance) = delete;
 		Lazy<T>& operator=(Lazy<T>&& instance)
 		{
-			Swap(_Value, instance._Value);
+			swap(_Value, instance._Value);
 		}
 		
 		T& GetValue()

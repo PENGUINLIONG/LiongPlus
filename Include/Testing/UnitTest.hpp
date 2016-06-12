@@ -4,18 +4,11 @@
 #ifndef _L_UnitTest
 #define _L_UnitTest
 #include "../Fundamental.hpp"
-#include "../Delegate.hpp"
-#include "../String.hpp"
-#include "../Text/StringBuilder.hpp"
-#include "../Collections/List.hpp"
 #include <mutex>
 
 #ifndef __FUNCTIONW__
 #define __FUNCTIONW__ __FUNCTION__
 #endif
-
-using namespace LiongPlus::Collections;
-using namespace LiongPlus::Text;
 
 namespace LiongPlus
 {
@@ -30,7 +23,6 @@ namespace LiongPlus
 		};
 
 		class TestObject
-			: public Object
 		{
 		public:
 			TestObject();
@@ -38,7 +30,6 @@ namespace LiongPlus
 			TestObject(TestObject&&) = delete;
 			virtual ~TestObject();
 
-			TestObject& operator=(const TestObject&) = delete;
 			TestObject& operator=(TestObject&&) = delete;
 
 			virtual void Prepare();
@@ -48,12 +39,12 @@ namespace LiongPlus
 
 		struct TestResult
 		{
-			StringBuilder Log;
-			String Name;
+			std::shared_ptr<std::stringstream> Log;
+			std::string Name;
 			TestState State;
 
 			TestResult();
-			TestResult(String name);
+			TestResult(std::string name);
 			TestResult(const TestResult& instance);
 			TestResult(TestResult&& instance);
 
@@ -64,7 +55,6 @@ namespace LiongPlus
 		};
 
 		class UnitTest
-			: public Object
 		{
 		public:
 			static class ResultsObject
@@ -77,24 +67,24 @@ namespace LiongPlus
 
 				void Add(TestResult& result)
 				{
-					_Results.Add(result);
+					_Results.push_back(result);
 				}
 
 				TestResult& Last()
 				{
-					return _Results.Last();
+					return _Results.back();
 				}
 			} Results;
 
 			static void Test(TestObject& obj);
 
-			static void RunUnit(Delegate<void(void)> unit);
+			static void RunUnit(std::function<void(void)> unit);
 
-			static String Summary();
-			static List<int> ListResultId(TestState state);
+			static std::string Summary();
+			static std::vector<int> ListResultId(TestState state);
 		private:
 			static std::mutex _Mutex;
-			static List<TestResult> _Results;
+			static std::vector<TestResult> _Results;
 		};
 	}
 }
@@ -103,5 +93,5 @@ namespace LiongPlus
 #define _L_Test_Prepare virtual void Prepare() override final
 #define _L_Test_TestList virtual void Test() override final
 #define _L_Test_CleanUp virtual void CleanUp() override final
-#define _L_Test_Unit(name, func) LiongPlus::Testing::UnitTest::Results.Add(TestResult(_LT(name))); LiongPlus::Testing::UnitTest::RunUnit(func)
+#define _L_Test_Unit(name, func) LiongPlus::Testing::UnitTest::Results.Add(TestResult(name)); LiongPlus::Testing::UnitTest::RunUnit(func)
 #endif

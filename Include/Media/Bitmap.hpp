@@ -8,7 +8,6 @@
 #include "Image.hpp"
 
 using namespace LiongPlus;
-using namespace LiongPlus::Serialization;
 
 namespace LiongPlus
 {
@@ -24,7 +23,7 @@ namespace LiongPlus
 			Bitmap(const Image& image);
 			Bitmap(const Bitmap& image);
 			Bitmap(Bitmap&& image);
-			Bitmap(Byte* buffer, Size size, PixelType pixelType, bool shouldCopy = true, bool shouldDelete = true);
+			Bitmap(Buffer&& buffer, Size size, PixelType pixelType);
 			virtual ~Bitmap();
 
 			Bitmap& operator=(const Bitmap& instance);
@@ -38,40 +37,39 @@ namespace LiongPlus
 			 */
 			static Image* FromMemory(MemoryStream& stream, Size size, PixelType pixelType);
 
-			// Derived from [intFramework::Media::Image]
+			// Derived from [LiongPlus::Media::Image]
 
-			virtual Byte* GetChunk(Point position, Size size) const override;
-			virtual int GetInterpretedLength(PixelType pixelType) const override;
-			virtual Byte* GetPixel(Point position) const override;
+			virtual Buffer GetChunk(Point position, Size size) const override;
+			virtual size_t GetInterpretedLength(PixelType pixelType) const override;
+			virtual Buffer GetPixel(Point position) const override;
 			virtual PixelType GetPixelType() const override;
 			virtual Size GetSize() const override;
 			virtual bool IsEmpty() const override;
-			virtual Byte* Interpret(PixelType pixelType) const override;
+			virtual Buffer Interpret(PixelType pixelType) const override;
 
 		private:
-			Byte* _Data;
-			int _Length;
+			Buffer _Buffer;
 			PixelType _PixelType;
 			Size _Size;
 
-			Byte* InterpretMonoTo(PixelType pixelType) const;
-			Byte* InterpretTriTo(PixelType pixelType) const;
-			Byte* InterpretQuadTo(PixelType pixelType) const;
+			Buffer InterpretMonoTo(PixelType pixelType) const;
+			Buffer InterpretTriTo(PixelType pixelType) const;
+			Buffer InterpretQuadTo(PixelType pixelType) const;
 
-			Byte* InterpretMonoToTri(int factorOffset) const;
-			Byte* InterpretMonoToQuad(int factorOffset) const;
+			Buffer InterpretMonoToTri(int factorOffset) const;
+			Buffer InterpretMonoToQuad(int factorOffset) const;
 
-			Byte* InterpretTriToMono(int factorOffset) const;
-			Byte* InterpretTriToTri() const;
-			Byte* InterpretTriToQuad(bool shouldInverse) const;
+			Buffer InterpretTriToMono(int factorOffset) const;
+			Buffer InterpretTriToTri() const;
+			Buffer InterpretTriToQuad(bool shouldInverse) const;
 
-			Byte* InterpretQuadToMono(int factorOffset) const;
-			Byte* InterpretQuadToTri(bool shouldInverse) const;
+			Buffer InterpretQuadToMono(int factorOffset) const;
+			Buffer InterpretQuadToTri(bool shouldInverse) const;
 
 			// Static
 
-			static int CalculatePixelLength(PixelType pixelType);
-			static int CalculateDataLength(Size size, PixelType pixelType);
+			static size_t CalculatePixelLength(PixelType pixelType);
+			static size_t CalculateDataLength(Size size, PixelType pixelType);
 		};
 	}
 }

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="资源文件">
+    <Filter Include="Resource">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
@@ -10,9 +10,6 @@
     </Filter>
     <Filter Include="Include">
       <UniqueIdentifier>{14e7653e-31c7-4b6e-a215-3c187ef21701}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Include\Collections">
-      <UniqueIdentifier>{e17a6bc7-5d76-4191-8526-acc66754553f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Include\Media">
       <UniqueIdentifier>{ce47198b-1179-4fc3-94e6-8fbe7fa4d9af}</UniqueIdentifier>
@@ -26,20 +23,11 @@
     <Filter Include="Include\Graphics">
       <UniqueIdentifier>{170cbaec-43ea-4d1b-8584-9c62a2201fc7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Include\Serialization">
-      <UniqueIdentifier>{a65c882d-fb24-45b5-8323-0d4c6c80f6c3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Include\IO">
       <UniqueIdentifier>{061bf89b-356e-4567-80d0-9aaee3c51e94}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source\IO">
       <UniqueIdentifier>{386c88b2-d468-453a-9165-d6b50b355660}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Text">
-      <UniqueIdentifier>{6c7fc062-f9e0-45cb-b7d3-5f96c433a1ff}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Include\Text">
-      <UniqueIdentifier>{c86643e0-accd-4847-811b-0933f1a24ce0}</UniqueIdentifier>
     </Filter>
     <Filter Include="Include\Testing">
       <UniqueIdentifier>{703df52e-094c-4e65-bfad-47a2054e5f3e}</UniqueIdentifier>
@@ -55,40 +43,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Include\Collections\ContinuousMemoryEnumerator.hpp">
-      <Filter>Include\Collections</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\Collections\ICollection.hpp">
-      <Filter>Include\Collections</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\Collections\IComparer.hpp">
-      <Filter>Include\Collections</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\Collections\IEnumerable.hpp">
-      <Filter>Include\Collections</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\Collections\IEnumerator.hpp">
-      <Filter>Include\Collections</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\Collections\IList.hpp">
-      <Filter>Include\Collections</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Include\Array.hpp">
       <Filter>Include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Include\Buffer.hpp">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\Char.hpp">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\Console.hpp">
-      <Filter>Include</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Include\DateTime.hpp">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\Delegate.hpp">
       <Filter>Include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Include\Exception.hpp">
@@ -98,15 +56,6 @@
       <Filter>Include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Include\Nullable.hpp">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\Ptr.hpp">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\ReferenceCounter.hpp">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\String.hpp">
       <Filter>Include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Include\Media\Bitmap.hpp">
@@ -126,15 +75,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Include\IO\Stream.hpp">
       <Filter>Include\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\IO\IBuffer.hpp">
-      <Filter>Include\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\Text\StringBuilder.hpp">
-      <Filter>Include\Text</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\Collections\List.hpp">
-      <Filter>Include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Include\Testing\Assume.hpp">
       <Filter>Include\Testing</Filter>
@@ -160,8 +100,14 @@
     <ClInclude Include="..\..\Include\Lazy.hpp">
       <Filter>Include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Include\Collections\LinkedList.hpp">
-      <Filter>Include\Collections</Filter>
+    <ClInclude Include="..\..\Include\Buffer.hpp">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Net\SocketAddress.hpp">
+      <Filter>Include\Net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Net\HttpHeader.hpp">
+      <Filter>Include\Net</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -177,22 +123,10 @@
     <ClCompile Include="..\..\Include\Media\Bmp.cpp">
       <Filter>Source\Media</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Include\Buffer.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Include\Char.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Include\Console.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Include\DateTime.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Include\source.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Include\String.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Include\Image.cpp">
@@ -200,9 +134,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Include\Fundamental.cpp">
       <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Include\Text\StringBuilder.cpp">
-      <Filter>Source\Text</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Include\Testing\UnitTest.cpp">
       <Filter>Source\Testing</Filter>
@@ -214,6 +145,12 @@
       <Filter>Source\Testing</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Include\Net\Socket.cpp">
+      <Filter>Source\Net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Include\Buffer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Include\Net\SocketAddress.cpp">
       <Filter>Source\Net</Filter>
     </ClCompile>
   </ItemGroup>

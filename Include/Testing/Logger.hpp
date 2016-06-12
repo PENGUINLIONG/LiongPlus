@@ -4,12 +4,8 @@
 #ifndef _L_Logger
 #define _L_Logger
 #include "../Fundamental.hpp"
-#include "../String.hpp"
-#include "../Text/StringBuilder.hpp"
 #include "UnitTest.hpp"
 #include "../DateTime.hpp"
-
-using namespace LiongPlus::Text;
 
 namespace LiongPlus
 {
@@ -18,12 +14,12 @@ namespace LiongPlus
 		class Logger
 		{
 		public:
-			static void Log(String label, String msg);
+			static void Log(std::string label, std::string msg);
 
-			static void Info(String msg);
-			static void Warn(String msg);
-			static void Excp(String msg);
-			static void Sver(String msg);
+			static void Info(std::string msg);
+			static void Warn(std::string msg);
+			static void Excp(std::string msg);
+			static void Sver(std::string msg);
 		};
 	}
 }

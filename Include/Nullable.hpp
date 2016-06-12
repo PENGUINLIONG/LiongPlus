@@ -13,7 +13,6 @@ namespace LiongPlus
 	/// <typeparam name="T">Type of obj</typeparam>
 	template<typename T>
 	class Nullable
-		: public Object
 	{
 	private:
 		typedef Nullable<T> TSelf;
@@ -41,20 +40,13 @@ namespace LiongPlus
 		{
 		}
 		Nullable(const T& obj)
-			: _Object(nullptr)
+			: _Object(new T(obj))
 		{
-			if (_Object == nullptr)
-				_Object = new T(obj);
-			else
-				*_Object = obj;
 		}
 		Nullable(T&& obj)
-			: _Object(nullptr)
+			: Nullable()
 		{
-			if (_Object == nullptr)
-				_Object = new T(Forward<T>(obj));
-			else
-				*_Object = obj;
+			_Object = new T(std::forward<T>(obj));
 		}
 		Nullable(const TSelf& nullable)
 			: _Object(nullptr)
@@ -73,10 +65,9 @@ namespace LiongPlus
 			}
 		}
 		Nullable(TSelf&& nullable)
-			: _Object(nullptr)
+			: Nullable()
 		{
-			_Object = nullable._Object;
-			nullable._Object = nullptr;
+			swap(_Object, nullable._Object);
 		}
 		~Nullable()
 		{
@@ -98,7 +89,7 @@ namespace LiongPlus
 		TSelf& operator=(T&& obj)
 		{
 			if (_Object == nullptr)
-				_Object = new T(Forward<T>(obj));
+				_Object = new T(std::forward<T>(obj));
 			else
 				*_Object = obj;
 			return *this;
@@ -121,8 +112,7 @@ namespace LiongPlus
 		}
 		TSelf& operator=(TSelf&& nullable)
 		{
-			_Object = nullable._Object;
-			nullable._Object = nullptr;
+			swap(_Object, nullable._Object);
 			return *this;
 		}
 
