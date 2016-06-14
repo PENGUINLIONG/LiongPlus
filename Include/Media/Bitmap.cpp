@@ -1,7 +1,7 @@
 // File: Bitmap.cpp
 // Author: Rendong Liang (Liong)
 
-#include "../Media/Bitmap.hpp"
+#include "Bitmap.hpp"
 
 namespace LiongPlus
 {

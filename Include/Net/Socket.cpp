@@ -24,6 +24,7 @@ namespace LiongPlus
 		}
 
 
+
 		Socket::Socket()
 			: _HSocket(-1)
 		{
@@ -35,7 +36,11 @@ namespace LiongPlus
 		Socket::Socket(int addressFamily, int type, int protocal)
 			: _HSocket(socket(addressFamily, type, protocal))
 		{
+#ifdef _L_WINDOWS
+			if (_HSocket == INVALID_SOCKET)
+#else
 			if (_HSocket < 0)
+#endif
 				throw std::runtime_error("Failed in creating socket.");
 		}
 		Socket::Socket(Socket&& instance)
@@ -78,12 +83,13 @@ namespace LiongPlus
 			if (_HSocket >= 0)
 			{
 #ifdef _L_WINDOWS
-				if (IsErrorOccured(shutdown(_HSocket, SD_BOTH)) || IsErrorOccured(closesocket(_HSocket)))
-					throw std::runtime_error("Failed in closing socket.");
+				if (IsErrorOccured(shutdown(_HSocket, SD_BOTH)) ||
+					IsErrorOccured(closesocket(_HSocket)))
 #else
-				if (IsErrorOccured(shutdown(_HSocket, SHUT_RDWR) || IsErrorOccured(close(_HSocket)))
-					throw std::runtime_error("Failed in closing socket.");
+				if (IsErrorOccured(shutdown(_HSocket, SHUT_RDWR) ||
+					IsErrorOccured(close(_HSocket)))
 #endif
+					throw std::runtime_error("Failed in closing socket.");
 				_HSocket = -1;
 			}
 		}
@@ -109,6 +115,16 @@ namespace LiongPlus
 		{
 			if (send(_HSocket, buffer.Field(), buffer.Length(), flags) < 0)
 				throw std::runtime_error("Failed in sending data.");
+		}
+
+		void Socket::SetOption(int flags, uint32_t value)
+		{
+			uint32_t temp = value;
+			setsockopt(_HSocket, SOL_SOCKET, flags, (const char *)&temp, sizeof(uint32_t));
+		}
+		void Socket::SetOption(int flags, Buffer value)
+		{
+			setsockopt(_HSocket, SOL_SOCKET, flags, value.Field(), value.Length());
 		}
 
 		void Socket::Receive(Buffer& buffer)

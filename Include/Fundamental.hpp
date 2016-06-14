@@ -55,11 +55,13 @@
 #ifdef _L_WINDOWS
 #include <WinSock2.h>
 #include <Ws2tcpip.h>
+#include <WinDNS.h>
 #include <Windows.h>
 #include <windowsx.h>
 #include <WinUser.h>
 
 #pragma comment (lib, "ws2_32.lib")
+#pragma comment (lib, "Dnsapi.lib")
 
 #ifdef _L_GRAPHICS
 #include <gl\GL.h>
@@ -74,7 +76,6 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
-
 #endif // !_L_WINDOWS
 
 #ifndef _L_DEBUG
@@ -88,18 +89,26 @@
 #include <ctime>
 #include <cwchar>
 #include <cassert>
+#include <codecvt>
 #include <exception>
 #include <functional>
+#include <future>
 #include <initializer_list>
+#include <locale>
+#include <map>
 #include <memory>
+#include <mutex>
 #include <stdexcept>
 #include <string>
 #include <sstream>
+#include <thread>
 #include <vector>
 
 #ifdef _L_MSVC
-#pragma warning(disable: 4584)
 #pragma warning(disable: 4002) // Too many actual params for 'assert'.
+#pragma warning(disable: 4244) // Loss of data.
+#pragma warning(disable: 4267) // Loss of data.
+#pragma warning(disable: 4584)
 #endif
 
 #ifdef _L_SYNTAX

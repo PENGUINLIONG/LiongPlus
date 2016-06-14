@@ -56,6 +56,8 @@ namespace LiongPlus
 			void Listen(int backlog);
 			void Send(const Buffer& buffer);
 			void Send(const Buffer& buffer, int flags);
+			void SetOption(int flags, uint32_t value);
+			void SetOption(int flags, Buffer value);
 			void Receive(Buffer& buffer);
 			void Receive(Buffer& buffer, int flags);
 			void SendTo(Buffer& buffer, const SocketAddress& addr);

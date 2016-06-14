@@ -62,7 +62,7 @@ namespace LiongPlus
 		long Second() const;
 		uint64_t Ticks() const;
 		TimeSpan TimeOfDay() const;
-		std::string ToString();
+		std::string To_L_String();
 		long Year() const;
 
 		static DateTime Now();

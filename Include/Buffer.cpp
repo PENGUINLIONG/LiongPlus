@@ -17,6 +17,10 @@ namespace LiongPlus
 		, _Length(length)
 	{
 	}
+	Buffer::Buffer(const Buffer& instance)
+	{
+		*this = instance.Clone();
+	}
 	Buffer::Buffer(Buffer&& instance)
 		: Buffer()
 	{
@@ -39,6 +43,12 @@ namespace LiongPlus
 		_Length = 0;
 	}
 
+
+	Buffer& Buffer::operator=(const Buffer& instance)
+	{
+		*this = instance.Clone();
+		return *this;
+	}
 	Buffer& Buffer::operator=(Buffer&& instance)
 	{
 		swap(_Field, instance._Field);
@@ -50,6 +60,19 @@ namespace LiongPlus
 		if (index >= 0 && index < _Length)
 			return _Field[index];
 		else throw std::runtime_error("$index is out of range.");
+	}
+
+	void Buffer::CopyTo(void* dst, size_t index, size_t count) const
+	{
+		std::memcpy(dst, _Field + index, count);
+	}
+
+	Buffer Buffer::Clone() const
+	{
+		Buffer buffer(_Length);
+		std::memcpy(buffer._Field, _Field, _Length);
+
+		return buffer;
 	}
 
 	size_t Buffer::Length() const

@@ -109,6 +109,9 @@
     <ClInclude Include="..\..\Include\Net\HttpHeader.hpp">
       <Filter>Include\Net</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Include\Net\Dns.hpp">
+      <Filter>Include\Net</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Include\Graphics\Texture.cpp">
@@ -128,9 +131,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Include\source.cpp">
       <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Include\Image.cpp">
-      <Filter>Source\Media</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Include\Fundamental.cpp">
       <Filter>Source</Filter>
@@ -152,6 +152,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Include\Net\SocketAddress.cpp">
       <Filter>Source\Net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Include\Media\Image.cpp">
+      <Filter>Source\Media</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

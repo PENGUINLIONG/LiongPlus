@@ -1,8 +1,8 @@
 // File: HttpHeader.hpp
 // Author: Rendong Liang (Liong)
 #pragma once
-#include<map>
-#include<string>
+#include "../Fundamental.hpp"
+
 namespace LiongPlus
 {
 	namespace Net

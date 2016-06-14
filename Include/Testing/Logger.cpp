@@ -8,7 +8,7 @@ namespace LiongPlus
 	{
 		void Logger::Log(std::string label, std::string msg)
 		{
-			*UnitTest::Results.Last().Log <<  DateTime::Now().ToString() << label << msg;
+			*UnitTest::Results.Last().Log <<  DateTime::Now().To_L_String() << label << msg;
 		}
 
 		void Logger::Info(std::string msg)

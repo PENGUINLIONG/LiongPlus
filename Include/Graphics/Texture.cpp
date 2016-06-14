@@ -70,7 +70,7 @@ namespace LiongPlus
 
 		// Static
 
-		//Texture Texture::FromFile(String& path)
+		//Texture Texture::FromFile(std::string& path)
 		//{
 		//	switch (File::Detect(path.c_str()))
 		//	{

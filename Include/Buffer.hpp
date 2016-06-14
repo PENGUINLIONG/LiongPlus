@@ -19,18 +19,21 @@ namespace LiongPlus
 		size_t _Length;
 	public:
 		Buffer();
-		Buffer(const Buffer&) = delete;
+		Buffer(const Buffer&);
 		Buffer(Buffer&&);
 		Buffer(size_t length);
 		Buffer(const char* str);
 		~Buffer();
 
+		Buffer& operator=(const Buffer&);
 		Buffer& operator=(Buffer&&);
 		Byte& operator[](size_t index);
 		
-		size_t Length() const;
+		void CopyTo(void* dst, size_t index, size_t count) const;
+		Buffer Clone() const;
 		Byte* Field();
 		const Byte* Field() const;
+		size_t Length() const;
 		void Wipe();
 	};
 }

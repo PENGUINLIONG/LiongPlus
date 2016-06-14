@@ -129,7 +129,7 @@ namespace LiongPlus
 	{
 		throw std::logic_error("Not implemented yet.");
 	}
-	std::string DateTime::ToString()
+	std::string DateTime::To_L_String()
 	{
 		char buffer[32];
 		std::sprintf(buffer, "%ld/%ld/%ld %ld:%ld:%ld", Year(), DayOfYear(), Month(), Hour(), Minute(), Second());

@@ -44,7 +44,7 @@ namespace LiongPlus
 				}
 				else
 				{
-					Log.Log((L"Bmp: Failed in loading " + wstring(path) + L"!").c_str(), Logger::WarningLevel::Warn);
+					Log.Log((L"Bmp: Failed in loading " + w_L_String(path) + L"!").c_str(), Logger::WarningLevel::Warn);
 					return TextureRef();
 				}
 

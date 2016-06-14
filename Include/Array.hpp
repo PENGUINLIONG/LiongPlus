@@ -145,12 +145,47 @@ namespace LiongPlus
 			return -1;
 		}
 		
-		// Static Members
+		// Private
 
+	private:
+		class ArrayIterator
+		{
+		private:
+			const T* _Pos;
+
+		public:
+			ArrayIterator(T* pos) : _Pos(pos) { }
+			~ArrayIterator() { }
+
+			T& operator*() { return *_Pos; }
+			bool operator!=(ArrayIterator<T>* value) { return &value->_Pos != &_Pos; }
+			ArrayIterator& operator++() { return ++_Pos, *this; }
+		};
+	
+		typedef ContinuousMemoryEnumerator<T> TEnumerator;
+
+		size_t _Size;
+		T* _Ptr;
+		
+		void CleanUp()
+		{
+			_Size = 0;
+			if (_Ptr)
+			{
+				delete [] _Ptr;
+				_Ptr = nullptr;
+			}
+		}
+	};
+	
+	template<typename T>
+	class ArrayUtil
+	{
+	public:
 		static size_t BinarySearch(Array<T>& arr, size_t index, size_t length, T value)
 		{
 			assert(index < 0 || length < 0, "Need non-negative number.");
-			assert(index + length > _Size,"Bound exceeded.");
+			assert(index + length > _Size, "Bound exceeded.");
 			assert(comparer == nullptr, "$comparer is nullptr.");
 
 			return BinarySearchImpl(arr, index, length, values);
@@ -376,29 +411,7 @@ namespace LiongPlus
 			}
 			return true;
 		}
-
-		// Private
-
 	private:
-		class ArrayIterator
-		{
-		private:
-			const T* _Pos;
-
-		public:
-			ArrayIterator(T* pos) : _Pos(pos) { }
-			~ArrayIterator() { }
-
-			T& operator*() { return *_Pos; }
-			bool operator!=(ArrayIterator<T>* value) { return &value->_Pos != &_Pos; }
-			ArrayIterator& operator++() { return ++_Pos, *this; }
-		};
-	
-		typedef ContinuousMemoryEnumerator<T> TEnumerator;
-
-		size_t _Size;
-		T* _Ptr;
-
 		static size_t BinarySearchImpl(Array<T>& arr, size_t index, size_t length, T& value)
 		{
 			if (arr._Ptr[index] == value)
@@ -444,16 +457,6 @@ namespace LiongPlus
 
 			SortImpl(keys, items, index, left - index + 1, comparer, itemsIsNull);
 			SortImpl(keys, items, right, length - right + 1, comparer, itemsIsNull);
-		}
-
-		void CleanUp()
-		{
-			_Size = 0;
-			if (_Ptr)
-			{
-				delete [] _Ptr;
-				_Ptr = nullptr;
-			}
 		}
 	};
 }
