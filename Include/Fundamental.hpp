@@ -52,6 +52,8 @@
 /*|                    #define private public              /*|*/
 /*|__________________________________________________________|*/
 
+#pragma execution_character_set("utf-8")
+
 #ifdef _L_WINDOWS
 #include <WinSock2.h>
 #include <Ws2tcpip.h>

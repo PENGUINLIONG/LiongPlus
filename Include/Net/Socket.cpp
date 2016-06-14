@@ -34,8 +34,9 @@ namespace LiongPlus
 		{
 		}
 		Socket::Socket(int addressFamily, int type, int protocal)
-			: _HSocket(socket(addressFamily, type, protocal))
+			: _HSocket(-1)
 		{
+			_HSocket = socket(addressFamily, type, protocal);
 #ifdef _L_WINDOWS
 			if (_HSocket == INVALID_SOCKET)
 #else
@@ -50,7 +51,12 @@ namespace LiongPlus
 		}
 		Socket::~Socket()
 		{
-			Close();
+#ifdef _L_WINDOWS
+			if (_HSocket != INVALID_SOCKET)
+#else
+			if (_HSocket >= 0)
+#endif
+				Close();
 		}
 
 		Socket& Socket::operator=(Socket&& instance)
@@ -83,15 +89,15 @@ namespace LiongPlus
 			if (_HSocket >= 0)
 			{
 #ifdef _L_WINDOWS
-				if (IsErrorOccured(shutdown(_HSocket, SD_BOTH)) ||
-					IsErrorOccured(closesocket(_HSocket)))
+				if (IsErrorOccured(closesocket(_HSocket)))
 #else
-				if (IsErrorOccured(shutdown(_HSocket, SHUT_RDWR) ||
-					IsErrorOccured(close(_HSocket)))
+				if (IsErrorOccured(close(_HSocket)))
 #endif
 					throw std::runtime_error("Failed in closing socket.");
 				_HSocket = -1;
 			}
+			else throw
+				std::logic_error("Socket already closed");
 		}
 
 		void Socket::Connect(const SocketAddress& addr)

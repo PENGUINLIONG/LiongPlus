@@ -18,6 +18,8 @@ namespace LiongPlus
 	{
 	}
 	Buffer::Buffer(const Buffer& instance)
+		: _Field(nullptr)
+		, _Length(0)
 	{
 		*this = instance.Clone();
 	}

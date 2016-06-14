@@ -30,7 +30,6 @@ namespace LiongPlus
 			_Addr = instance._Addr;
 			return *this;
 		}
-
 		SocketAddress& SocketAddress::operator=(SocketAddress&& instance)
 		{
 			swap(_Addr, instance._Addr);
@@ -71,7 +70,7 @@ namespace LiongPlus
 		{
 		}
 		IPv4EndPoint::IPv4EndPoint(IPv4EndPoint&& instance)
-			: SocketAddress(instance)
+			: SocketAddress(std::forward<IPv4EndPoint>(instance))
 		{
 		}
 		IPv4EndPoint::IPv4EndPoint(const std::string name, uint16_t port)
@@ -113,7 +112,7 @@ namespace LiongPlus
 		{
 		}
 		IPv6EndPoint::IPv6EndPoint(IPv6EndPoint&& instance)
-			: SocketAddress(instance)
+			: SocketAddress(std::forward<IPv6EndPoint>(instance))
 		{
 		}
 		IPv6EndPoint::IPv6EndPoint(const std::string name, uint16_t port)

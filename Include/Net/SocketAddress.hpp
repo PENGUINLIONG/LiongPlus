@@ -45,6 +45,16 @@ namespace LiongPlus
 			
 			uint16_t& Port();
 			uint16_t Port() const;
+
+			std::string ToString()
+			{
+				std::stringstream ss;
+				auto field = (uint8_t*)_Addr.Field();
+				ss << std::to_string(field[4]) << '.' << std::to_string(field[5]) << '.' << std::to_string(field[6]) << '.' << std::to_string(field[7]);
+				if (Port() != 0)
+					ss << ':' << Port();
+				return ss.str();
+			}
 		};
 
 		class IPv6EndPoint
