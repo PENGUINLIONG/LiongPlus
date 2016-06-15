@@ -11,12 +11,12 @@ namespace LiongPlus
 			if (isTrue)
 			{
 				UnitTest::Results.Last().State = TestState::Passed;
-				UnitTest::Results.Last().Log.AppendLine(String(_LT("[Passed]")));
+				*UnitTest::Results.Last().Log << "[Passed]";
 			}
 			else
 			{
 				UnitTest::Results.Last().State = TestState::Failed;
-				UnitTest::Results.Last().Log.AppendLine(String(_LT("[Assertion failed]")));
+				*UnitTest::Results.Last().Log << "[Assertion failed]";
 			}
 		}
 	}

@@ -9,7 +9,7 @@ namespace LiongPlus
 		Image* Image::FromMemory(MemoryStream stream)
 		{
 			//if (stream.ReadByte() == 'B')
-			throw NotImplementedException();
+			throw std::logic_error("Not implemented yet.");
 		}
 	}
 }

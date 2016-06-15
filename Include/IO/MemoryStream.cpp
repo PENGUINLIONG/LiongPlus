@@ -6,45 +6,57 @@ namespace LiongPlus
 {
 	namespace IO
 	{
+		using std::swap;
 		MemoryStream::MemoryStream()
-			: _Size(DEFAULT_BUFFER_CHUNK_SIZE)
+			: _Buffer(DEFAULT_BUFFER_CHUNK_SIZE)
 			, _Position(0)
-			, _Buffer(new Byte[DEFAULT_BUFFER_CHUNK_SIZE])
 			, _Permission(StreamAccessPermission::ReadWrite)
-			, _ShouldDeleteBuffer(true)
+			, _IsClosed(false)
 		{
 		}
-		MemoryStream::MemoryStream(const MemoryStream& instance)
-			: _Size(instance._Size)
-			, _Position(instance._Position)
-			, _Buffer(instance._Buffer)
-			, _Permission(instance._Permission)
-			, _ShouldDeleteBuffer(false)
+		MemoryStream::MemoryStream(MemoryStream&& instance)
+			: _Buffer()
+			, _Position(0)
+			, _Permission(StreamAccessPermission::ReadWrite)
+			, _IsClosed(true)
 		{
+			swap(_Buffer, instance._Buffer);
+			swap(_Position, instance._Position);
+			swap(_Permission, instance._Permission);
+			swap(_IsClosed, instance._IsClosed);
 		}
 		MemoryStream::MemoryStream(StreamAccessPermission permission)
-			: _Size(DEFAULT_BUFFER_CHUNK_SIZE)
+			: _Buffer(DEFAULT_BUFFER_CHUNK_SIZE)
 			, _Position(0)
-			, _Buffer(new Byte[DEFAULT_BUFFER_CHUNK_SIZE])
 			, _Permission(permission)
-			, _ShouldDeleteBuffer((true))
+			, _IsClosed(false)
 		{
 		}
+<<<<<<< HEAD
+		MemoryStream::MemoryStream(Buffer&& buffer)
+			: _Buffer()
+=======
 		MemoryStream::MemoryStream(Byte* buffer, long length)
 			: _Size(length)
+>>>>>>> master
 			, _Position(0)
-			, _Buffer(buffer)
 			, _Permission(StreamAccessPermission::ReadWrite)
-			, _ShouldDeleteBuffer(false)
+			, _IsClosed(false)
 		{
+			swap(_Buffer, buffer);
 		}
+<<<<<<< HEAD
+		MemoryStream::MemoryStream(Buffer&& buffer, StreamAccessPermission permission)
+			: _Buffer()
+=======
 		MemoryStream::MemoryStream(Byte* buffer, long length, StreamAccessPermission permission)
 			: _Size(length)
+>>>>>>> master
 			, _Position(0)
-			, _Buffer(buffer)
 			, _Permission(permission)
-			, _ShouldDeleteBuffer(false)
+			, _IsClosed(false)
 		{
+			swap(_Buffer, buffer);
 		}
 
 		MemoryStream::~MemoryStream()
@@ -52,6 +64,9 @@ namespace LiongPlus
 			Close();
 		}
 
+<<<<<<< HEAD
+		Buffer MemoryStream::ToBuffer()
+=======
 		// IBuffer
 
 		Byte* MemoryStream::AbandonBuffer()
@@ -64,13 +79,11 @@ namespace LiongPlus
 		}
 
 		const Byte* MemoryStream::AccessBuffer()
+>>>>>>> master
 		{
-			return _Buffer;
-		}
-
-		bool MemoryStream::IsBufferAccessable()
-		{
-			return true;
+			Buffer rv(_Buffer.Length());
+			memcpy(rv.Field(), _Buffer.Field(), _Buffer.Length());
+			return rv;
 		}
 
 		bool MemoryStream::CanRead()
@@ -90,65 +103,90 @@ namespace LiongPlus
 
 		void MemoryStream::Close()
 		{
-			if (!_IsClosed)
-			{
-				_IsClosed = true;
-
-				if (_ShouldDeleteBuffer)
-					delete[] _Buffer;
-			}
 		}
 
 		void MemoryStream::CopyTo(Stream& stream)
 		{
-			stream.Write(_Buffer + _Position, _Size - _Position);
+			stream.Write(_Buffer.Field() + _Position, _Buffer.Length() - _Position);
 		}
+<<<<<<< HEAD
+		void MemoryStream::CopyTo(Stream& stream, size_t length)
+		{
+			int available = _Buffer.Length() - _Position;
+			stream.Write(_Buffer.Field() + _Position, length > available ? available : length);
+=======
 		void MemoryStream::CopyTo(Stream& stream, long length)
 		{
 			long available = _Size - _Position;
 			stream.Write(_Buffer + _Position, length > available ? available : length);
+>>>>>>> master
 		}
 
 		void MemoryStream::Flush()
 		{
 		}
 
+<<<<<<< HEAD
+		size_t MemoryStream::Capacity()
+=======
 		long MemoryStream::GetCapacity()
+>>>>>>> master
 		{
-			return _Size;
+			return _Buffer.Length();
 		}
 
+<<<<<<< HEAD
+		size_t MemoryStream::Length()
+=======
 		long MemoryStream::GetLength()
+>>>>>>> master
 		{
-			return _Size;
+			return _Buffer.Length();
 		}
 
+<<<<<<< HEAD
+		size_t MemoryStream::Position()
+=======
 		long MemoryStream::GetPosition()
+>>>>>>> master
 		{
 			return _Position;
 		}
 
 		bool MemoryStream::IsEndOfStream()
 		{
-			return _Size == _Position + 1;
+			return _Buffer.Length() == _Position + 1;
 		}
 
+<<<<<<< HEAD
+		Buffer MemoryStream::Read(size_t length)
+=======
 		Byte* MemoryStream::Read(long length)
+>>>>>>> master
 		{
 			assert(CanRead(), "Cannot read from this instance");
 
-			Byte* buffer = new Byte[length];
-			Read(buffer, length);
+			Buffer buffer = Buffer(length);
+			Read(buffer.Field(), length);
 			return buffer;
 		}
 
+<<<<<<< HEAD
+		void MemoryStream::Read(Byte* buffer, size_t length)
+=======
 		void MemoryStream::Read(Byte* buffer, long length)
+>>>>>>> master
 		{
 			assert(CanRead(), "Cannot read from this instance");
 
 			// If available data is less than which is requested, just copy the available part.
+<<<<<<< HEAD
+			size_t available = length > (_Buffer.Length() - _Position) ? (_Buffer.Length() - _Position) : length;
+			memcpy(buffer, _Buffer.Field(), available);
+=======
 			long available = length > (_Size - _Position) ? (_Size - _Position) : length;
 			memcpy(buffer, _Buffer, available);
+>>>>>>> master
 		}
 
 		Byte MemoryStream::ReadByte()
@@ -158,9 +196,16 @@ namespace LiongPlus
 			return _Buffer[_Position++];
 		}
 
+<<<<<<< HEAD
+		void MemoryStream::Seek(size_t distance, SeekOrigin position)
+		{
+			assert(!CanSeek(), "Cannot seek in this instance");
+			
+=======
 		void MemoryStream::Seek(long distance, SeekOrigin position)
 		{
 			assert(CanSeek(), "Cannot seek in this instance");
+>>>>>>> master
 			switch (position)
 			{
 			case SeekOrigin::Begin:
@@ -169,7 +214,7 @@ namespace LiongPlus
 			case SeekOrigin::Current:
 				break;
 			case SeekOrigin::End:
-				_Position = _Size - 1;
+				_Position = _Buffer.Length() - 1;
 				break;
 			default:
 				break;
@@ -178,33 +223,38 @@ namespace LiongPlus
 
 			if (_Position < 0)
 				_Position = 0;
-			else if (_Position >= _Size)
-				_Position = _Size - 1;
+			else if (_Position >= _Buffer.Length())
+				_Position = _Buffer.Length() - 1;
 		}
 
+<<<<<<< HEAD
+		bool MemoryStream::SetCapacity(size_t capacity)
+=======
 		bool MemoryStream::SetCapacity(long capacity)
+>>>>>>> master
 		{
-			if (!_ShouldDeleteBuffer)
-				return false;
-
-			if (capacity > _Size) // Need to reallocate.
+			if (capacity != _Buffer.Length()) // Need to reallocate.
 			{
-				Byte* newBuffer = new Byte[capacity];
-				memcpy(newBuffer, _Buffer, _Size);
+				Buffer newBuffer(capacity);
+				memcpy(newBuffer.Field(), _Buffer.Field(), capacity > _Buffer.Length() ? _Buffer.Length() : capacity);
+				_Buffer = std::move(newBuffer);
 			}
-			_Size = capacity; // Reset capacity.
 
 			return true;
 		}
 
+<<<<<<< HEAD
+		size_t MemoryStream::Write(Byte* data, size_t length)
+=======
 		long MemoryStream::Write(Byte* data, long length)
+>>>>>>> master
 		{
 			assert(CanWrite(), "Cannot write to this instance");
 			if (IsEndOfStream())
 				return false;
-			if (length > _Size - _Position)
-				length = _Size - _Position;
-			memcpy(_Buffer + _Position, data, length);
+			if (length > _Buffer.Length() - _Position)
+				length = _Buffer.Length() - _Position;
+			memcpy(_Buffer.Field() + _Position, data, length);
 			return length;
 		}
 

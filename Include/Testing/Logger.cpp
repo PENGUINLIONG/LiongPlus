@@ -2,32 +2,46 @@
 // Author: Rendong Liang (Liong)
 #include "Logger.hpp"
 
-using namespace LiongPlus::Text;
-
 namespace LiongPlus
 {
 	namespace Testing
 	{
-		void Logger::Log(String label, String msg)
+		void Logger::Log(std::string label, std::string msg)
 		{
-			UnitTest::Results.Last().Log.AppendLine(String::Concat({ DateTime::Now().ToString(), label, msg }));
+			*UnitTest::Results.Last().Log <<  DateTime::Now().To_L_String() << label << msg;
 		}
 
-		void Logger::Info(String msg)
+		void Logger::Info(std::string msg)
 		{
+<<<<<<< HEAD
+			Log("[INFO]", msg);
+=======
 			Log(_LT(" [INFO] "), msg);
+>>>>>>> master
 		}
-		void Logger::Warn(String msg)
+		void Logger::Warn(std::string msg)
 		{
+<<<<<<< HEAD
+			Log("[WARN]", msg);
+=======
 			Log(_LT(" [WARN] "), msg);
+>>>>>>> master
 		}
-		void Logger::Excp(String msg)
+		void Logger::Excp(std::string msg)
 		{
+<<<<<<< HEAD
+			Log("[EXCP]", msg);
+=======
 			Log(_LT(" [EXCP] "), msg);
+>>>>>>> master
 		}
-		void Logger::Sver(String msg)
+		void Logger::Sver(std::string msg)
 		{
+<<<<<<< HEAD
+			Log("[SVER]", msg);
+=======
 			Log(_LT("[SVER] "), msg);
+>>>>>>> master
 		}
 	}
 }

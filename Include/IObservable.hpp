@@ -4,7 +4,6 @@
 #ifndef _L_IObservable
 #define _L_IObservable
 #include "Fundamental.hpp"
-#include "IDisposable.hpp"
 #include "IObserver.hpp"
 
 namespace LiongPlus
@@ -14,7 +13,7 @@ namespace LiongPlus
 		: public virtual Interface
 	{
 	public:
-		virtual IDisposable Subscribe(IObserver<T> observer) = 0;
+		virtual unique_ptr<Object> Subscribe(IObserver<T> observer) = 0;
 	}
 }
 

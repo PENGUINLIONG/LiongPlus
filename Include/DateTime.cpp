@@ -15,13 +15,22 @@ namespace LiongPlus
 		: _TimeData(instance._TimeData)
 	{
 	}
+<<<<<<< HEAD
+	DateTime::DateTime(uint64_t tick, DateTimeKind kind)
+		: _TimeData(tick & (kind == DateTimeKind::Utc ? _UtcMask :(kind == DateTimeKind::Local ? _LocalMask : 0)))
+=======
 	DateTime::DateTime(DateTime&& instance)
 		: _TimeData(0)
+>>>>>>> master
 	{
 		Swap(_TimeData, instance._TimeData);
 	}
+<<<<<<< HEAD
+	DateTime::DateTime(long year, long month, long date, long hour, long minute, long second, long millisecond, DateTimeKind kind)
+=======
 	DateTime::DateTime(long tick, DateTimeKind kind)
 		: _TimeData(tick | (kind == DateTimeKind::Utc ? _UtcMask : _LocalMask))
+>>>>>>> master
 	{
 	}
 	DateTime::DateTime(long year, long month, long date, long hour, long minute, long second, long millisecond, DateTimeKind kind)
@@ -125,16 +134,26 @@ namespace LiongPlus
 	{
 		return (((_TimeData & _TickMask) / _TicksPerSecond) % 60);
 	}
+<<<<<<< HEAD
+	uint64_t DateTime::Ticks() const
+=======
 	long DateTime::Ticks() const
+>>>>>>> master
 	{
 		return (_TimeData & _TickMask);
 	}
 	TimeSpan DateTime::TimeOfDay() const
 	{
-		throw NotImplementedException("Not implemented yet.");
+		throw std::logic_error("Not implemented yet.");
 	}
-	String DateTime::ToString()
+	std::string DateTime::To_L_String()
 	{
+<<<<<<< HEAD
+		char buffer[32];
+		std::sprintf(buffer, "%ld/%ld/%ld %ld:%ld:%ld", Year(), DayOfYear(), Month(), Hour(), Minute(), Second());
+
+		return buffer;
+=======
 		LiongPlus::Text::StringBuilder sb;
 		sb.Append(String::FromValue(Year()));
 		sb.Append(_LT('/'));
@@ -148,6 +167,7 @@ namespace LiongPlus
 		sb.Append(_LT(':'));
 		sb.Append(String::FromValue(Second()));
 		return sb.ToString();
+>>>>>>> master
 	}
 	long DateTime::Year() const
 	{
@@ -161,7 +181,7 @@ namespace LiongPlus
 		auto t = time(nullptr);
 		tm timeinfo;
 		if (localtime_s(&timeinfo, &t))
-			throw Exception("Failed in fetching time info.");
+			throw std::runtime_error("Failed in fetching time info.");
 
 		return DateTime
 			(timeinfo.tm_year + 1900
@@ -178,7 +198,7 @@ namespace LiongPlus
 		auto t = time(nullptr);
 		tm timeinfo;
 		if (localtime_s(&timeinfo, &t))
-			throw Exception("Failed in fetching time info.");
+			throw std::runtime_error("Failed in fetching time info.");
 
 		return DateTime
 			(timeinfo.tm_year + 1900
@@ -196,7 +216,7 @@ namespace LiongPlus
 		auto t = time(nullptr);
 		tm timeinfo;
 		if (gmtime_s(&timeinfo, &t))
-			throw Exception("Failed in fetching time info.");
+			throw std::runtime_error("Failed in fetching time info.");
 
 		return DateTime
 			(timeinfo.tm_year + 1900
@@ -212,6 +232,10 @@ namespace LiongPlus
 
 	// Private
 
+<<<<<<< HEAD
+	const int DateTime::_DaysToMonth_365[12] = { 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 };
+	const int DateTime::_DaysToMonth_366[12] = { 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366 };
+=======
 	const uint64_t DateTime::_TickMask = 0x3FFFFFFFFFFFFFFFULL;
 	const uint64_t DateTime::_UtcMask =  0x4000000000000000ULL;
 	const uint64_t DateTime::_LocalMask = 0x8000000000000000ULL;
@@ -230,6 +254,7 @@ namespace LiongPlus
 
 	const long DateTime::_DaysToMonth_365[12] = { 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 };
 	const long DateTime::_DaysToMonth_366[12] = { 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366 };
+>>>>>>> master
 
 	long DateTime::AnalyseDate(const InfoType type) const
 	{
@@ -266,6 +291,11 @@ namespace LiongPlus
 			return ++months;
 
 		if (type == InfoType::Day)
+<<<<<<< HEAD
+			return ++days - monthDict[months];
+		return -1;
+=======
 			return ++days - (months == 0 ? 0 : monthDict[months]);
+>>>>>>> master
 	}
 }

@@ -2,7 +2,4 @@
 
 namespace LiongPlus
 {
-	Object::~Object()
-	{
-	}
 }

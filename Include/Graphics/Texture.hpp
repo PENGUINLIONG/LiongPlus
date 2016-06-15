@@ -7,7 +7,6 @@
 #ifndef Texture_hpp
 #define Texture_hpp
 
-#include "../String.hpp"
 #include "../Media/Image.hpp"
 
 using namespace LiongPlus::Media;
@@ -55,7 +54,7 @@ namespace LiongPlus
 
 			// Static
 
-			static Texture FromFile(String& path);
+			static Texture FromFile(std::string& path);
 		private:
 			unsigned long _Count;
 			TextureIndex* _Index;

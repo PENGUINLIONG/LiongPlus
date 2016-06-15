@@ -10,11 +10,16 @@ namespace LiongPlus
 		// Public
 
 		Bmp::Bmp(Image& instance)
-			: _Bitmap(instance.Interpret(PixelType::Bgr), instance.GetSize(), instance.GetPixelType(), false)
+			: _Bitmap(instance.Interpret(PixelType::Bgr), instance.GetSize(), instance.GetPixelType())
 		{
 		}
+<<<<<<< HEAD
+		Bmp::Bmp(Buffer& buffer)
+			: _Bitmap(Init(buffer))
+=======
 		Bmp::Bmp(Byte* buffer, long length, bool shouldDelete)
 			: _Bitmap(Init(buffer, length, shouldDelete))
+>>>>>>> master
 		{
 		}
 		Bmp::~Bmp()
@@ -44,7 +49,7 @@ namespace LiongPlus
 				}
 				else
 				{
-					Log.Log((L"Bmp: Failed in loading " + wstring(path) + L"!").c_str(), Logger::WarningLevel::Warn);
+					Log.Log((L"Bmp: Failed in loading " + w_L_String(path) + L"!").c_str(), Logger::WarningLevel::Warn);
 					return TextureRef();
 				}
 
@@ -56,17 +61,21 @@ namespace LiongPlus
 
 			// Derived from [intFramework::Media::Image]
 
-		Byte* Bmp::GetChunk(Point position, Size size) const
+		Buffer Bmp::GetChunk(Point position, Size size) const
 		{
 			return _Bitmap.GetChunk(position, size);
 		}
 
+<<<<<<< HEAD
+		size_t Bmp::GetInterpretedLength(PixelType pixelType) const
+=======
 		long Bmp::GetInterpretedLength(PixelType pixelType) const
+>>>>>>> master
 		{
 			return _Bitmap.GetInterpretedLength(pixelType);
 		}
 
-		Byte* Bmp::GetPixel(Point position) const
+		Buffer Bmp::GetPixel(Point position) const
 		{
 			return _Bitmap.GetPixel(position);
 		}
@@ -86,20 +95,20 @@ namespace LiongPlus
 			return _Bitmap.IsEmpty();
 		}
 
-		Byte* Bmp::Interpret(PixelType pixelType) const
+		Buffer Bmp::Interpret(PixelType pixelType) const
 		{
 			return _Bitmap.Interpret(pixelType);
 		}
 
-		// Derived from [LiongPlus::Serialization::ISerializable]
-
-		Array<Byte> Bmp::Serialize()
-		{
-			return Array<Byte>(1);
-		}
-
 		// Private
 
+<<<<<<< HEAD
+		Bitmap Bmp::Init(Buffer& buffer)
+		{
+			assert(buffer.Length() < 54, "Incomplete header.");
+			assert(buffer[0] != 'B' || buffer[1] != 'M', "Unsupported bmp format.");
+			assert(*((unsigned short*)(buffer.Field() + 28)) != 24, "Unsupported pixel type."); // Bits per pixel.
+=======
 		Bitmap Bmp::Init(Byte* buffer, long length, bool shouldDelete)
 		{
 			assert(length > 54, "Incomplete header.");
@@ -108,11 +117,16 @@ namespace LiongPlus
 
 			unsigned long offset = *((unsigned long*)(buffer + 10));
 			Size size = { *((long*)(buffer + 18)), *((long*)(buffer + 22)) };
+>>>>>>> master
 
-			return Bitmap(buffer + offset, size, PixelType::Bgr);
+			unsigned int offset = *((unsigned int*)(buffer.Field() + 10));
+			Size size = { *((int*)(buffer.Field() + 18)), *((int*)(buffer.Field() + 22)) };
+			size_t length = buffer.Length() - offset;
+			
+			Buffer pixels(length);
+			memcpy(pixels.Field(), buffer.Field() + offset, buffer.Length() - offset);
 
-			if (shouldDelete)
-				delete[] buffer;
+			return Bitmap(buffer.Field() + offset, size, PixelType::Bgr);
 		}
 	}
 }

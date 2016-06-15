@@ -4,9 +4,12 @@
 #ifndef _L_DateTime
 #define _L_DateTime
 #include "Fundamental.hpp"
+<<<<<<< HEAD
+=======
 #include "Exception.hpp"
 #include "String.hpp"
 #include "Text/StringBuilder.hpp"
+>>>>>>> master
 
 #pragma warning(push)
 #pragma warning(disable : 4244)
@@ -37,13 +40,16 @@ namespace LiongPlus
 	};
 
 	struct DateTime
-		: public Object
 	{
 	public:
 		DateTime();
 		DateTime(const DateTime& instance);
+<<<<<<< HEAD
+		DateTime(uint64_t tick, DateTimeKind kind = DateTimeKind::Local);
+=======
 		DateTime(DateTime&& instance);
 		DateTime(long tick, DateTimeKind kind = DateTimeKind::Local);
+>>>>>>> master
 		DateTime(long year, long month, long date, long hour = 0, long minute = 0, long second = 0, long millisecond = 0, DateTimeKind kind = DateTimeKind::Local);
 
 		DateTime& operator=(DateTime& instance);
@@ -66,9 +72,15 @@ namespace LiongPlus
 		long Minute() const;
 		long Month() const;
 		long Second() const;
+<<<<<<< HEAD
+		uint64_t Ticks() const;
+		TimeSpan TimeOfDay() const;
+		std::string To_L_String();
+=======
 		long Ticks() const;
 		TimeSpan TimeOfDay() const;
 		String ToString();
+>>>>>>> master
 		long Year() const;
 
 		static DateTime Now();
@@ -78,21 +90,26 @@ namespace LiongPlus
 	private:
 		uint64_t _TimeData;
 
+<<<<<<< HEAD
+		const int64_t _UtcMask = 0x0100000000000000;
+		const int64_t _LocalMask = 0x0200000000000000;
+=======
 		const static uint64_t _TickMask;
 		const static uint64_t _UtcMask;
 		const static uint64_t _LocalMask;
+>>>>>>> master
 
-		const static uint64_t _TicksPerMillisecond;
-		const static uint64_t _TicksPerSecond;
-		const static uint64_t _TicksPerMinute;
-		const static uint64_t _TicksPerHour;
-		const static uint64_t _TicksPerDay;
+		const int64_t _TicksPerMillisecond = 10000;
+		const int64_t _TicksPerSecond = _TicksPerMillisecond * 1000;
+		const int64_t _TicksPerMinute = _TicksPerSecond * 60;
+		const int64_t _TicksPerHour = _TicksPerMinute * 60;
+		const int64_t _TicksPerDay = _TicksPerHour * 24;
 
-		const static uint64_t _DaysPerYear;
-		const static uint64_t _DaysPerLeapYear;
-		const static uint64_t _DaysPer4Years;
-		const static uint64_t _DaysPer100Years;
-		const static uint64_t _DaysPer400Years;
+		const int64_t _DaysPerYear = 365;
+		const int64_t _DaysPerLeapYear = 366;
+		const int64_t _DaysPer4Years = (_DaysPerYear << 2) + 1;
+		const int64_t _DaysPer100Years = _DaysPer4Years * 25 - 1;
+		const int64_t _DaysPer400Years = (_DaysPer100Years << 2) + 1;
 
 		const static long _DaysToMonth_365[12];
 		const static long _DaysToMonth_366[12];

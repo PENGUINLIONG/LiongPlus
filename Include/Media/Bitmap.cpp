@@ -1,69 +1,59 @@
 // File: Bitmap.cpp
 // Author: Rendong Liang (Liong)
 
-#include "../Media/Bitmap.hpp"
+#include "Bitmap.hpp"
 
 namespace LiongPlus
 {
 	namespace Media
 	{
+		using std::swap;
 		// Public
 
 		Bitmap::Bitmap(const Image& image)
-			: _Data(image.Interpret(image.GetPixelType()))
-			, _Length(image.GetInterpretedLength(image.GetPixelType()))
+			: _Buffer()
 			, _PixelType(image.GetPixelType())
 			, _Size(image.GetSize())
 		{
 		}
 		Bitmap::Bitmap(const Bitmap& instance)
-			: _Data(instance._Data)
-			, _Length(instance._Length)
+			: _Buffer()
 			, _PixelType(instance._PixelType)
 			, _Size(instance._Size)
 		{
 		}
 		Bitmap::Bitmap(Bitmap&& instance)
-			: _Data(nullptr)
-			, _Length(0)
-			, _PixelType(PixelType::Rgba)
-			, _Size({ 0, 0 })
+			: _Buffer()
+			, _PixelType(instance._PixelType)
+			, _Size(instance._Size)
 		{
-			Swap(_Size, instance._Size);
-			Swap(_PixelType, instance._PixelType);
-			Swap(_Length, instance._Length);
-			Swap(_Data, instance._Data);
+			swap(_Buffer, instance._Buffer);
+			swap(_PixelType, instance._PixelType);
+			swap(_Size, instance._Size);
 		}
-		Bitmap::Bitmap(Byte* buffer, Size size, PixelType pixelType, bool shouldCopy, bool shouldDelete)
-			: _Data(shouldCopy ? new Byte[CalculateDataLength(size, pixelType)] : buffer)
-			, _Length(CalculateDataLength(size, pixelType))
+		Bitmap::Bitmap(Buffer&& buffer, Size size, PixelType pixelType)
+			: _Buffer(std::forward<Buffer>(buffer))
 			, _PixelType(pixelType)
 			, _Size(size)
 		{
-			if (shouldCopy)
-				Buffer::Memcpy(_Data, buffer, _Length);
-			if (shouldDelete)
-				delete[] buffer;
 		}
 		Bitmap::~Bitmap()
 		{
-			delete[] _Data;
 		}
 
 		Bitmap& Bitmap::operator=(const Bitmap& instance)
 		{
 			_Size = instance.GetSize();
 			_PixelType = instance.GetPixelType();
-			_Length = CalculateDataLength(_Size, _PixelType);
-			_Data = new Byte[_Length];
+			_Buffer = Buffer(instance._Buffer.Length());
+			memcpy(_Buffer.Field(), instance._Buffer.Field(), instance._Buffer.Length());
 			return *this;
 		}
 		Bitmap& Bitmap::operator=(Bitmap&& instance)
 		{
-			Swap(_Size, instance._Size);
-			Swap(_PixelType, instance._PixelType);
-			Swap(_Length, instance._Length);
-			Swap(_Data, instance._Data);
+			swap(_Size, instance._Size);
+			swap(_PixelType, instance._PixelType);
+			swap(_Buffer, instance._Buffer);
 			return *this;
 		}
 
@@ -71,47 +61,69 @@ namespace LiongPlus
 
 		Image* Bitmap::FromMemory(MemoryStream& stream, Size size, PixelType pixelType)
 		{
+<<<<<<< HEAD
+			size_t length = CalculateDataLength(size, pixelType);
+			Buffer buffer = stream.Read(length);
+=======
 			long length = CalculateDataLength(size, pixelType);
 			Byte* buffer = stream.Read(length);
+>>>>>>> master
 
-			return new Bitmap(buffer, size, pixelType);
+			return new Bitmap(std::move(buffer), size, pixelType);
 		}
 
 		// Derived from [LiongFramework::Media::Image]
 
-		Byte* Bitmap::GetChunk(Point position, Size size) const
+		Buffer Bitmap::GetChunk(Point position, Size size) const
 		{
 			if (position.X < 0 || position.X + size.Width > _Size.Width ||
 				position.Y < 0 || position.Y + size.Height > _Size.Height)
 				return nullptr;
 
-			Byte* buffer = new Byte[CalculateDataLength(size, _PixelType)];
+			Buffer buffer(CalculateDataLength(size, _PixelType));
 
+<<<<<<< HEAD
+			size_t pixelLength = CalculatePixelLength(_PixelType);
+			size_t lineData = size.Width * pixelLength;
+			size_t lineOffset = (_Size.Width - size.Width) * pixelLength;
+			Byte* pos = const_cast<Byte*>(_Buffer.Field()) + // Origin
+=======
 			long pixelLength = CalculatePixelLength(_PixelType);
 			long lineData = size.Width * pixelLength;
 			long lineOffset = (_Size.Width - size.Width) * pixelLength;
 			Byte* pos = _Data + // Origin
+>>>>>>> master
 				(position.X + position.Y * _Size.Width) * pixelLength; // Offset
 
 			while (size.Height-- > 0)
 			{
-				memcpy(buffer, pos, lineData); // Copy linear pixels in the same row.
+				memcpy(buffer.Field(), pos, lineData); // Copy linear pixels in the same row.
 				pos += lineOffset;
 			}
 
 			return buffer;
 		}
 
+<<<<<<< HEAD
+		size_t Bitmap::GetInterpretedLength(PixelType pixelType) const
+=======
 		long Bitmap::GetInterpretedLength(PixelType pixelType) const
+>>>>>>> master
 		{
 			return CalculateDataLength(_Size, pixelType);
 		}
 
-		Byte* Bitmap::GetPixel(Point position) const
+		Buffer Bitmap::GetPixel(Point position) const
 		{
+<<<<<<< HEAD
+			size_t pixelLength = CalculatePixelLength(_PixelType);
+			Buffer pixel = Buffer(pixelLength);
+			memcpy(pixel.Field(), _Buffer.Field() + position.Y * _Size.Width + position.X, pixelLength);
+=======
 			long pixelLength = CalculatePixelLength(_PixelType);
 			Byte* pixel = new Byte[pixelLength];
 			memcpy(pixel, _Data + position.Y * _Size.Width + position.X, pixelLength);
+>>>>>>> master
 
 			return pixel;
 		}
@@ -131,12 +143,12 @@ namespace LiongPlus
 			return _Size.Width == 0 || _Size.Height == 0;
 		}
 
-		Byte* Bitmap::Interpret(PixelType pixelType) const
+		Buffer Bitmap::Interpret(PixelType pixelType) const
 		{
 			if (pixelType == _PixelType)
 			{
-				Byte* buffer = new Byte[_Length];
-				memcpy(buffer, _Data, _Length);
+				Byte* buffer = new Byte[_Buffer.Length()];
+				memcpy(buffer, _Buffer.Field(), _Buffer.Length());
 				return buffer;
 			}
 
@@ -152,6 +164,8 @@ namespace LiongPlus
 			return nullptr;
 		}
 
+<<<<<<< HEAD
+=======
 		// Derived from [LiongFramework::Serialization::ISerializable<Bitmap>]
 
 		Array<Byte> Bitmap::Serialize()
@@ -179,9 +193,10 @@ namespace LiongPlus
 			return new Bitmap(buffer, size, pixelType);
 		}
 
+>>>>>>> master
 		// Private
 
-		Byte* Bitmap::InterpretMonoTo(PixelType pixelType) const
+		Buffer Bitmap::InterpretMonoTo(PixelType pixelType) const
 		{
 			if (pixelType < 4) return nullptr; // Mono
 			else if (pixelType == PixelType::Rgba) // Quad
@@ -192,7 +207,7 @@ namespace LiongPlus
 					: 3 - (long)pixelType);
 		}
 
-		Byte* Bitmap::InterpretTriTo(PixelType pixelType) const
+		Buffer Bitmap::InterpretTriTo(PixelType pixelType) const
 		{
 			if (pixelType == PixelType::Rgba) // Quad
 				return InterpretTriToQuad((pixelType != 4));
@@ -202,7 +217,7 @@ namespace LiongPlus
 				return InterpretTriToTri();
 		}
 
-		Byte* Bitmap::InterpretQuadTo(PixelType pixelType) const
+		Buffer Bitmap::InterpretQuadTo(PixelType pixelType) const
 		{
 			if (pixelType < 4) // Mono
 				return InterpretQuadToMono((long)pixelType);
@@ -210,11 +225,28 @@ namespace LiongPlus
 				return InterpretQuadToTri((pixelType != 4));
 		}
 
+<<<<<<< HEAD
+		Buffer Bitmap::InterpretMonoToTri(int factorOffset) const
+=======
 		Byte* Bitmap::InterpretMonoToTri(long factorOffset) const
+>>>>>>> master
 		{
 			if (factorOffset < 0)
 				return nullptr;
 			Byte* buffer = new Byte[_Size.Width * _Size.Height * 3];
+<<<<<<< HEAD
+			const Byte* source = _Buffer.Field();
+			for (int i = 0; i < _Buffer.Length(); ++i)
+				buffer[i * 3 + factorOffset] = source[i];
+			return buffer;
+		}
+
+		Buffer Bitmap::InterpretMonoToQuad(int factorOffset) const
+		{
+			Byte* buffer = new Byte[_Size.Width * _Size.Height * 4];
+			const Byte* source = _Buffer.Field();
+			for (int i = 0; i < _Buffer.Length(); ++i)
+=======
 			for (long i = 0; i < _Length; ++i)
 				buffer[i * 3 + factorOffset] = _Data[i];
 			return buffer;
@@ -224,46 +256,63 @@ namespace LiongPlus
 		{
 			Byte* buffer = new Byte[_Size.Width * _Size.Height * 4];
 			for (long i = 0; i < _Length; ++i)
+>>>>>>> master
 			{
-				buffer[i * 4 + factorOffset] = _Data[i];
+				buffer[i * 4 + factorOffset] = source[i];
 				buffer[i * 4 + 3] = (Byte)0xFF;
 			}
 			return buffer;
 		}
 
+<<<<<<< HEAD
+		Buffer Bitmap::InterpretTriToMono(int factorOffset) const
+=======
 		Byte* Bitmap::InterpretTriToMono(long factorOffset) const
+>>>>>>> master
 		{
 			long pixelCount = _Size.Width * _Size.Height;
 			Byte* buffer = new Byte[pixelCount];
+<<<<<<< HEAD
+			const Byte* source = _Buffer.Field();
+			for (int i = 0; i < pixelCount; ++i)
+				buffer[i] = source[i * 3 + factorOffset];
+=======
 			for (long i = 0; i < pixelCount; ++i)
 				buffer[i] = _Data[i * 3 + factorOffset];
+>>>>>>> master
 			return buffer;
 		}
 
-		Byte* Bitmap::InterpretTriToTri() const
+		Buffer Bitmap::InterpretTriToTri() const
 		{
 			long pixelCount = _Size.Width * _Size.Height * 3;
 			Byte* buffer = new Byte[pixelCount];
+<<<<<<< HEAD
+			const Byte* source = _Buffer.Field();
+			for (int i = 0; i < pixelCount; i += 3)
+=======
 			for (long i = 0; i < pixelCount; i += 3)
+>>>>>>> master
 			{
-				buffer[i] = _Data[i + 2];
-				buffer[i + 1] = _Data[i + 1];
-				buffer[i + 2] = _Data[i];
+				buffer[i] = source[i + 2];
+				buffer[i + 1] = source[i + 1];
+				buffer[i + 2] = source[i];
 			}
 			return buffer;
 		}
 
-		Byte* Bitmap::InterpretTriToQuad(bool shouldInverse) const
+		Buffer Bitmap::InterpretTriToQuad(bool shouldInverse) const
 		{
 			long pixelCount = _Size.Width * _Size.Height;
 			Byte* buffer = new Byte[pixelCount * 4];
+			const Byte* source = _Buffer.Field();
 			if (shouldInverse)
 			{
 				for (long i = 0; i < pixelCount; ++i)
 				{
-					buffer[i * 4] = _Data[i * 3];
-					buffer[i * 4 + 1] = _Data[i * 3 + 1];
-					buffer[i * 4 + 2] = _Data[i * 3 + 2];
+					buffer[i * 4] = source[i * 3];
+					buffer[i * 4 + 1] = source[i * 3 + 1];
+					buffer[i * 4 + 2] = source[i * 3 + 2];
 					buffer[i * 4 + 3] = (Byte)0xFF;
 				}
 			}
@@ -271,44 +320,55 @@ namespace LiongPlus
 			{
 				for (long i = 0; i < pixelCount; ++i)
 				{
-					buffer[i * 4] = _Data[i * 3 + 2];
-					buffer[i * 4 + 1] = _Data[i * 3 + 1];
-					buffer[i * 4 + 2] = _Data[i * 3];
+					buffer[i * 4] = source[i * 3 + 2];
+					buffer[i * 4 + 1] = source[i * 3 + 1];
+					buffer[i * 4 + 2] = source[i * 3];
 					buffer[i * 4 + 3] = (Byte)0xFF;
 				}
 			}
 			return buffer;
 		}
 
+<<<<<<< HEAD
+		Buffer Bitmap::InterpretQuadToMono(int factorOffset) const
+=======
 		Byte* Bitmap::InterpretQuadToMono(long factorOffset) const
+>>>>>>> master
 		{
 			long pixelCount = _Size.Width * _Size.Height;
 			Byte* buffer = new Byte[pixelCount];
+<<<<<<< HEAD
+			const Byte* source = _Buffer.Field();
+			for (int i = 0; i < pixelCount; ++i)
+				buffer[i] = source[i * 4 + factorOffset];
+=======
 			for (long i = 0; i < pixelCount; ++i)
 				buffer[i] = _Data[i * 4 + factorOffset];
+>>>>>>> master
 			return buffer;
 		}
 
-		Byte* Bitmap::InterpretQuadToTri(bool shouldInverse) const
+		Buffer Bitmap::InterpretQuadToTri(bool shouldInverse) const
 		{
 			long pixelCount = _Size.Width * _Size.Height;
 			Byte* buffer = new Byte[pixelCount * 3];
+			const Byte* source = _Buffer.Field();
 			if (shouldInverse)
 			{
 				for (long i = 0; i < pixelCount; ++i)
 				{
-					buffer[i * 3] = _Data[i * 4];
-					buffer[i * 3 + 1] = _Data[i * 4 + 1];
-					buffer[i * 3 + 2] = _Data[i * 4 + 2];
+					buffer[i * 3] = source[i * 4];
+					buffer[i * 3 + 1] = source[i * 4 + 1];
+					buffer[i * 3 + 2] = source[i * 4 + 2];
 				}
 			}
 			else
 			{
 				for (long i = 0; i < pixelCount; ++i)
 				{
-					buffer[i * 3] = _Data[i * 4 + 2];
-					buffer[i * 3 + 1] = _Data[i * 4 + 1];
-					buffer[i * 3 + 2] = _Data[i * 4];
+					buffer[i * 3] = source[i * 4 + 2];
+					buffer[i * 3 + 1] = source[i * 4 + 1];
+					buffer[i * 3 + 2] = source[i * 4];
 				}
 			}
 			return buffer;
@@ -316,7 +376,11 @@ namespace LiongPlus
 
 		// Static
 
+<<<<<<< HEAD
+		size_t Bitmap::CalculatePixelLength(PixelType pixelType)
+=======
 		long Bitmap::CalculatePixelLength(PixelType pixelType)
+>>>>>>> master
 		{
 			switch (pixelType)
 			{
@@ -335,7 +399,11 @@ namespace LiongPlus
 			}
 		}
 
+<<<<<<< HEAD
+		size_t Bitmap::CalculateDataLength(Size size, PixelType pixelType)
+=======
 		long Bitmap::CalculateDataLength(Size size, PixelType pixelType)
+>>>>>>> master
 		{
 			return size.Width * size.Height * CalculatePixelLength(pixelType);
 		}

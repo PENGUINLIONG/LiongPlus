@@ -8,113 +8,15 @@
 namespace LiongPlus
 {
 	/// <summary>
-	/// Help store optional object which can be nullptr.
+	/// Help store optional obj which can be nullptr.
 	/// </summary>
-	/// <typeparam name="T">Type of object</typeparam>
+	/// <typeparam name="T">Type of obj</typeparam>
 	template<typename T>
 	class Nullable
-		: public Object
 	{
 	private:
 		typedef Nullable<T> TSelf;
-	protected:
-		T* _Object;
-
-		inline void Clear()
-		{
-			if (_Object)
-			{
-				delete _Object;
-				_Object = nullptr;
-			}
-		}
-	public:
-		Nullable()
-			:_Object(nullptr)
-		{
-		}
-		Nullable(const T& object)
-			:_Object(new T(Move(object)))
-		{
-		}
-		Nullable(T&& object)
-			:_Object(Move(object))
-		{
-		}
-		Nullable(const Nullable<T>& nullable)
-			:_Object(nullable._Object ? new T(*nullable._Object) : nullptr)
-		{
-		}
-		Nullable(Nullable<T>&& nullable)
-			:_Object(nullable._Object)
-		{
-			nullable._Object = nullptr;
-		}
-		~Nullable()
-		{
-			Clear();
-		}
-
-		TSelf& operator=(Null nullptr)
-		{
-			Clear();
-		}
-		TSelf& operator=(const T& object)
-		{
-			Clear();
-			_Object = new T(object);
-			return *this;
-		}
-		TSelf& operator=(T&& object)
-		{
-			Clear();
-			_Object = &object;
-			return *this;
-		}
-		TSelf& operator=(const TSelf& nullable)
-		{
-			if (this != &nullable)
-			{
-				Clear();
-				_Object = nullable._Object
-					? new T(*nullable._Object)
-					: nullptr;
-			}
-			return *this;
-		}
-		TSelf& operator=(TSelf&& nullable)
-		{
-			if (this != &nullable)
-			{
-				Clear();
-				_Object = nullable._Object;
-				nullable = nullptr;
-			}
-			return *this;
-		}
-
-		bool operator==(const TSelf& nullable) const
-		{
-			return Equals(*this, nullable);
-		}
-		bool operator==(const Null nullptr) const
-		{
-			return !_Object;
-		}
-		bool operator!() const
-		{
-			return !_Object;
-		}
-		bool operator!=(const TSelf& nullable) const
-		{
-			return !Equals(*this, nullable);
-		}
-
-		operator bool() const
-		{
-			return _Object;
-		}
-
+		
 		bool Equals(TSelf& n1, TSelf& n2)
 		{
 			return
@@ -126,15 +28,134 @@ namespace LiongPlus
 				false
 				: true;
 		}
-		const T& GetValueOrDefault(T& defaultValue)
+	protected:
+		T* _Object;
+	public:
+		Nullable()
+			: _Object(nullptr)
 		{
-			return _Object ? *_Object : defaultValue;
+		}
+		Nullable(nullptr_t)
+			: _Object(nullptr)
+		{
+		}
+		Nullable(const T& obj)
+			: _Object(new T(obj))
+		{
+		}
+		Nullable(T&& obj)
+			: Nullable()
+		{
+			_Object = new T(std::forward<T>(obj));
+		}
+		Nullable(const TSelf& nullable)
+			: _Object(nullptr)
+		{
+			if (nullable._Object == nullptr)
+			{
+				CleanUp();
+				_Object = nullptr;
+			}
+			else
+			{
+				if (_Object == nullptr)
+					_Object = new T(*nullable._Object);
+				else
+					*_Object = *nullable._Object;
+			}
+		}
+		Nullable(TSelf&& nullable)
+			: Nullable()
+		{
+			swap(_Object, nullable._Object);
+		}
+		~Nullable()
+		{
+			CleanUp();
+		}
+
+		TSelf& operator=(nullptr_t)
+		{
+			CleanUp();
+		}
+		TSelf& operator=(const T& obj)
+		{
+			if (_Object == nullptr)
+				_Object = new T(obj);
+			else
+				*_Object = obj;
+			return *this;
+		}
+		TSelf& operator=(T&& obj)
+		{
+			if (_Object == nullptr)
+				_Object = new T(std::forward<T>(obj));
+			else
+				*_Object = obj;
+			return *this;
+		}
+		TSelf& operator=(const TSelf& nullable)
+		{
+			if (nullable._Object == nullptr)
+			{
+				CleanUp();
+				_Object = nullptr;
+			}
+			else
+			{
+				if (_Object == nullptr)
+					_Object = new T(*nullable._Object);
+				else
+					*_Object = *nullable._Object;
+			}
+			return *this;
+		}
+		TSelf& operator=(TSelf&& nullable)
+		{
+			swap(_Object, nullable._Object);
+			return *this;
+		}
+
+		bool operator==(const TSelf& nullable) const
+		{
+			return Equals(*this, nullable);
+		}
+		bool operator==(const nullptr_t nullptr) const
+		{
+			return _Object == nullptr;
+		}
+		bool operator!() const
+		{
+			return _Object == nullptr;
+		}
+		bool operator!=(const TSelf& nullable) const
+		{
+			return !Equals(*this, nullable);
+		}
+
+		operator bool() const
+		{
+			return _Object != nullptr;
+		}
+
+		void CleanUp()
+		{
+			if (_Object != nullptr)
+			{
+				delete _Object;
+				_Object = nullptr;
+			}
+		}
+
+		T& GetValueOrDefault(T& defaultValue) const
+		{
+			return _Object != nullptr ? *_Object : defaultValue;
 		}
 		bool HasValue() const
 		{
-			return _Object;
+			return _Object != nullptr;
 		}
-		const T& Value() const
+		T& Value() const
 		{
 			return *_Object;
 		}

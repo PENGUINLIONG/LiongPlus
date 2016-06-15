@@ -19,7 +19,7 @@ namespace LiongPlus
 				if (actual != expectance)
 				{
 					UnitTest::_Results.Last().State = TestState::Skipped;
-					UnitTest::_Results.Last().Log.AppendLine(String(_LT("[Invalid Input(s), skip]")));
+					UnitTest::_Results.Last().Log.AppendLine(std::string("[Invalid Input(s), skip]"));
 				}
 			}
 
@@ -33,7 +33,7 @@ namespace LiongPlus
 				catch (...)
 				{
 					UnitTest::_Results.Last().State = TestState::Skipped;
-					UnitTest::_Results.Last().Log.AppendLine(String(_LT("[Invalid Input(s), skip]")));
+					UnitTest::_Results.Last().Log.AppendLine(std::string("[Invalid Input(s), skip]"));
 				}
 			}
 		};
