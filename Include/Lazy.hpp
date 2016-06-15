@@ -123,7 +123,7 @@ namespace LiongPlus
 				if (_ThreadId == 0)
 				{
 					auto tid = std::this_thread::get_id();
-					_ThreadId = *((unsigned int*)(&tid));
+					_ThreadId = *((unsigned long*)(&tid));
 				}
 				if (this_thread::get_id() == _ThreadId)
 				{
@@ -140,7 +140,7 @@ namespace LiongPlus
 				return *_Value;
 			}
 		private:
-			unsigned int _ThreadId;
+			unsigned long _ThreadId;
 			std::mutex _Mutex;
 		};
 		

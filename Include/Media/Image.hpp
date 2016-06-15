@@ -33,8 +33,13 @@ namespace LiongPlus
 			 * [warning] You should delete the pointer when you will not use it anymore.
 			 * [note] You should not use this method to retrieve a chunk of pixels. Alternatively, use [intFramework::IO::Image::GetChunk] instead.
 			 */
+<<<<<<< HEAD
 			virtual Buffer GetChunk(Point position, Size size) const = 0;
 			virtual size_t GetInterpretedLength(PixelType pixelType) const = 0;
+=======
+			virtual Byte* GetChunk(Point position, Size size) const = 0;
+			virtual long GetInterpretedLength(PixelType pixelType) const = 0;
+>>>>>>> master
 			/*
 			 * Retrieve a single pixel in the image.
 			 * [return] A pointer to a newly allocated buffer which stores a single pixel.

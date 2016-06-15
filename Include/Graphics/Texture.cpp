@@ -7,7 +7,7 @@ namespace LiongPlus
 {
 	namespace Graphics
 	{
-		Texture::Texture(unsigned int count)
+		Texture::Texture(unsigned long count)
 			: _Count(count)
 			, _Index(new TextureIndex[count])
 			, _MagFilter(Filter::Linear)
@@ -22,9 +22,9 @@ namespace LiongPlus
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, Filter::Linear);
 			}
 		}
-		Texture::Texture(Filter magFilter, Filter minFilter, unsigned int count)
+		Texture::Texture(Filter magFilter, Filter minFilter, unsigned long count)
 			: _Count(count)
-			, _Index(new unsigned int[count])
+			, _Index(new TextureIndex[count])
 			, _MagFilter(magFilter)
 			, _MinFilter(minFilter)
 		{
@@ -43,24 +43,24 @@ namespace LiongPlus
 			delete[] _Index;
 		}
 
-		TextureIndex Texture::GetIndex(unsigned int position)
+		TextureIndex Texture::GetIndex(unsigned long position)
 		{
 			return _Index[position];
 		}
 
-		void Texture::SetMagFilter(Filter filter, unsigned int position)
+		void Texture::SetMagFilter(Filter filter, unsigned long position)
 		{
 			glBindTexture(GL_TEXTURE_2D, _Index[position]);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
 		}
 
-		void Texture::SetMinFilter(Filter filter, unsigned int position)
+		void Texture::SetMinFilter(Filter filter, unsigned long position)
 		{
 			glBindTexture(GL_TEXTURE_2D, _Index[position]);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
 		}
 
-		void Texture::Update(Image& image, unsigned int position)
+		void Texture::Update(Image& image, unsigned long position)
 		{
 			Buffer buffer = image.Interpret(PixelType::Rgba);
 			glBindTexture(GL_TEXTURE_2D, _Index[position]);

@@ -135,6 +135,7 @@ namespace LiongPlus
 
 		void Socket::Receive(Buffer& buffer)
 		{
+<<<<<<< HEAD
 			if (recv(_HSocket, buffer.Field(), buffer.Length(), 0) < 0)
 				throw std::runtime_error("Failed in receiving data.");
 		}
@@ -177,6 +178,9 @@ namespace LiongPlus
 #else
 			return code < 0;
 #endif
+=======
+			WSACleanup();
+>>>>>>> master
 		}
 	}
 }
