@@ -3,15 +3,8 @@
 
 #pragma once
 #include "../Fundamental.hpp"
-<<<<<<< HEAD
 #include "../Buffer.hpp"
 #include "SocketAddress.hpp"
-=======
-#ifdef _L_NET
-#include "../Exception.hpp"
-#include "../IDisposable.hpp"
-#include <mutex>
->>>>>>> master
 
 namespace LiongPlus
 {
@@ -19,24 +12,7 @@ namespace LiongPlus
 	{
 		using namespace LiongPlus;
 
-<<<<<<< HEAD
 		class StartUpNetModule
-=======
-		/// <summary>
-		/// A quick access to initialize WinSock library.
-		/// </summary>
-		/// <remarks>
-		/// It's suggested that to quote this when you want to use socket-associated functionalities. Use this class as following code.
-		/// <c>
-		/// long main()
-		/// {
-		///		SocketInitialization init;
-		///		// Use of socket...
-		/// }
-		/// </c>
-		/// </remarks>
-		class SocketInitialization
->>>>>>> master
 		{
 		private:
 #ifdef _L_WINDOWS

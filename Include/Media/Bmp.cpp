@@ -13,13 +13,9 @@ namespace LiongPlus
 			: _Bitmap(instance.Interpret(PixelType::Bgr), instance.GetSize(), instance.GetPixelType())
 		{
 		}
-<<<<<<< HEAD
+
 		Bmp::Bmp(Buffer& buffer)
 			: _Bitmap(Init(buffer))
-=======
-		Bmp::Bmp(Byte* buffer, long length, bool shouldDelete)
-			: _Bitmap(Init(buffer, length, shouldDelete))
->>>>>>> master
 		{
 		}
 		Bmp::~Bmp()
@@ -66,11 +62,7 @@ namespace LiongPlus
 			return _Bitmap.GetChunk(position, size);
 		}
 
-<<<<<<< HEAD
 		size_t Bmp::GetInterpretedLength(PixelType pixelType) const
-=======
-		long Bmp::GetInterpretedLength(PixelType pixelType) const
->>>>>>> master
 		{
 			return _Bitmap.GetInterpretedLength(pixelType);
 		}
@@ -102,22 +94,12 @@ namespace LiongPlus
 
 		// Private
 
-<<<<<<< HEAD
+
 		Bitmap Bmp::Init(Buffer& buffer)
 		{
 			assert(buffer.Length() < 54, "Incomplete header.");
 			assert(buffer[0] != 'B' || buffer[1] != 'M', "Unsupported bmp format.");
 			assert(*((unsigned short*)(buffer.Field() + 28)) != 24, "Unsupported pixel type."); // Bits per pixel.
-=======
-		Bitmap Bmp::Init(Byte* buffer, long length, bool shouldDelete)
-		{
-			assert(length > 54, "Incomplete header.");
-			assert(buffer[0] == 'B' && buffer[1] == 'M', "Unsupported bmp format.");
-			assert(*((unsigned short*)(buffer + 28)) == 24, "Unsupported pixel type."); // Bits per pixel.
-
-			unsigned long offset = *((unsigned long*)(buffer + 10));
-			Size size = { *((long*)(buffer + 18)), *((long*)(buffer + 22)) };
->>>>>>> master
 
 			unsigned int offset = *((unsigned int*)(buffer.Field() + 10));
 			Size size = { *((int*)(buffer.Field() + 18)), *((int*)(buffer.Field() + 22)) };

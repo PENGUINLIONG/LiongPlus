@@ -46,9 +46,6 @@
     <ClInclude Include="..\..\Include\Array.hpp">
       <Filter>Include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Include\DateTime.hpp">
-      <Filter>Include</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Include\Exception.hpp">
       <Filter>Include</Filter>
     </ClInclude>
@@ -112,11 +109,8 @@
     <ClInclude Include="..\..\Include\Net\Dns.hpp">
       <Filter>Include\Net</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Include\Text\StringFormatter.hpp">
-      <Filter>Include\Text</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Include\Collections\Tuple.hpp">
-      <Filter>Include\Collections</Filter>
+    <ClInclude Include="..\..\Include\DateTime.hpp">
+      <Filter>Include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -131,9 +125,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Include\Media\Bmp.cpp">
       <Filter>Source\Media</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Include\DateTime.cpp">
-      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Include\source.cpp">
       <Filter>Source</Filter>
@@ -153,7 +144,6 @@
     <ClCompile Include="..\..\Include\Net\Socket.cpp">
       <Filter>Source\Net</Filter>
     </ClCompile>
-<<<<<<< HEAD
     <ClCompile Include="..\..\Include\Buffer.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -162,10 +152,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Include\Media\Image.cpp">
       <Filter>Source\Media</Filter>
-=======
-    <ClCompile Include="..\..\Include\Text\StringFormatter.cpp">
-      <Filter>Source\Text</Filter>
->>>>>>> master
+    </ClCompile>
+    <ClCompile Include="..\..\Include\DateTime.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

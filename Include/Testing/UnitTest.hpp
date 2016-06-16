@@ -80,13 +80,8 @@ namespace LiongPlus
 
 			static void RunUnit(std::function<void(void)> unit);
 
-<<<<<<< HEAD
 			static std::string Summary();
 			static std::vector<int> ListResultId(TestState state);
-=======
-			static String Summary();
-			static List<long> ListResultId(TestState state);
->>>>>>> master
 		private:
 			static std::mutex _Mutex;
 			static std::vector<TestResult> _Results;

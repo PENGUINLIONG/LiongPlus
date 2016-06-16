@@ -21,21 +21,6 @@
   <ItemGroup>
     <ClInclude Include="..\..\Include\Array.hpp" />
     <ClInclude Include="..\..\Include\Buffer.hpp" />
-<<<<<<< HEAD
-=======
-    <ClInclude Include="..\..\Include\Char.hpp" />
-    <ClInclude Include="..\..\Include\Collections\ContinuousMemoryEnumerator.hpp" />
-    <ClInclude Include="..\..\Include\Collections\ICollection.hpp" />
-    <ClInclude Include="..\..\Include\Collections\IComparer.hpp" />
-    <ClInclude Include="..\..\Include\Collections\IEnumerable.hpp" />
-    <ClInclude Include="..\..\Include\Collections\IEnumerator.hpp" />
-    <ClInclude Include="..\..\Include\Collections\IList.hpp" />
-    <ClInclude Include="..\..\Include\Collections\LinkedList.hpp" />
-    <ClInclude Include="..\..\Include\Collections\List.hpp" />
-    <ClInclude Include="..\..\Include\Collections\Tuple.hpp" />
-    <ClInclude Include="..\..\Include\Console.hpp" />
->>>>>>> master
-    <ClInclude Include="..\..\Include\DateTime.hpp" />
     <ClInclude Include="..\..\Include\Exception.hpp" />
     <ClInclude Include="..\..\Include\Fundamental.hpp" />
     <ClInclude Include="..\..\Include\Graphics\Texture.hpp" />
@@ -56,17 +41,13 @@
     <ClInclude Include="..\..\Include\Testing\Assume.hpp" />
     <ClInclude Include="..\..\Include\Testing\Logger.hpp" />
     <ClInclude Include="..\..\Include\Testing\UnitTest.hpp" />
-<<<<<<< HEAD
-=======
-    <ClInclude Include="..\..\Include\Text\StringBuilder.hpp" />
-    <ClInclude Include="..\..\Include\Text\StringFormatter.hpp" />
->>>>>>> master
+    <ClInclude Include="..\..\Include\DateTime.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Include\Buffer.cpp" />
+    <ClCompile Include="..\..\Include\DateTime.cpp" />
     <ClCompile Include="..\..\Include\Fundamental.cpp" />
     <ClCompile Include="..\..\Include\Graphics\Texture.cpp" />
-    <ClCompile Include="..\..\Include\DateTime.cpp" />
     <ClCompile Include="..\..\Include\IO\MemoryStream.cpp" />
     <ClCompile Include="..\..\Include\Media\Bitmap.cpp" />
     <ClCompile Include="..\..\Include\Media\Bmp.cpp" />
@@ -77,11 +58,6 @@
     <ClCompile Include="..\..\Include\Testing\Assert.cpp" />
     <ClCompile Include="..\..\Include\Testing\Logger.cpp" />
     <ClCompile Include="..\..\Include\Testing\UnitTest.cpp" />
-<<<<<<< HEAD
-=======
-    <ClCompile Include="..\..\Include\Text\StringBuilder.cpp" />
-    <ClCompile Include="..\..\Include\Text\StringFormatter.cpp" />
->>>>>>> master
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F7B8D8F6-627C-476F-9461-DA3A6316B45D}</ProjectGuid>

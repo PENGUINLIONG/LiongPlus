@@ -41,24 +41,14 @@ namespace LiongPlus
 		{
 		public:
 			Bmp(Image& instance);
-<<<<<<< HEAD
 			Bmp(Buffer& buffer);
-=======
-			Bmp(Byte* buffer, long length, bool shouldDelete = true);
->>>>>>> master
 			~Bmp();
 
 			// Derived from [LiongPlus::Media::Image]
 
-<<<<<<< HEAD
 			virtual Buffer GetChunk(Point position, Size size) const override;
 			virtual size_t GetInterpretedLength(PixelType pixelType) const override;
 			virtual Buffer GetPixel(Point position) const override;
-=======
-			virtual Byte* GetChunk(Point position, Size size) const override;
-			virtual long GetInterpretedLength(PixelType pixelType) const override;
-			virtual Byte* GetPixel(Point position) const override;
->>>>>>> master
 			virtual Size GetSize() const override;
 			virtual PixelType GetPixelType() const override;
 			virtual bool IsEmpty() const override;
@@ -69,11 +59,7 @@ namespace LiongPlus
 		private:
 			Bitmap _Bitmap;
 
-<<<<<<< HEAD
 			Bitmap Init(Buffer& buffer);
-=======
-			Bitmap Init(Byte* buffer, long length, bool shouldDelete);
->>>>>>> master
 		};
 	}
 }

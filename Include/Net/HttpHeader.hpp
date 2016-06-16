@@ -12,76 +12,99 @@ namespace LiongPlus
 		{
 		private:
 			map<string, string> _Headers;
+
+			template<typename ... TArgs>
+			void AddElements(string& key, string& value, TArgs ... others)
+			{
+				_Headers[key] = value;
+				ConnectElements(others ...);
+			}
+			void AddElements(string& key, string& value);
 		public:
 			struct GeneralHeaders
 			{
-				const string
-					CacheControl = "Cache-Control",
-					Connection = "Connection",
-					Date = "Date",
-					Pragma = "Pragma",
-					Trailer = "Trailer",
-					TransferEncoding = "Transfer-Encoding",
-					Upgrade = "Upgrade",
-					Via = "Via",
-					Warning = "Warning";
+				static const char
+					*CacheControl,
+					*Connection,
+					*Date,
+					*Pragma,
+					*Trailer,
+					*TransferEncoding,
+					*Upgrade,
+					*Via,
+					*Warning;
 			};
 			struct RequestHeaders
 			{
-				const string
-					Accept = "Accept",
-					AcceptCharset = "Accept-Charset",
-					AcceptEncoding = "Accept-Encoding",
-					AcceptLanguage = "Accept-Language",
-					Authorization = "Authorization",
-					Except = "Except",
-					From = "From",
-					Host = "Host",
-					IfMatch = "If-Match",
-					IfModifiedSince = "If-Modified-Since",
-					IfNoneMatch = "If-None-Match",
-					IfUnmodifiedSince = "If-Unmodified-Since",
-					MaxForwards = "Max-Forwards",
-					ProxyAuthorization = "Proxy-Authorization",
-					Range = "Range",
-					Referer = "Referer",
-					TE = "TE",
-					UserAgent = "User-Agent";
+				static const char
+					*Accept,
+					*AcceptCharset,
+					*AcceptEncoding,
+					*AcceptLanguage,
+					*Authorization,
+					*Except,
+					*From,
+					*Host,
+					*IfMatch,
+					*IfModifiedSince,
+					*IfNoneMatch,
+					*IfUnmodifiedSince,
+					*MaxForwards,
+					*ProxyAuthorization,
+					*Range,
+					*Referer,
+					*TE,
+					*UserAgent;
 			};
 			struct ResponseHeaders
 			{
-				const string
-					AcceptRange = "Accept-Range",
-					Age = "Age",
-					ETag = "ETag",
-					Location = "Location",
-					ProxyAuthenticate = "Proxy-Authenticate",
-					RetryAfter = "Retry-After",
-					Server = "Server",
-					Vary = "Vary",
-					WwwAuthenticate = "WWW-Authenticate";
+				static const char
+					*AcceptRange,
+					*Age,
+					*ETag,
+					*Location,
+					*ProxyAuthenticate,
+					*RetryAfter,
+					*Server,
+					*Vary,
+					*WwwAuthenticate;
 			};
 			struct EntityHeaders
 			{
-				const string
-					Allow = "Allow",
-					ContentEncoding = "Content-Encoding",
-					ContentLanguage = "Content-Language",
-					ContentLength = "Content-Length",
-					ContentLocation = "Content-Location",
-					ContentMd5 = "Content-MD5",
-					ContentRange = "Content-Range",
-					ContentType = "Content-Type",
-					Expires = "Expires",
-					LastModified = "Last-Modified";
+				static const char
+					*Allow,
+					*ContentEncoding,
+					*ContentLanguage,
+					*ContentLength,
+					*ContentLocation,
+					*ContentMd5,
+					*ContentRange,
+					*ContentType,
+					*Expires,
+					*LastModified;
 			};
 
-			HttpHeader();
-			~HttpHeader();
+			HttpHeader() = default;
+			HttpHeader(const HttpHeader&) = default;
+			HttpHeader(HttpHeader&& instance)
+			{
+				swap(*this, instance);
+			}
+			template<size_t TSize>
+			HttpHeader(initializer_list<string> list)
+				: HttpHeader()
+			{
+				AddElements(list);
+			}
 
-			void Add(string& speifier, string& field);
-			void Exists(string& specifier) const;
-			int Remove(string&);
+			string& operator=(const HttpHeader& instance);
+			string& operator=(HttpHeader&& instance);
+			string& operator[](string& key);
+
+			bool Exists(string& key) const;
+			// This will return the boolean value which indicates whether the key/value pair is NOT existing.
+			bool Remove(string& key);
+			string& ToString() const;
 		};
 	}
 }

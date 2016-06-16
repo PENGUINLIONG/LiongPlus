@@ -109,7 +109,6 @@ namespace LiongPlus
 				if (result.State == TestState::Passed)
 					++passed;
 			}
-<<<<<<< HEAD
 			return std::to_string(_Results.size()) + " tests have been run and " + std::to_string(passed) + " of these passed.";
 		}
 		std::vector<int> UnitTest::ListResultId(TestState state)
@@ -117,15 +116,6 @@ namespace LiongPlus
 			_Mutex.lock();
 			std::vector<int> list;
 			for (int i = 0; i < _Results.size(); ++i)
-=======
-			return String::FromValue(_Results.GetCount()) + _LT(" tests have been run and ") + String::FromValue(passed) + _LT(" of these passed.");
-		}
-		List<long> UnitTest::ListResultId(TestState state)
-		{
-			_Mutex.lock();
-			List<long> list;
-			for (long i = 0; i < _Results.GetCount(); ++i)
->>>>>>> master
 			{
 				if (_Results[i].State == state)
 					list.push_back(i);

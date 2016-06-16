@@ -36,9 +36,7 @@
 /*|__________________________________________________________|*/
 /*|*/                    #define _L_DEBUG                  /*|*/
 /*|*/                   #define _L_RELEASE                 /*|*/
-/*|*/                #define _L_EFFICIENT_IO               /*|*/
 /*|*/                    #define _L_LINQ                   /*|*/
-/*|*/               #define _L_STABILITY_CHECK             /*|*/
 /*|*/                   #define _L_SYNTAX                  /*|*/
 /*|*/                  #define _L_GRAPHICS                 /*|*/
 /*|*/                    #define _L_NET                    /*|*/
@@ -95,6 +93,7 @@
 #include <exception>
 #include <functional>
 #include <future>
+#include <set>
 #include <initializer_list>
 #include <locale>
 #include <map>
