@@ -10,6 +10,22 @@ namespace LiongPlus
 		using namespace std;
 		using std::swap;
 
+
+		//
+		// HttpMethod
+		//
+
+		const char
+			*HttpMethod::Get = "GET",
+			*HttpMethod::Head = "HEAD",
+			*HttpMethod::Post = "POST",
+			*HttpMethod::Put = "PUT",
+			*HttpMethod::Delete = "DELETE",
+			*HttpMethod::Trace = "TRACE",
+			*HttpMethod::Options = "OPTIONS",
+			*HttpMethod::Connect = "CONNECT",
+			*HttpMethod::Patch = "PATCH";
+
 		//
 		// HttpResponseLine
 		//
@@ -50,10 +66,10 @@ namespace LiongPlus
 		string HttpRequestLine::ToString() const
 		{
 			stringstream ss;
-			ss << Method << ' ' << Path << "HTTP/" << MajorVersion << '.' << MinorVersion << '\n';
+			ss << Method << ' ' << Path << ' ' << "HTTP/" << MajorVersion << '.' << MinorVersion << '\n';
 			return ss.str();
 		}
-
+		
 		//
 		// HttpResponseLine
 		//
@@ -65,9 +81,10 @@ namespace LiongPlus
 			swap(MinorVersion, instance.MinorVersion);
 			swap(Status, instance.Status);
 		}
-		HttpStatusLine::HttpStatusLine(long major, long minor, string status)
+		HttpStatusLine::HttpStatusLine(long major, long minor, long statusCode, string status)
 			: MajorVersion(major)
 			, MinorVersion(minor)
+			, StatusCode(statusCode)
 			, Status(status)
 		{
 		}
@@ -108,55 +125,55 @@ namespace LiongPlus
 		// Public
 
 		const char
-			*HttpHeader::GeneralHeaders::CacheControl = "Cache-Control",
-			*HttpHeader::GeneralHeaders::Connection = "Connection",
-			*HttpHeader::GeneralHeaders::Date = "Date",
-			*HttpHeader::GeneralHeaders::Pragma = "Pragma",
-			*HttpHeader::GeneralHeaders::Trailer = "Trailer",
-			*HttpHeader::GeneralHeaders::TransferEncoding = "Transfer-Encoding",
-			*HttpHeader::GeneralHeaders::Upgrade = "Upgrade",
-			*HttpHeader::GeneralHeaders::Via = "Via",
-			*HttpHeader::GeneralHeaders::Warning = "Warning";
+			*HttpHeader::General::CacheControl = "Cache-Control",
+			*HttpHeader::General::Connection = "Connection",
+			*HttpHeader::General::Date = "Date",
+			*HttpHeader::General::Pragma = "Pragma",
+			*HttpHeader::General::Trailer = "Trailer",
+			*HttpHeader::General::TransferEncoding = "Transfer-Encoding",
+			*HttpHeader::General::Upgrade = "Upgrade",
+			*HttpHeader::General::Via = "Via",
+			*HttpHeader::General::Warning = "Warning";
 		const char
-			*HttpHeader::RequestHeaders::Accept = "Accept",
-			*HttpHeader::RequestHeaders::AcceptCharset = "Accept-Charset",
-			*HttpHeader::RequestHeaders::AcceptEncoding = "Accept-Encoding",
-			*HttpHeader::RequestHeaders::AcceptLanguage = "Accept-Language",
-			*HttpHeader::RequestHeaders::Authorization = "Authorization",
-			*HttpHeader::RequestHeaders::Except = "Except",
-			*HttpHeader::RequestHeaders::From = "From",
-			*HttpHeader::RequestHeaders::Host = "Host",
-			*HttpHeader::RequestHeaders::IfMatch = "If-Match",
-			*HttpHeader::RequestHeaders::IfModifiedSince = "If-Modified-Since",
-			*HttpHeader::RequestHeaders::IfNoneMatch = "If-None-Match",
-			*HttpHeader::RequestHeaders::IfUnmodifiedSince = "If-Unmodified-Since",
-			*HttpHeader::RequestHeaders::MaxForwards = "Max-Forwards",
-			*HttpHeader::RequestHeaders::ProxyAuthorization = "Proxy-Authorization",
-			*HttpHeader::RequestHeaders::Range = "Range",
-			*HttpHeader::RequestHeaders::Referer = "Referer",
-			*HttpHeader::RequestHeaders::TE = "TE",
-			*HttpHeader::RequestHeaders::UserAgent = "User-Agent";
+			*HttpHeader::Request::Accept = "Accept",
+			*HttpHeader::Request::AcceptCharset = "Accept-Charset",
+			*HttpHeader::Request::AcceptEncoding = "Accept-Encoding",
+			*HttpHeader::Request::AcceptLanguage = "Accept-Language",
+			*HttpHeader::Request::Authorization = "Authorization",
+			*HttpHeader::Request::Except = "Except",
+			*HttpHeader::Request::From = "From",
+			*HttpHeader::Request::Host = "Host",
+			*HttpHeader::Request::IfMatch = "If-Match",
+			*HttpHeader::Request::IfModifiedSince = "If-Modified-Since",
+			*HttpHeader::Request::IfNoneMatch = "If-None-Match",
+			*HttpHeader::Request::IfUnmodifiedSince = "If-Unmodified-Since",
+			*HttpHeader::Request::MaxForwards = "Max-Forwards",
+			*HttpHeader::Request::ProxyAuthorization = "Proxy-Authorization",
+			*HttpHeader::Request::Range = "Range",
+			*HttpHeader::Request::Referer = "Referer",
+			*HttpHeader::Request::TE = "TE",
+			*HttpHeader::Request::UserAgent = "User-Agent";
 		const char
-			*HttpHeader::ResponseHeaders::AcceptRange = "Accept-Range",
-			*HttpHeader::ResponseHeaders::Age = "Age",
-			*HttpHeader::ResponseHeaders::ETag = "ETag",
-			*HttpHeader::ResponseHeaders::Location = "Location",
-			*HttpHeader::ResponseHeaders::ProxyAuthenticate = "Proxy-Authenticate",
-			*HttpHeader::ResponseHeaders::RetryAfter = "Retry-After",
-			*HttpHeader::ResponseHeaders::Server = "Server",
-			*HttpHeader::ResponseHeaders::Vary = "Vary",
-			*HttpHeader::ResponseHeaders::WwwAuthenticate = "WWW-Authenticate";
+			*HttpHeader::Response::AcceptRange = "Accept-Range",
+			*HttpHeader::Response::Age = "Age",
+			*HttpHeader::Response::ETag = "ETag",
+			*HttpHeader::Response::Location = "Location",
+			*HttpHeader::Response::ProxyAuthenticate = "Proxy-Authenticate",
+			*HttpHeader::Response::RetryAfter = "Retry-After",
+			*HttpHeader::Response::Server = "Server",
+			*HttpHeader::Response::Vary = "Vary",
+			*HttpHeader::Response::WwwAuthenticate = "WWW-Authenticate";
 		const char
-			*HttpHeader::EntityHeaders::Allow = "Allow",
-			*HttpHeader::EntityHeaders::ContentEncoding = "Content-Encoding",
-			*HttpHeader::EntityHeaders::ContentLanguage = "Content-Language",
-			*HttpHeader::EntityHeaders::ContentLength = "Content-Length",
-			*HttpHeader::EntityHeaders::ContentLocation = "Content-Location",
-			*HttpHeader::EntityHeaders::ContentMd5 = "Content-MD5",
-			*HttpHeader::EntityHeaders::ContentRange = "Content-Range",
-			*HttpHeader::EntityHeaders::ContentType = "Content-Type",
-			*HttpHeader::EntityHeaders::Expires = "Expires",
-			*HttpHeader::EntityHeaders::LastModified = "Last-Modified";
+			*HttpHeader::Entity::Allow = "Allow",
+			*HttpHeader::Entity::ContentEncoding = "Content-Encoding",
+			*HttpHeader::Entity::ContentLanguage = "Content-Language",
+			*HttpHeader::Entity::ContentLength = "Content-Length",
+			*HttpHeader::Entity::ContentLocation = "Content-Location",
+			*HttpHeader::Entity::ContentMd5 = "Content-MD5",
+			*HttpHeader::Entity::ContentRange = "Content-Range",
+			*HttpHeader::Entity::ContentType = "Content-Type",
+			*HttpHeader::Entity::Expires = "Expires",
+			*HttpHeader::Entity::LastModified = "Last-Modified";
 
 		HttpHeader::HttpHeader(HttpHeader&& instance)
 		{
@@ -199,6 +216,12 @@ namespace LiongPlus
 		// HttpRequest
 		//
 
+		HttpMessage::HttpMessage(HttpHeader header, Buffer content)
+			: Header(header)
+			, Content(content)
+		{
+		}
+
 		Buffer HttpMessage::ToBuffer(const HttpLine& _line, const HttpHeader& _header, const Buffer& _content)
 		{
 			string line = _line.ToString();
@@ -212,9 +235,29 @@ namespace LiongPlus
 			return buffer;
 		}
 
+		//
+		// HttpRequest
+		//
+
+		HttpRequest::HttpRequest(HttpHeader& header, HttpRequestLine& line, Buffer& content)
+			: HttpMessage(header, content)
+			, RequestLine(line)
+		{
+		}
+
 		Buffer HttpRequest::ToBuffer() const
 		{
 			return forward<Buffer>(HttpMessage::ToBuffer(RequestLine, Header, Content));
+		}
+
+		//
+		// HttpResponse
+		//
+
+		HttpResponse::HttpResponse(HttpHeader& header, HttpStatusLine& line, Buffer& content)
+			: HttpMessage(header, content)
+			, StatusLine(line)
+		{
 		}
 
 		Buffer HttpResponse::ToBuffer() const

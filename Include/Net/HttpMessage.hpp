@@ -3,6 +3,7 @@
 #pragma once
 #include "../Fundamental.hpp"
 #include "../Buffer.hpp"
+#include "Socket.hpp"
 
 namespace LiongPlus
 {
@@ -15,6 +16,12 @@ namespace LiongPlus
 		{
 		public:
 			virtual string ToString() const = 0;
+		};
+
+		struct HttpMethod
+		{
+			static const char
+				*Get, *Head, *Post, *Put, *Delete, *Trace, *Options, *Connect, *Patch;
 		};
 
 		struct HttpRequestLine
@@ -39,13 +46,13 @@ namespace LiongPlus
 			: public HttpLine
 		{
 		public:
-			long MajorVersion, MinorVersion;
+			long MajorVersion, MinorVersion, StatusCode;
 			string Status;
 
 			HttpStatusLine() = default;
 			HttpStatusLine(const HttpStatusLine&) = default;
 			HttpStatusLine(HttpStatusLine&&);
-			HttpStatusLine(long major, long minor, string status);
+			HttpStatusLine(long major, long minor, long statusCode, string status);
 
 			HttpStatusLine& operator=(const HttpStatusLine&);
 			HttpStatusLine& operator=(HttpStatusLine&&);
@@ -59,14 +66,14 @@ namespace LiongPlus
 			map<string, string> _Headers;
 
 			template<typename ... TArgs>
-			void AddElements(string& key, string& value, TArgs ... others)
+			void AddElements(string& key, string& value, TArgs& ... others)
 			{
 				_Headers[key] = value;
-				ConnectElements(others ...);
+				AddElements(others ...);
 			}
 			void AddElements(string& key, string& value);
 		public:
-			struct GeneralHeaders
+			struct General
 			{
 				static const char
 					*CacheControl,
@@ -79,7 +86,7 @@ namespace LiongPlus
 					*Via,
 					*Warning;
 			};
-			struct RequestHeaders
+			struct Request
 			{
 				static const char
 					*Accept,
@@ -101,7 +108,7 @@ namespace LiongPlus
 					*TE,
 					*UserAgent;
 			};
-			struct ResponseHeaders
+			struct Response
 			{
 				static const char
 					*AcceptRange,
@@ -114,7 +121,7 @@ namespace LiongPlus
 					*Vary,
 					*WwwAuthenticate;
 			};
-			struct EntityHeaders
+			struct Entity
 			{
 				static const char
 					*Allow,
@@ -132,11 +139,11 @@ namespace LiongPlus
 			HttpHeader() = default;
 			HttpHeader(const HttpHeader&) = default;
 			HttpHeader(HttpHeader&& instance);
-			template<size_t TSize>
-			HttpHeader(initializer_list<string> list)
+			template<typename ... TArgs>
+			HttpHeader(string key, string value, TArgs ... args)
 				: HttpHeader()
 			{
-				AddElements(list);
+				AddElements(key, value, (string)args ...);
 			}
 
 			HttpHeader& operator=(const HttpHeader& instance);
@@ -152,12 +159,14 @@ namespace LiongPlus
 		struct HttpMessage
 		{
 		protected:
+			HttpMessage(HttpHeader header, Buffer content);
+
 			static Buffer ToBuffer(const HttpLine& _line, const HttpHeader& _header, const Buffer& _content);
 		public:
 			HttpHeader Header;
 			Buffer Content;
 
-			virtual Buffer ToBuffer() const;
+			virtual Buffer ToBuffer() const = 0;
 		};
 
 		struct HttpRequest
@@ -165,6 +174,8 @@ namespace LiongPlus
 		{
 		public:
 			HttpRequestLine RequestLine;
+
+			HttpRequest(HttpHeader& header, HttpRequestLine& line, Buffer& Content);
 
 			Buffer ToBuffer() const override;
 		};
@@ -175,7 +186,10 @@ namespace LiongPlus
 		public:
 			HttpStatusLine StatusLine;
 
+			HttpResponse(HttpHeader& header, HttpStatusLine& line, Buffer& content);
+
 			Buffer ToBuffer() const override;
+			
 		};
 	}
 }

@@ -14,7 +14,7 @@ namespace LiongPlus
 		protected:
 			Buffer _Addr;
 		public:
-			SocketAddress() = delete;
+			SocketAddress() = default;
 			SocketAddress(size_t length);
 			SocketAddress(const SocketAddress&);
 			SocketAddress(SocketAddress&&);
@@ -29,6 +29,8 @@ namespace LiongPlus
 			const Byte* Field() const;
 			uint16_t& AddressFamily();
 			uint16_t AddressFamily() const;
+			
+			virtual std::string ToString() const;
 		};
 
 		class IPv4EndPoint
@@ -46,15 +48,7 @@ namespace LiongPlus
 			uint16_t& Port();
 			uint16_t Port() const;
 
-			std::string ToString()
-			{
-				std::stringstream ss;
-				auto field = (uint8_t*)_Addr.Field();
-				ss << std::to_string(field[4]) << '.' << std::to_string(field[5]) << '.' << std::to_string(field[6]) << '.' << std::to_string(field[7]);
-				if (Port() != 0)
-					ss << ':' << Port();
-				return ss.str();
-			}
+			std::string ToString() const override;
 		};
 
 		class IPv6EndPoint

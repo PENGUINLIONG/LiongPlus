@@ -1,8 +1,7 @@
-// File: HttpClient.hpp
+/*// File: HttpClient.hpp
 // Author: Rendong Liang (Liong)
 #include "../Fundamental.hpp"
 #include "Socket.hpp"
-#include "Dns.hpp"
 
 namespace LiongPlus
 {
@@ -14,21 +13,24 @@ namespace LiongPlus
 		class HttpClient
 		{
 			Socket _Socket;
-			string _BaseAddr;
+			SocketAddress _Addr;
 			bool _IsConnected;
 
-			HttpClient(string host, uint16_t port = 80)
+			HttpClient(SocketAddress& addr)
 				: _Socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)
-				, _BaseAddr(host)
+				, _Addr(addr)
+				, _IsConnected(false)
 			{
 			}
 			HttpClient(const HttpClient&) = delete;
 			HttpClient(HttpClient&& instance)
 				: _Socket()
-				, _BaseAddr()
+				, _Addr()
+				, _IsConnected(false)
 			{
 				swap(_Socket, instance._Socket);
-				swap(_BaseAddr, instance._BaseAddr);
+				swap(_Addr, instance._Addr);
+				swap(_IsConnected, instance._IsConnected);
 			}
 
 			string& BaseAddress()
@@ -37,7 +39,6 @@ namespace LiongPlus
 			}
 			void SendRequest()
 			{
-
 				_Socket.Send();
 			}
 			void SendRequestAsync()
@@ -46,4 +47,4 @@ namespace LiongPlus
 			}
 		};
 	}
-}
+}*/

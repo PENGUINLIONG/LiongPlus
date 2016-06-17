@@ -99,6 +99,7 @@
 #include <map>
 #include <memory>
 #include <mutex>
+#include <regex>
 #include <stdexcept>
 #include <string>
 #include <sstream>

@@ -62,7 +62,12 @@ namespace LiongPlus
 		{
 			return *((uint16_t*)_Addr.Field());
 		}
-		
+
+		std::string SocketAddress::ToString() const
+		{
+			return "";
+		}
+
 
 
 		IPv4EndPoint::IPv4EndPoint(const IPv4EndPoint& instance)
@@ -105,6 +110,14 @@ namespace LiongPlus
 			return *((uint16_t*)(_Addr.Field() + 2));
 		}
 
+		std::string IPv4EndPoint::ToString() const
+		{
+			auto field = (uint8_t*)_Addr.Field();
+			auto rv = std::to_string(field[4]) + '.' + std::to_string(field[5]) + '.' + std::to_string(field[6]) + '.' + std::to_string(field[7]);
+			if (Port() != 0)
+				rv += ':' + Port();
+			return rv;
+		}
 
 
 		IPv6EndPoint::IPv6EndPoint(const IPv6EndPoint& instance)
