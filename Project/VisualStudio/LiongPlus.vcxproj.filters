@@ -103,14 +103,17 @@
     <ClInclude Include="..\..\Include\Net\SocketAddress.hpp">
       <Filter>Include\Net</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Include\Net\HttpHeader.hpp">
-      <Filter>Include\Net</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Include\Net\Dns.hpp">
       <Filter>Include\Net</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Include\DateTime.hpp">
       <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Net\HttpMessage.hpp">
+      <Filter>Include\Net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Net\HttpClient.hpp">
+      <Filter>Include\Net</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -155,6 +158,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Include\DateTime.cpp">
       <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Include\Net\HttpMessage.cpp">
+      <Filter>Source\Net</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

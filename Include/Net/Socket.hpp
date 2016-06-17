@@ -22,7 +22,7 @@ namespace LiongPlus
 #endif
 		public:
 			StartUpNetModule();
-			StartUpNetModule(StartUpNetModule&) = delete;
+			StartUpNetModule(const StartUpNetModule&) = delete;
 			StartUpNetModule(StartUpNetModule&&) = delete;
 			~StartUpNetModule();
 		};
@@ -37,11 +37,11 @@ namespace LiongPlus
 #endif
 			HSocket _HSocket;
 
-			Socket();
 			Socket(HSocket hSocket);
 
 			bool IsErrorOccured(int code);
 		public:
+			Socket();
 			Socket(int addressFamily, int type, int protocal);
 			Socket(const Socket&) = delete;
 			Socket(Socket&& instance);

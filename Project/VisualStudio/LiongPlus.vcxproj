@@ -33,7 +33,8 @@
     <ClInclude Include="..\..\Include\Media\Bmp.hpp" />
     <ClInclude Include="..\..\Include\Media\Image.hpp" />
     <ClInclude Include="..\..\Include\Net\Dns.hpp" />
-    <ClInclude Include="..\..\Include\Net\HttpHeader.hpp" />
+    <ClInclude Include="..\..\Include\Net\HttpClient.hpp" />
+    <ClInclude Include="..\..\Include\Net\HttpMessage.hpp" />
     <ClInclude Include="..\..\Include\Net\SocketAddress.hpp" />
     <ClInclude Include="..\..\Include\Net\Socket.hpp" />
     <ClInclude Include="..\..\Include\Nullable.hpp" />
@@ -52,6 +53,7 @@
     <ClCompile Include="..\..\Include\Media\Bitmap.cpp" />
     <ClCompile Include="..\..\Include\Media\Bmp.cpp" />
     <ClCompile Include="..\..\Include\Media\Image.cpp" />
+    <ClCompile Include="..\..\Include\Net\HttpMessage.cpp" />
     <ClCompile Include="..\..\Include\Net\Socket.cpp" />
     <ClCompile Include="..\..\Include\Net\SocketAddress.cpp" />
     <ClCompile Include="..\..\Include\source.cpp" />

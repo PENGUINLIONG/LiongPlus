@@ -8,7 +8,12 @@ namespace LiongPlus
 {
 	class Buffer
 	{
-		friend void swap(Buffer& x, Buffer& y);
+		friend void swap(Buffer& x, Buffer& y)
+		{
+			using std::swap;
+			swap(x._Field, y._Field);
+			swap(x._Length, y._Length);
+		}
 	private:
 		Byte* _Field;
 		size_t _Length;

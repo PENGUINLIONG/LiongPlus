@@ -7,13 +7,6 @@ namespace LiongPlus
 {
 	using std::swap;
 
-	void swap(Buffer& x, Buffer& y)
-	{
-		using std::swap;
-		swap(x._Field, y._Field);
-		swap(x._Length, y._Length);
-	}
-
 	Buffer::Buffer()
 		: _Field(nullptr)
 		, _Length(0)
