@@ -3,6 +3,7 @@
 #pragma once
 #include "../Fundamental.hpp"
 #include "../Buffer.hpp"
+#include "HttpUtils.hpp"
 #include "Socket.hpp"
 
 namespace LiongPlus
@@ -15,20 +16,25 @@ namespace LiongPlus
 		class HttpLine
 		{
 		public:
+			long MajorVersion = 0, MinorVersion = 0;
+
+			HttpLine() = default;
+			HttpLine(long major, long minor);
+
 			virtual string ToString() const = 0;
 		};
 
-		struct HttpMethod
+		class HttpMethod
 		{
+		public:
 			static const char
 				*Get, *Head, *Post, *Put, *Delete, *Trace, *Options, *Connect, *Patch;
 		};
 
-		struct HttpRequestLine
+		class HttpRequestLine
 			: public HttpLine
 		{
 		public:
-			long MajorVersion, MinorVersion;
 			string Method, Path;
 
 			HttpRequestLine() = default;
@@ -40,14 +46,15 @@ namespace LiongPlus
 			HttpRequestLine& operator=(HttpRequestLine&&);
 
 			string ToString() const override;
+			bool FromBuffer(Buffer& buffer, size_t& offset);
 		};
 
-		struct HttpStatusLine
+		class HttpStatusLine
 			: public HttpLine
 		{
 		public:
-			long MajorVersion, MinorVersion, StatusCode;
-			string Status;
+			long StatusCode = 0;
+			string Reason;
 
 			HttpStatusLine() = default;
 			HttpStatusLine(const HttpStatusLine&) = default;
@@ -58,6 +65,7 @@ namespace LiongPlus
 			HttpStatusLine& operator=(HttpStatusLine&&);
 			
 			string ToString() const override;
+			bool FromBuffer(Buffer buffer, size_t& offset);
 		};
 
 		class HttpHeader
@@ -148,17 +156,21 @@ namespace LiongPlus
 
 			HttpHeader& operator=(const HttpHeader& instance);
 			HttpHeader& operator=(HttpHeader&& instance);
-			string& operator[](string& key);
+			string& operator[](const char* key);
 
-			bool Contains(string& key) const;
+			bool Contains(const char* key) const;
 			// This will return the boolean value which indicates whether the key/value pair is NOT existing.
-			void Remove(string& key);
+			void Remove(const char* key);
 			string ToString() const;
+			bool FromBuffer(Buffer& buffer, size_t& offset);
 		};
 
 		struct HttpMessage
 		{
 		protected:
+			HttpMessage() = default;
+			HttpMessage(const HttpMessage&) = delete;
+			HttpMessage(HttpMessage&&) = delete;
 			HttpMessage(HttpHeader header, Buffer content);
 
 			static Buffer ToBuffer(const HttpLine& _line, const HttpHeader& _header, const Buffer& _content);
@@ -175,9 +187,14 @@ namespace LiongPlus
 		public:
 			HttpRequestLine RequestLine;
 
+			HttpRequest() = default;
+			HttpRequest(const HttpRequest&) = default;
+			HttpRequest(HttpRequest&&);
 			HttpRequest(HttpHeader& header, HttpRequestLine& line, Buffer& Content);
 
 			Buffer ToBuffer() const override;
+			// Return length read.
+			size_t FromBuffer(Buffer& buffer, size_t offset);
 		};
 
 		struct HttpResponse
@@ -186,10 +203,13 @@ namespace LiongPlus
 		public:
 			HttpStatusLine StatusLine;
 
+			HttpResponse() = default;
+			HttpResponse(const HttpResponse&) = default;
+			HttpResponse(HttpResponse&&);
 			HttpResponse(HttpHeader& header, HttpStatusLine& line, Buffer& content);
 
 			Buffer ToBuffer() const override;
-			
+			size_t FromBuffer(Buffer& buffer, size_t offset);
 		};
 	}
 }

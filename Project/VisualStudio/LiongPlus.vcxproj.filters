@@ -115,6 +115,9 @@
     <ClInclude Include="..\..\Include\Net\HttpClient.hpp">
       <Filter>Include\Net</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Include\Net\HttpUtils.hpp">
+      <Filter>Include\Net</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Include\Graphics\Texture.cpp">

@@ -33,6 +33,7 @@
     <ClInclude Include="..\..\Include\Media\Bmp.hpp" />
     <ClInclude Include="..\..\Include\Media\Image.hpp" />
     <ClInclude Include="..\..\Include\Net\Dns.hpp" />
+    <ClInclude Include="..\..\Include\Net\HttpUtils.hpp" />
     <ClInclude Include="..\..\Include\Net\HttpClient.hpp" />
     <ClInclude Include="..\..\Include\Net\HttpMessage.hpp" />
     <ClInclude Include="..\..\Include\Net\SocketAddress.hpp" />

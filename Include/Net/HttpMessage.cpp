@@ -1,7 +1,6 @@
 // File: HttpMessage.cpp
 // Author: Rendong Liang (Liong)
 #include "HttpMessage.hpp"
-#include "../IO/MemoryStream.hpp"
 
 namespace LiongPlus
 {
@@ -10,6 +9,15 @@ namespace LiongPlus
 		using namespace std;
 		using std::swap;
 
+		//
+		// HttpLine
+		//
+
+		HttpLine::HttpLine(long major, long minor)
+			: MajorVersion(major)
+			, MinorVersion(minor)
+		{
+		}
 
 		//
 		// HttpMethod
@@ -39,8 +47,7 @@ namespace LiongPlus
 			swap(Path, instance.Path);
 		}
 		HttpRequestLine::HttpRequestLine(long major, long minor, string method, string path)
-			: MajorVersion(major)
-			, MinorVersion(minor)
+			: HttpLine(major, minor)
 			, Method(method)
 			, Path(path)
 		{
@@ -70,6 +77,30 @@ namespace LiongPlus
 			return ss.str();
 		}
 		
+		// Notice that the offset will be set to the beginning of the HTTP header part.
+		bool HttpRequestLine::FromBuffer(Buffer& buffer, size_t& offset)
+		{
+			HttpRequestLine line;
+			auto end = buffer.Field() + buffer.Length(); // Should not be read.
+			auto beg = buffer.Field() + offset;
+			auto pos = beg;
+			auto eol = HttpUtils::SeekForEOL(beg, end);
+
+			HttpUtils::CaptureText(pos, eol, line.Method);
+			if (*(pos++) != ' ') return false;
+			HttpUtils::CaptureText(pos, eol, line.Path);
+			if (*(pos++) != ' ') return false;
+			if (!HttpUtils::CaptureHttpVersion(pos, eol, line.MinorVersion, line.MinorVersion))
+				return false;
+			// Here should be the end of line.
+			if (pos != eol) return false;
+			// Set offset.
+			offset += HttpUtils::GetOffset(beg, eol, end);
+
+			*this = std::move(line);
+			return true;
+		}
+		
 		//
 		// HttpResponseLine
 		//
@@ -79,13 +110,13 @@ namespace LiongPlus
 		{
 			swap(MajorVersion, instance.MajorVersion);
 			swap(MinorVersion, instance.MinorVersion);
-			swap(Status, instance.Status);
+			swap(StatusCode, instance.StatusCode);
+			swap(Reason, instance.Reason);
 		}
-		HttpStatusLine::HttpStatusLine(long major, long minor, long statusCode, string status)
-			: MajorVersion(major)
-			, MinorVersion(minor)
+		HttpStatusLine::HttpStatusLine(long major, long minor, long statusCode, string reason)
+			: HttpLine(major, minor)
 			, StatusCode(statusCode)
-			, Status(status)
+			, Reason(reason)
 		{
 		}
 
@@ -93,22 +124,48 @@ namespace LiongPlus
 		{
 			MajorVersion = instance.MajorVersion;
 			MinorVersion = instance.MinorVersion;
-			Status = instance.Status;
+			StatusCode = instance.StatusCode;
+			Reason = instance.Reason;
 			return *this;
 		}
 		HttpStatusLine& HttpStatusLine::operator=(HttpStatusLine&& instance)
 		{
 			swap(MajorVersion, instance.MajorVersion);
 			swap(MinorVersion, instance.MinorVersion);
-			swap(Status, instance.Status);
+			swap(StatusCode, instance.StatusCode);
+			swap(Reason, instance.Reason);
 			return *this;
 		}
 
 		string HttpStatusLine::ToString() const
 		{
 			stringstream ss;
-			ss << "HTTP/" << MajorVersion << '.' << MinorVersion << ' ' << Status << '\n';
+			ss << "HTTP/" << MajorVersion << '.' << MinorVersion << ' ' << Reason << '\n';
 			return ss.str();
+		}
+
+		// Notice that the offset will be set to the beginning of the HTTP header part.
+		bool HttpStatusLine::FromBuffer(Buffer buffer, size_t& offset)
+		{
+			HttpStatusLine line;
+			auto end = buffer.Field() + buffer.Length(); // Should not be read.
+			auto beg = buffer.Field() + offset;
+			auto pos = beg;
+			auto eol = HttpUtils::SeekForEOL(beg, end);
+
+			if (!HttpUtils::CaptureHttpVersion(pos, eol, line.MajorVersion, line.MinorVersion))
+				return false;
+			if (*(pos++) != ' ') return false;
+			HttpUtils::CaptureNumber(pos, eol, line.StatusCode);
+			if (*(pos++) != ' ') return false;
+			line.Reason = string(pos, eol);
+			// Here should be the end of line but we will do nothing.
+			// (Because $pos must equal to $eol)
+			// Set offset.
+			offset += HttpUtils::GetOffset(beg, eol, end);
+
+			*this = std::move(line);
+			return true;
 		}
 
 		//
@@ -190,17 +247,17 @@ namespace LiongPlus
 			swap(*this, instance);
 			return *this;
 		}
-		string& HttpHeader::operator[](string& key)
+		string& HttpHeader::operator[](const char* key)
 		{
 			return _Headers[key];
 		}
 
-		bool HttpHeader::Contains(string& key) const
+		bool HttpHeader::Contains(const char* key) const
 		{
 			return (_Headers.find(key) != _Headers.end());
 		}
 		// This will return the boolean value which indicates whether the key/value pair is NOT existing.
-		void HttpHeader::Remove(string& key)
+		void HttpHeader::Remove(const char* key)
 		{
 			_Headers.erase(key);
 		}
@@ -211,11 +268,47 @@ namespace LiongPlus
 				ss << header.first << ": " << header.second << '\n';
 			return ss.str();
 		}
+		bool HttpHeader::FromBuffer(Buffer& buffer, size_t& offset)
+		{
+			for (;;)
+			{
+				auto beg = buffer.Field() + offset;
+				auto end = buffer.Field() + buffer.Length();
+				auto divisor = beg;
+				auto eol = HttpUtils::SeekForEOL(beg, end);
+				
+				// An empty line should exist, which is the end of the HTTP header.
+				if (beg == eol) // This is actually the case of $divisor == $eol.
+				{
+					// There is no empty line, improper format.
+					if (eol == end)
+						return false;
+					offset += HttpUtils::GetOffset(beg, eol, end);
+					return true;
+				}
+
+				// Seek for ':'.
+				while (divisor < eol)
+				{
+					if (*(divisor++) == ':')
+						break;
+				}
+				// Now divisor should be at SP.
+				if (divisor < eol)
+				{
+					offset += HttpUtils::GetOffset(beg, eol, end);
+					_Headers.emplace(string(beg, divisor - 1), string(divisor + 1, eol));
+				}
+				// Improper format.
+				else
+					return false;
+			}
+		}
 
 		//
-		// HttpRequest
+		// HttpMessage
 		//
-
+		
 		HttpMessage::HttpMessage(HttpHeader header, Buffer content)
 			: Header(header)
 			, Content(content)
@@ -239,6 +332,13 @@ namespace LiongPlus
 		// HttpRequest
 		//
 
+		HttpRequest::HttpRequest(HttpRequest&& instance)
+			: HttpRequest()
+		{
+			swap(RequestLine, instance.RequestLine);
+			swap(Header, instance.Header);
+			swap(Content, instance.Content);
+		}
 		HttpRequest::HttpRequest(HttpHeader& header, HttpRequestLine& line, Buffer& content)
 			: HttpMessage(header, content)
 			, RequestLine(line)
@@ -248,6 +348,28 @@ namespace LiongPlus
 		Buffer HttpRequest::ToBuffer() const
 		{
 			return forward<Buffer>(HttpMessage::ToBuffer(RequestLine, Header, Content));
+		}
+
+		size_t HttpRequest::FromBuffer(Buffer& buffer, size_t offset)
+		{
+			auto beg = buffer.Field() + offset;
+			auto end = buffer.Field() + buffer.Length();
+			auto pos = beg;
+
+			if (!RequestLine.FromBuffer(buffer, offset))
+				return 0;
+			if (!Header.FromBuffer(buffer, offset))
+				return 0;
+			if (Header.Contains(HttpHeader::Entity::ContentLength))
+			{
+				size_t length = std::stoull(Header[HttpHeader::Entity::ContentLength]);
+				if (length > buffer.Length() - offset)
+					return 0;
+				Content = Buffer(length);
+				buffer.CopyTo(Content.Field(), offset, length);
+				return offset + length;
+			}
+			return offset;
 		}
 
 		//
@@ -263,6 +385,28 @@ namespace LiongPlus
 		Buffer HttpResponse::ToBuffer() const
 		{
 			return forward<Buffer>(HttpMessage::ToBuffer(StatusLine, Header, Content));
+		}
+
+		size_t HttpResponse::FromBuffer(Buffer& buffer, size_t offset)
+		{
+			auto beg = buffer.Field() + offset;
+			auto end = buffer.Field() + buffer.Length();
+			auto pos = beg;
+			
+			if (!StatusLine.FromBuffer(buffer, offset))
+				return 0;
+			if (!Header.FromBuffer(buffer, offset))
+				return 0;
+			if (Header.Contains(HttpHeader::Entity::ContentLength))
+			{
+				size_t length = std::stoull(Header[HttpHeader::Entity::ContentLength]);
+				if (length > buffer.Length() - offset)
+					return false;
+				Content = Buffer(length);
+				buffer.CopyTo(Content.Field(), offset, length);
+				return offset + length;
+			}
+			return offset;
 		}
 	}
 }
