@@ -20,12 +20,25 @@ namespace LiongPlus
 				return (pos[0] == '\r' && pos[1] == '\n');
 			}
 
+			static bool IsLWS(const char* pos)
+			{
+				return *pos == ' ' || *pos == '\t';
+			}
+
 			static char* SeekForEOL(const char* beg, const char* end)
 			{
 				char* eol = const_cast<char*>(beg);
 				while (!HttpUtils::IsLineSeparator(eol) && eol < end)
 					++eol;
 				return eol;
+			}
+
+			static char* SeekForNonLWS(const char* beg, const char* end)
+			{
+				char* nlws = const_cast<char*>(beg);
+				while (HttpUtils::IsLWS(nlws) && nlws < end)
+					++nlws;
+				return nlws;
 			}
 
 			static void CaptureText(char*& pos, const char* eol, std::string& result)

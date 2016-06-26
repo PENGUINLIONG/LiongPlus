@@ -159,8 +159,10 @@ namespace LiongPlus
 			string& operator[](const char* key);
 
 			bool Contains(const char* key) const;
+			bool Contains(string& key) const;
 			// This will return the boolean value which indicates whether the key/value pair is NOT existing.
 			void Remove(const char* key);
+			void Remove(string& key);
 			string ToString() const;
 			bool FromBuffer(Buffer& buffer, size_t& offset);
 		};

@@ -255,21 +255,40 @@ namespace LiongPlus
 		bool HttpHeader::Contains(const char* key) const
 		{
 			return (_Headers.find(key) != _Headers.end());
+			for (pair<string, string> pr : _Headers)
+			{
+#ifdef _L_WINDOWS
+				if (_stricmp(pr.first.c_str(), key))
+#else
+				if (strcasecmp(pr.first.c_str(), key))
+#endif
+					return true;
+			}
+			return false;
+		}
+		bool HttpHeader::Contains(string& key) const
+		{
+			return Contains(key.c_str());
 		}
 		// This will return the boolean value which indicates whether the key/value pair is NOT existing.
 		void HttpHeader::Remove(const char* key)
 		{
 			_Headers.erase(key);
 		}
+		void HttpHeader::Remove(string& key)
+		{
+			_Headers.erase(key);
+		}
 		string HttpHeader::ToString() const
 		{
 			stringstream ss;
-			for (auto& header : _Headers)
+			for (pair<string, string> header : _Headers)
 				ss << header.first << ": " << header.second << '\n';
 			return ss.str();
 		}
 		bool HttpHeader::FromBuffer(Buffer& buffer, size_t& offset)
 		{
+			auto last = _Headers.end();
 			for (;;)
 			{
 				auto beg = buffer.Field() + offset;
@@ -278,13 +297,28 @@ namespace LiongPlus
 				auto eol = HttpUtils::SeekForEOL(beg, end);
 				
 				// An empty line should exist, which is the end of the HTTP header.
-				if (beg == eol) // This is actually the case of $divisor == $eol.
+				if (beg == eol) // This actually equals to the case of $divisor == $eol.
 				{
 					// There is no empty line, improper format.
 					if (eol == end)
 						return false;
+
 					offset += HttpUtils::GetOffset(beg, eol, end);
 					return true;
+				}
+
+				// If LWS (linear white space) presents, this line is the complement of the previous one.
+				if (HttpUtils::IsLWS(beg))
+				{
+					auto nlws = HttpUtils::SeekForNonLWS(beg, eol);
+					if (nlws < eol)
+					{
+						if (last != _Headers.end())
+							(*last).second += string(nlws, eol);
+						else
+							return false;
+					}
+					continue;
 				}
 
 				// Seek for ':'.
@@ -293,11 +327,17 @@ namespace LiongPlus
 					if (*(divisor++) == ':')
 						break;
 				}
+
 				// Now divisor should be at SP.
 				if (divisor < eol)
 				{
 					offset += HttpUtils::GetOffset(beg, eol, end);
-					_Headers.emplace(string(beg, divisor - 1), string(divisor + 1, eol));
+					string key(beg, divisor - 1);
+					string value(divisor + 1, eol);
+					if (Contains(key))
+						_Headers[key] += ", " + value;
+					else
+						last = _Headers.emplace(key, value).first;
 				}
 				// Improper format.
 				else
