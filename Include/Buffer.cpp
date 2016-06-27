@@ -18,10 +18,14 @@ namespace LiongPlus
 	{
 	}
 	Buffer::Buffer(const Buffer& instance)
-		: _Field(nullptr)
-		, _Length(0)
+		: Buffer()
 	{
-		*this = instance.Clone();
+		_Length = instance._Length;
+		if (_Length > 0)
+		{
+			_Field = new Byte[_Length];
+			instance.CopyTo(_Field, 0, _Length);
+		}
 	}
 	Buffer::Buffer(Buffer&& instance)
 		: Buffer()
@@ -48,7 +52,12 @@ namespace LiongPlus
 
 	Buffer& Buffer::operator=(const Buffer& instance)
 	{
-		*this = instance.Clone();
+		_Length = instance._Length;
+		if (_Length > 0)
+		{
+			_Field = new Byte[instance._Length];
+			instance.CopyTo(_Field, 0, _Length);
+		}
 		return *this;
 	}
 	Buffer& Buffer::operator=(Buffer&& instance)
@@ -72,7 +81,8 @@ namespace LiongPlus
 	Buffer Buffer::Clone() const
 	{
 		Buffer buffer(_Length);
-		std::memcpy(buffer._Field, _Field, _Length);
+		if (_Length > 0)
+			std::memcpy(buffer._Field, _Field, _Length);
 
 		return buffer;
 	}

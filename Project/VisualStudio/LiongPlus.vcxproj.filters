@@ -118,6 +118,9 @@
     <ClInclude Include="..\..\Include\Net\HttpUtils.hpp">
       <Filter>Include\Net</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Include\Net\HttpBufferPool.hpp">
+      <Filter>Include\Net</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Include\Graphics\Texture.cpp">
@@ -163,6 +166,15 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Include\Net\HttpMessage.cpp">
+      <Filter>Source\Net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Include\Net\HttpUtils.cpp">
+      <Filter>Source\Net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Include\Net\HttpClient.cpp">
+      <Filter>Source\Net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Include\Net\HttpBufferPool.cpp">
       <Filter>Source\Net</Filter>
     </ClCompile>
   </ItemGroup>

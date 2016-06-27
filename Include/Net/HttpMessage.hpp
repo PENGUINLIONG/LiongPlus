@@ -171,9 +171,9 @@ namespace LiongPlus
 		{
 		protected:
 			HttpMessage() = default;
-			HttpMessage(const HttpMessage&) = delete;
-			HttpMessage(HttpMessage&&) = delete;
-			HttpMessage(HttpHeader header, Buffer content);
+			HttpMessage(const HttpMessage&) = default;
+			HttpMessage(HttpMessage&&);
+			HttpMessage(HttpHeader& header, Buffer& content);
 
 			static Buffer ToBuffer(const HttpLine& _line, const HttpHeader& _header, const Buffer& _content);
 		public:
@@ -192,10 +192,10 @@ namespace LiongPlus
 			HttpRequest() = default;
 			HttpRequest(const HttpRequest&) = default;
 			HttpRequest(HttpRequest&&);
-			HttpRequest(HttpHeader& header, HttpRequestLine& line, Buffer& Content);
+			HttpRequest(HttpRequestLine& line, HttpHeader& header, Buffer& content);
 
 			Buffer ToBuffer() const override;
-			// Return length read.
+			// Return the length of non-content.
 			size_t FromBuffer(Buffer& buffer, size_t offset);
 		};
 
@@ -208,9 +208,10 @@ namespace LiongPlus
 			HttpResponse() = default;
 			HttpResponse(const HttpResponse&) = default;
 			HttpResponse(HttpResponse&&);
-			HttpResponse(HttpHeader& header, HttpStatusLine& line, Buffer& content);
+			HttpResponse(HttpStatusLine& line, HttpHeader& header, Buffer& content);
 
 			Buffer ToBuffer() const override;
+			// Return the length of non-content.
 			size_t FromBuffer(Buffer& buffer, size_t offset);
 		};
 	}

@@ -140,7 +140,7 @@ namespace LiongPlus
 		string HttpStatusLine::ToString() const
 		{
 			stringstream ss;
-			ss << "HTTP/" << MajorVersion << '.' << MinorVersion << ' ' << Reason << '\n';
+			ss << "HTTP/" << MajorVersion << '.' << MinorVersion << ' ' << StatusCode << ' ' << Reason << '\n';
 			return ss.str();
 		}
 
@@ -234,7 +234,7 @@ namespace LiongPlus
 
 		HttpHeader::HttpHeader(HttpHeader&& instance)
 		{
-			swap(*this, instance);
+			swap(_Headers, instance._Headers);
 		}
 
 		HttpHeader& HttpHeader::operator=(const HttpHeader& instance)
@@ -244,7 +244,7 @@ namespace LiongPlus
 		}
 		HttpHeader& HttpHeader::operator=(HttpHeader&& instance)
 		{
-			swap(*this, instance);
+			swap(_Headers, instance._Headers);
 			return *this;
 		}
 		string& HttpHeader::operator[](const char* key)
@@ -333,9 +333,10 @@ namespace LiongPlus
 				{
 					offset += HttpUtils::GetOffset(beg, eol, end);
 					string key(beg, divisor - 1);
-					string value(divisor + 1, eol);
+					auto posValue = HttpUtils::SeekForNonLWS(divisor, eol);
+					string value(divisor, eol);
 					if (Contains(key))
-						_Headers[key] += ", " + value;
+						_Headers[key] += _Headers[key] == "" ? value : ", " + value;
 					else
 						last = _Headers.emplace(key, value).first;
 				}
@@ -349,7 +350,13 @@ namespace LiongPlus
 		// HttpMessage
 		//
 		
-		HttpMessage::HttpMessage(HttpHeader header, Buffer content)
+		HttpMessage::HttpMessage(HttpMessage&& instance)
+			: HttpMessage()
+		{
+			swap(Header, instance.Header);
+			swap(Content, instance.Content);
+		}
+		HttpMessage::HttpMessage(HttpHeader& header, Buffer& content)
 			: Header(header)
 			, Content(content)
 		{
@@ -379,7 +386,7 @@ namespace LiongPlus
 			swap(Header, instance.Header);
 			swap(Content, instance.Content);
 		}
-		HttpRequest::HttpRequest(HttpHeader& header, HttpRequestLine& line, Buffer& content)
+		HttpRequest::HttpRequest(HttpRequestLine& line, HttpHeader& header, Buffer& content)
 			: HttpMessage(header, content)
 			, RequestLine(line)
 		{
@@ -403,11 +410,8 @@ namespace LiongPlus
 			if (Header.Contains(HttpHeader::Entity::ContentLength))
 			{
 				size_t length = std::stoull(Header[HttpHeader::Entity::ContentLength]);
-				if (length > buffer.Length() - offset)
-					return 0;
 				Content = Buffer(length);
-				buffer.CopyTo(Content.Field(), offset, length);
-				return offset + length;
+				buffer.CopyTo(Content.Field(), offset, buffer.Length() - offset);
 			}
 			return offset;
 		}
@@ -416,8 +420,15 @@ namespace LiongPlus
 		// HttpResponse
 		//
 
-		HttpResponse::HttpResponse(HttpHeader& header, HttpStatusLine& line, Buffer& content)
-			: HttpMessage(header, content)
+		HttpResponse::HttpResponse(HttpResponse&& instance)
+			: HttpResponse()
+		{
+			swap(StatusLine, instance.StatusLine);
+			swap(Header, instance.Header);
+			swap(Content, instance.Content);
+		}
+		HttpResponse::HttpResponse(HttpStatusLine& line, HttpHeader& header, Buffer& content)
+			: HttpMessage(forward<HttpHeader>(header), forward<Buffer>(content))
 			, StatusLine(line)
 		{
 		}
@@ -440,11 +451,11 @@ namespace LiongPlus
 			if (Header.Contains(HttpHeader::Entity::ContentLength))
 			{
 				size_t length = std::stoull(Header[HttpHeader::Entity::ContentLength]);
-				if (length > buffer.Length() - offset)
-					return false;
 				Content = Buffer(length);
-				buffer.CopyTo(Content.Field(), offset, length);
-				return offset + length;
+				if (length > buffer.Length() - offset)
+					buffer.CopyTo(Content.Field(), offset, buffer.Length() - offset);
+				else
+					buffer.CopyTo(Content.Field(), offset, length);
 			}
 			return offset;
 		}

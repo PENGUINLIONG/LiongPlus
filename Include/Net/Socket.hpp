@@ -5,6 +5,7 @@
 #include "../Fundamental.hpp"
 #include "../Buffer.hpp"
 #include "SocketAddress.hpp"
+#include "HttpMessage.hpp"
 
 namespace LiongPlus
 {
@@ -50,20 +51,24 @@ namespace LiongPlus
 			Socket& operator=(Socket&& instance);
 			
 			Socket Accept(SocketAddress& addr);
-			void Bind(const SocketAddress& addr);
-			void Close();
-			void Connect(const SocketAddress& addr);
-			void Listen(int backlog);
-			void Send(const Buffer& buffer);
-			void Send(const Buffer& buffer, int flags);
-			void SetOption(int flags, uint32_t value);
-			void SetOption(int flags, Buffer value);
-			void Receive(Buffer& buffer);
-			void Receive(Buffer& buffer, int flags);
-			void SendTo(Buffer& buffer, const SocketAddress& addr);
-			void SendTo(Buffer& buffer, const SocketAddress& addr, int flags);
-			void ReceiveFrom(Buffer& buffer, SocketAddress& addr);
-			void ReceiveFrom(Buffer& buffer, SocketAddress& addr, int flags);
+			bool Bind(const SocketAddress& addr);
+			bool Close();
+			bool Connect(const SocketAddress& addr);
+			bool Listen(int backlog);
+			bool Send(const Buffer& buffer, size_t offset = 0);
+			bool Send(const Buffer& buffer, size_t offset, int flags);
+			bool SetSendTimeOut(uint32_t ms);
+			bool SetOption(int flags, uint32_t value);
+			bool SetOption(int flags, Buffer& value);
+			bool SetReceiveTimeOut(uint32_t ms);
+			bool Receive(Buffer& buffer, size_t offset = 0);
+			bool Receive(Buffer& buffer, size_t offset, int flags);
+			bool SendTo(Buffer& buffer, size_t offset, const SocketAddress& addr);
+			bool SendTo(Buffer& buffer, size_t offset, const SocketAddress& addr, int flags);
+			bool ReceiveFrom(Buffer& buffer, size_t offset, SocketAddress& addr);
+			bool ReceiveFrom(Buffer& buffer, size_t offset, SocketAddress& addr, int flags);
+
+			bool IsValid() const;
 		};
 	}
 }

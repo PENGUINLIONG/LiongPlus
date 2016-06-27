@@ -1,6 +1,10 @@
-/*// File: HttpClient.hpp
+// File: HttpClient.hpp
 // Author: Rendong Liang (Liong)
+#pragma once
 #include "../Fundamental.hpp"
+#include "Dns.hpp"
+#include "HttpMessage.hpp"
+#include "HttpBufferPool.hpp"
 #include "Socket.hpp"
 
 namespace LiongPlus
@@ -12,39 +16,43 @@ namespace LiongPlus
 
 		class HttpClient
 		{
+			friend void swap(HttpClient& a, HttpClient& b)
+			{
+				swap(a._Socket, b._Socket);
+				swap(a._Addr, b._Addr);
+				swap(a._IsConnected, b._IsConnected);
+				swap(a._HostName, b._HostName);
+			}
+		private:
 			Socket _Socket;
 			SocketAddress _Addr;
 			bool _IsConnected;
+			string _HostName;
 
-			HttpClient(SocketAddress& addr)
-				: _Socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)
-				, _Addr(addr)
-				, _IsConnected(false)
-			{
-			}
+			static string _UserAgentCode;
+			static string _AcceptContentType;
+			
+			static HttpResponse DoSend(HttpClient* this_ptr, HttpRequestLine& line, HttpHeader& header, Buffer& content);
+			static HttpResponse DoSendRequest(HttpClient* this_ptr, HttpRequest& request);
+
+		public:
+			HttpClient();
 			HttpClient(const HttpClient&) = delete;
-			HttpClient(HttpClient&& instance)
-				: _Socket()
-				, _Addr()
-				, _IsConnected(false)
-			{
-				swap(_Socket, instance._Socket);
-				swap(_Addr, instance._Addr);
-				swap(_IsConnected, instance._IsConnected);
-			}
+			HttpClient(HttpClient&&);
+			HttpClient(SocketAddress& addr);
+			HttpClient(const string hostname);
 
-			string& BaseAddress()
-			{
-				return _BaseAddr;
-			}
-			void SendRequest()
-			{
-				_Socket.Send();
-			}
-			void SendRequestAsync()
-			{
-				async(launch::async, );
-			}
+			string& HostName();
+
+			// TODO: Get set hostname ! ///////////////////////////////
+
+			future<HttpResponse> GetAsync(string path);
+			future<HttpResponse> PostAsync(string path, Buffer& content);
+			future<HttpResponse> PutAsync(string path, Buffer& content);
+
+			future<HttpResponse> SendAsync(HttpRequest& request);
+
+			bool IsConnected() const;
 		};
 	}
-}*/
+}

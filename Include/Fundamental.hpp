@@ -95,6 +95,7 @@
 #include <future>
 #include <set>
 #include <initializer_list>
+#include <list>
 #include <locale>
 #include <map>
 #include <memory>

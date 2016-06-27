@@ -37,12 +37,6 @@ namespace LiongPlus
 			: _HSocket(-1)
 		{
 			_HSocket = socket(addressFamily, type, protocal);
-#ifdef _L_WINDOWS
-			if (_HSocket == INVALID_SOCKET)
-#else
-			if (_HSocket < 0)
-#endif
-				throw std::runtime_error("Failed in creating socket.");
 		}
 		Socket::Socket(Socket&& instance)
 			: Socket()
@@ -68,105 +62,117 @@ namespace LiongPlus
 		Socket Socket::Accept(SocketAddress& addr)
 		{
 			int len = addr.Length();
-			HSocket code = accept(_HSocket, (sockaddr*)addr.Field(), &len);
+			return accept(_HSocket, (sockaddr*)addr.Field(), &len);
+		}
+
+		bool Socket::Bind(const SocketAddress& addr)
+		{
+			return !IsErrorOccured(::bind(_HSocket, (const sockaddr*)addr.Field(), addr.Length()));
+		}
+
+		bool Socket::Close()
+		{
 #ifdef _L_WINDOWS
-			if (code == INVALID_SOCKET)
-#else
-			if (code < 0)
-#endif
-				throw std::runtime_error("Failed in accepting incoming connection.");
-			else return Socket(code);
-		}
-
-		void Socket::Bind(const SocketAddress& addr)
-		{
-			if (IsErrorOccured(bind(_HSocket, (const sockaddr*)addr.Field(), addr.Length())))
-				throw std::runtime_error("Failed in binding with a certain address.");
-		}
-
-		void Socket::Close()
-		{
-			if (_HSocket >= 0)
+			if (_HSocket != INVALID_SOCKET )
 			{
-#ifdef _L_WINDOWS
 				if (IsErrorOccured(closesocket(_HSocket)))
 #else
+			if (_HSocket >= 0 )
+			{
 				if (IsErrorOccured(close(_HSocket)))
 #endif
-					throw std::runtime_error("Failed in closing socket.");
+					return false;
 				_HSocket = -1;
 			}
-			else throw
-				std::logic_error("Socket already closed");
+			return true;
 		}
 
-		void Socket::Connect(const SocketAddress& addr)
+		bool Socket::Connect(const SocketAddress& addr)
 		{
-			if (IsErrorOccured(connect(_HSocket, (const sockaddr*)addr.Field(), addr.Length())))
-				throw std::runtime_error("Failed in connectiong to a certain address.");
+			return !IsErrorOccured(connect(_HSocket, (const sockaddr*)addr.Field(), addr.Length()));
 		}
 
-		void Socket::Listen(int backlog)
+		bool Socket::Listen(int backlog)
 		{
-			if (IsErrorOccured(listen(_HSocket, backlog)))
-				throw std::runtime_error("Failed in listening.");
+			return !IsErrorOccured(listen(_HSocket, backlog));
 		}
 
-		void Socket::Send(const Buffer& buffer)
+		bool Socket::Send(const Buffer& buffer, size_t offset)
 		{
-			if (send(_HSocket, buffer.Field(), buffer.Length(), 0) < 0)
-				throw std::runtime_error("Failed in sending data.");
+			return send(_HSocket, buffer.Field() + offset, buffer.Length() - offset, 0) >= 0;
 		}
-		void Socket::Send(const Buffer& buffer, int flags)
+		bool Socket::Send(const Buffer& buffer, size_t offset, int flags)
 		{
-			if (send(_HSocket, buffer.Field(), buffer.Length(), flags) < 0)
-				throw std::runtime_error("Failed in sending data.");
+			return send(_HSocket, buffer.Field() + offset, buffer.Length() - offset, flags) >= 0;
 		}
 
-		void Socket::SetOption(int flags, uint32_t value)
+		bool Socket::SetSendTimeOut(uint32_t ms)
 		{
-			uint32_t temp = value;
-			setsockopt(_HSocket, SOL_SOCKET, flags, (const char *)&temp, sizeof(uint32_t));
-		}
-		void Socket::SetOption(int flags, Buffer value)
-		{
-			setsockopt(_HSocket, SOL_SOCKET, flags, value.Field(), value.Length());
-		}
-
-		void Socket::Receive(Buffer& buffer)
-		{
-
-			if (recv(_HSocket, buffer.Field(), buffer.Length(), 0) < 0)
-				throw std::runtime_error("Failed in receiving data.");
-		}
-		void Socket::Receive(Buffer& buffer, int flags)
-		{
-			if (recv(_HSocket, buffer.Field(), buffer.Length(), flags) < 0)
-				throw std::runtime_error("Failed in receiving data.");
+#ifdef _L_WINDOWS
+			return SetOption(SO_RCVTIMEO, ms);
+#else
+			Buffer buffer(sizeof(timeval));
+			*(reinterpret_cast<timeval*>(buffer.Field())) = { 0, ms };
+			return SetOption(SO_RCVTIMEO, buffer);
+#endif
 		}
 
-		void Socket::SendTo(Buffer& buffer, const SocketAddress& addr)
+		bool Socket::SetOption(int flags, uint32_t value)
 		{
-			if (sendto(_HSocket, buffer.Field(), buffer.Length(), 0, (const sockaddr*)addr.Field(), addr.Length()) < 0)
-				throw std::runtime_error("Failed in sending data to a certain address");
+			return setsockopt(_HSocket, SOL_SOCKET, flags, (const char *)&value, sizeof(uint32_t)) >= 0;
 		}
-		void Socket::SendTo(Buffer& buffer, const SocketAddress& addr, int flags)
+		bool Socket::SetOption(int flags, Buffer& value)
 		{
-			if (sendto(_HSocket, buffer.Field(), buffer.Length(), flags, (const sockaddr*)addr.Field(), addr.Length()) < 0)
-				throw std::runtime_error("Failed in sending data to a certain address");
+			return setsockopt(_HSocket, SOL_SOCKET, flags, value.Field(), value.Length()) >= 0;
 		}
 
-		void Socket::ReceiveFrom(Buffer& buffer, SocketAddress& addr)
+		bool Socket::SetReceiveTimeOut(uint32_t ms)
+		{
+#ifdef _L_WINDOWS
+			return SetOption(SO_SNDTIMEO, ms);
+#else
+			Buffer buffer(sizeof(timeval));
+			*(reinterpret_cast<timeval*>(buffer.Field())) = { 0, ms };
+			return SetOption(SO_SNDTIMEO, buffer);
+#endif
+		}
+
+		bool Socket::Receive(Buffer& buffer, size_t offset)
+		{
+			return recv(_HSocket, buffer.Field() + offset, buffer.Length() - offset, 0) >= 0;
+		}
+		bool Socket::Receive(Buffer& buffer, size_t offset, int flags)
+		{
+			return recv(_HSocket, buffer.Field() + offset, buffer.Length() - offset, flags) >= 0;
+		}
+
+		bool Socket::SendTo(Buffer& buffer, size_t offset, const SocketAddress& addr)
+		{
+			return sendto(_HSocket, buffer.Field() + offset, buffer.Length() - offset, 0, (const sockaddr*)addr.Field(), addr.Length()) >= 0;
+		}
+		bool Socket::SendTo(Buffer& buffer, size_t offset, const SocketAddress& addr, int flags)
+		{
+			return sendto(_HSocket, buffer.Field() + offset, buffer.Length() - offset, flags, (const sockaddr*)addr.Field(), addr.Length()) >= 0;
+		}
+
+		bool Socket::ReceiveFrom(Buffer& buffer, size_t offset, SocketAddress& addr)
 		{
 			int len = addr.Length();
-			if (recvfrom(_HSocket, buffer.Field(), buffer.Length(), 0, (sockaddr*)addr.Field(), &len) < 0)
-				throw std::runtime_error("Failed in receiving data from a certain address.");
+			return recvfrom(_HSocket, buffer.Field() + offset, buffer.Length() - offset, 0, (sockaddr*)addr.Field(), &len) >= 0;
 		}
-		void Socket::ReceiveFrom(Buffer& buffer, SocketAddress& addr, int flags)
+		bool Socket::ReceiveFrom(Buffer& buffer, size_t offset, SocketAddress& addr, int flags)
 		{
 			int len = addr.Length();
-			if (recvfrom(_HSocket, buffer.Field(), buffer.Length(), flags, (sockaddr*)addr.Field(), &len) < 0)
-				throw std::runtime_error("Failed in receiving data from a certain address.");
+			return recvfrom(_HSocket, buffer.Field() + offset, buffer.Length() - offset, flags, (sockaddr*)addr.Field(), &len) >= 0;
+		}
+
+		bool Socket::IsValid() const
+		{
+#ifdef _L_WINDOWS
+			return _HSocket != INVALID_SOCKET;
+#else
+			return _HSocket >= 0;
+#endif
 		}
 
 		// Private
