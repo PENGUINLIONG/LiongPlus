@@ -334,7 +334,7 @@ namespace LiongPlus
 					offset += HttpUtils::GetOffset(beg, eol, end);
 					string key(beg, divisor - 1);
 					auto posValue = HttpUtils::SeekForNonLWS(divisor, eol);
-					string value(divisor, eol);
+					string value(posValue, eol);
 					if (Contains(key))
 						_Headers[key] += _Headers[key] == "" ? value : ", " + value;
 					else

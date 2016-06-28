@@ -123,15 +123,18 @@ namespace LiongPlus
 			if (!this_ptr->_IsConnected)
 			{
 				// Try connecting.
-				tryConnecting:
-				if (!socket.Connect(this_ptr->_Addr))
-					return{}; // Failed return an empty response.
-				else this_ptr->_IsConnected = true;
+			tryConnecting:
+				if (socket.Connect(this_ptr->_Addr))
+					this_ptr->_IsConnected = true;
+				else
+					return{}; // Failed, return an empty response.
 				triedConnecting = true;
 			}
-
+			
+			auto sendInfo = socket.Send(request.ToBuffer());
+			
 			// If failed in sending request,
-			if (!socket.Send(request.ToBuffer()))
+			if (sendInfo.IsErrorOccurred)
 			{
 				// Consider if the connection is out dated.
 				// But if we have tried connecting previously, re-connection will obviously fail.
@@ -144,15 +147,26 @@ namespace LiongPlus
 			HttpBufferToken token = HttpBufferPool::Apply();
 			Buffer& buffer = HttpBufferPool::Fetch(token);
 
-			socket.Receive(buffer);
+			auto recvInfo = socket.Receive(buffer);
+			if (recvInfo.Amount == 0)
+				return{};
 
 			HttpResponse res;
 			size_t headerLength = res.FromBuffer(buffer, 0);
 			if (res.Header.Contains(HttpHeader::Entity::ContentLength))
 			{
-				size_t length = stoull(res.Header[HttpHeader::Entity::ContentLength]);
-				if (length > buffer.Length() - headerLength)
-					socket.Receive(res.Content, length + headerLength - buffer.Length());
+				size_t contentLength = stoull(res.Header[HttpHeader::Entity::ContentLength]);
+
+				size_t contentHaveRead = recvInfo.Amount - headerLength;
+
+				while (contentLength > contentHaveRead)
+				{
+					auto complementInfo = socket.Receive(res.Content, contentHaveRead);
+					if (complementInfo.Amount == 0)
+						return{};
+					else
+						contentHaveRead += complementInfo.Amount;
+				}
 			}
 			HttpBufferPool::Release(token);
 

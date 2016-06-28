@@ -97,13 +97,21 @@ namespace LiongPlus
 			return !IsErrorOccured(listen(_HSocket, backlog));
 		}
 
-		bool Socket::Send(const Buffer& buffer, size_t offset)
+		SocketResult Socket::Send(const Buffer& buffer, size_t offset)
 		{
-			return send(_HSocket, buffer.Field() + offset, buffer.Length() - offset, 0) >= 0;
+			int amount = send(_HSocket, buffer.Field() + offset, buffer.Length() - offset, 0);
+			SocketResult rv;
+			rv.IsErrorOccurred = amount < 0;
+			rv.Amount = rv.IsErrorOccurred ? 0 : amount;
+			return rv;
 		}
-		bool Socket::Send(const Buffer& buffer, size_t offset, int flags)
+		SocketResult Socket::Send(const Buffer& buffer, size_t offset, int flags)
 		{
-			return send(_HSocket, buffer.Field() + offset, buffer.Length() - offset, flags) >= 0;
+			int amount = send(_HSocket, buffer.Field() + offset, buffer.Length() - offset, flags);
+			SocketResult rv;
+			rv.IsErrorOccurred = amount < 0;
+			rv.Amount = rv.IsErrorOccurred ? 0 : amount;
+			return rv;
 		}
 
 		bool Socket::SetSendTimeOut(uint32_t ms)
@@ -137,33 +145,58 @@ namespace LiongPlus
 #endif
 		}
 
-		bool Socket::Receive(Buffer& buffer, size_t offset)
+		SocketResult Socket::Receive(Buffer& buffer, size_t offset)
 		{
-			return recv(_HSocket, buffer.Field() + offset, buffer.Length() - offset, 0) >= 0;
+			int amount = recv(_HSocket, buffer.Field() + offset, buffer.Length() - offset, 0);
+			SocketResult rv;
+			rv.IsErrorOccurred = amount < 0;
+			rv.Amount = rv.IsErrorOccurred ? 0 : amount;
+			return rv;
 		}
-		bool Socket::Receive(Buffer& buffer, size_t offset, int flags)
+		SocketResult Socket::Receive(Buffer& buffer, size_t offset, int flags)
 		{
-			return recv(_HSocket, buffer.Field() + offset, buffer.Length() - offset, flags) >= 0;
+			int amount = recv(_HSocket, buffer.Field() + offset, buffer.Length() - offset, flags);
+			SocketResult rv;
+			rv.IsErrorOccurred = amount < 0;
+			rv.Amount = rv.IsErrorOccurred ? 0 : amount;
+			return rv;
 		}
 
-		bool Socket::SendTo(Buffer& buffer, size_t offset, const SocketAddress& addr)
+		SocketResult Socket::SendTo(Buffer& buffer, size_t offset, const SocketAddress& addr)
 		{
-			return sendto(_HSocket, buffer.Field() + offset, buffer.Length() - offset, 0, (const sockaddr*)addr.Field(), addr.Length()) >= 0;
+			int amount = sendto(_HSocket, buffer.Field() + offset, buffer.Length() - offset, 0, (const sockaddr*)addr.Field(), addr.Length());
+			SocketResult rv;
+			rv.IsErrorOccurred = amount < 0;
+			rv.Amount = rv.IsErrorOccurred ? 0 : amount;
+			return rv;
 		}
-		bool Socket::SendTo(Buffer& buffer, size_t offset, const SocketAddress& addr, int flags)
+		SocketResult Socket::SendTo(Buffer& buffer, size_t offset, const SocketAddress& addr, int flags)
 		{
-			return sendto(_HSocket, buffer.Field() + offset, buffer.Length() - offset, flags, (const sockaddr*)addr.Field(), addr.Length()) >= 0;
+			int amount = sendto(_HSocket, buffer.Field() + offset, buffer.Length() - offset, flags, (const sockaddr*)addr.Field(), addr.Length());
+			SocketResult rv;
+			rv.IsErrorOccurred = amount < 0;
+			rv.Amount = rv.IsErrorOccurred ? 0 : amount;
+			return rv;
 		}
 
-		bool Socket::ReceiveFrom(Buffer& buffer, size_t offset, SocketAddress& addr)
+		SocketResult Socket::ReceiveFrom(Buffer& buffer, size_t offset, SocketAddress& addr)
 		{
 			int len = addr.Length();
-			return recvfrom(_HSocket, buffer.Field() + offset, buffer.Length() - offset, 0, (sockaddr*)addr.Field(), &len) >= 0;
+
+			int amount = recvfrom(_HSocket, buffer.Field() + offset, buffer.Length() - offset, 0, (sockaddr*)addr.Field(), &len);
+			SocketResult rv;
+			rv.IsErrorOccurred = amount < 0;
+			rv.Amount = rv.IsErrorOccurred ? 0 : amount;
+			return rv;
 		}
-		bool Socket::ReceiveFrom(Buffer& buffer, size_t offset, SocketAddress& addr, int flags)
+		SocketResult Socket::ReceiveFrom(Buffer& buffer, size_t offset, SocketAddress& addr, int flags)
 		{
 			int len = addr.Length();
-			return recvfrom(_HSocket, buffer.Field() + offset, buffer.Length() - offset, flags, (sockaddr*)addr.Field(), &len) >= 0;
+			int amount = recvfrom(_HSocket, buffer.Field() + offset, buffer.Length() - offset, flags, (sockaddr*)addr.Field(), &len);
+			SocketResult rv;
+			rv.IsErrorOccurred = amount < 0;
+			rv.Amount = rv.IsErrorOccurred ? 0 : amount;
+			return rv;
 		}
 
 		bool Socket::IsValid() const
