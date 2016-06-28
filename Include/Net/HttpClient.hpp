@@ -28,6 +28,7 @@ namespace LiongPlus
 			SocketAddress _Addr;
 			bool _IsConnected;
 			string _HostName;
+			mutex _HostNameLock;
 
 			static string _UserAgentCode;
 			static string _AcceptContentType;
@@ -40,16 +41,19 @@ namespace LiongPlus
 			HttpClient(const HttpClient&) = delete;
 			HttpClient(HttpClient&&);
 			HttpClient(SocketAddress& addr);
-			HttpClient(const string hostname);
+			HttpClient(const string hostname, bool shouldWait = true);
+			
+			string GetHostName();
+			future<bool> SetHostName(const string);
 
-			string& HostName();
-
-			// TODO: Get set hostname ! ///////////////////////////////
-
+			HttpResponse Get(string path);
 			future<HttpResponse> GetAsync(string path);
+			HttpResponse Post(string path, Buffer& content);
 			future<HttpResponse> PostAsync(string path, Buffer& content);
+			HttpResponse Put(string path, Buffer& content);
 			future<HttpResponse> PutAsync(string path, Buffer& content);
 
+			HttpResponse Send(HttpRequest& request);
 			future<HttpResponse> SendAsync(HttpRequest& request);
 
 			bool IsConnected() const;

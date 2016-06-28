@@ -12,7 +12,7 @@ namespace LiongPlus
 		string HttpClient::_AcceptContentType = "*/*";
 
 		HttpClient::HttpClient()
-			: _Socket()
+			: _Socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)
 			, _Addr()
 			, _IsConnected(false)
 			, _HostName()
@@ -36,25 +36,47 @@ namespace LiongPlus
 			, _HostName(addr.ToString())
 		{
 		}
-		HttpClient::HttpClient(const string hostname)
+		HttpClient::HttpClient(const string hostname, bool shouldWait)
 			: _Socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)
 			, _Addr()
 			, _IsConnected(false)
-			, _HostName(hostname)
+			, _HostName()
 		{
-			vector<IPv4EndPoint> ips;
-			if (!Dns::GetHostIPv4(hostname, ips))
-				throw runtime_error("Dns information not found or an internal error has occured.");
-			ips[0].Port() = htons(80);
-			_Addr = ips[0];
+			if (shouldWait)
+				SetHostName(hostname).wait();
+			else
+				SetHostName(hostname);
 		}
 
-		string& HttpClient::HostName()
+		string HttpClient::GetHostName()
 		{
 			return _HostName;
 		}
+		future<bool> HttpClient::SetHostName(const string hostname)
+		{
+			auto handle = async(launch::async, [this](string hostn) -> bool
+			{
+				_HostNameLock.lock();
 
-		future<HttpResponse> HttpClient::GetAsync(string path)
+				vector<IPv4EndPoint> ips;
+				if (!Dns::GetHostIPv4(hostn, ips))
+				{
+					_HostNameLock.unlock();
+					return false;
+				}
+				ips[0].Port() = htons(80);
+				_Addr = ips[0];
+				_HostName = move(hostn);
+				_IsConnected = false;
+				_Socket = Socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+				_HostNameLock.unlock();
+
+				return true;
+			}, hostname);
+			return handle;
+		}
+
+		HttpResponse HttpClient::Get(string path)
 		{
 			HttpRequestLine line(1, 1, HttpMethod::Get, path);
 			HttpHeader header
@@ -64,11 +86,21 @@ namespace LiongPlus
 				HttpHeader::Request::UserAgent, _UserAgentCode
 			};
 			Buffer empty;
-			
-			auto rv = async(launch::async, HttpClient::DoSend, this, line, header, empty);
+
+			return HttpClient::DoSend(this, line, header, empty);
+		}
+		future<HttpResponse> HttpClient::GetAsync(string path)
+		{
+			auto rv = async(launch::async, [this](string p)
+			{
+				_HostNameLock.lock();
+				auto result = Get(p);
+				_HostNameLock.unlock();
+				return result;
+			}, path);
 			return rv;
 		}
-		future<HttpResponse> HttpClient::PostAsync(string path, Buffer& content)
+		HttpResponse HttpClient::Post(string path, Buffer& content)
 		{
 			HttpRequestLine line(1, 1, HttpMethod::Post, path);
 			HttpHeader header
@@ -78,10 +110,20 @@ namespace LiongPlus
 				HttpHeader::Request::UserAgent, _UserAgentCode
 			};
 
-			auto rv = async(launch::async, HttpClient::DoSend, this, line, header, content);
+			return HttpClient::DoSend(this, line, header, content);
+		}
+		future<HttpResponse> HttpClient::PostAsync(string path, Buffer& content)
+		{
+			auto rv = async(launch::async, [this](string p, Buffer c)
+			{
+				_HostNameLock.lock();
+				auto result = Post(p, c);
+				_HostNameLock.unlock();
+				return result;
+			}, path, content);
 			return rv;
 		}
-		future<HttpResponse> HttpClient::PutAsync(string path, Buffer& content)
+		HttpResponse HttpClient::Put(string path, Buffer& content)
 		{
 			HttpRequestLine line(1, 1, HttpMethod::Put, path);
 			HttpHeader header
@@ -91,12 +133,33 @@ namespace LiongPlus
 				HttpHeader::Request::UserAgent, _UserAgentCode
 			};
 
-			auto rv = async(launch::async, HttpClient::DoSend, this, line, header, content);
+			return HttpClient::DoSend(this, line, header, content);
+		}
+		future<HttpResponse> HttpClient::PutAsync(string path, Buffer& content)
+		{
+			auto rv = async(launch::async, [this](string p, Buffer c)
+			{
+				_HostNameLock.lock();
+				auto result = Put(p, c);
+				_HostNameLock.unlock();
+				return result;
+			}, path, content);
 			return rv;
+		}
+
+		HttpResponse HttpClient::Send(HttpRequest& request)
+		{
+			return HttpClient::DoSendRequest(this, request);
 		}
 		future<HttpResponse> HttpClient::SendAsync(HttpRequest& request)
 		{
-			auto rv = async(launch::async, HttpClient::DoSendRequest, this, request);
+			auto rv = async(launch::async, [this](HttpRequest req)
+			{
+				_HostNameLock.lock();
+				auto result = Send(req);
+				_HostNameLock.unlock();
+				return result;
+			}, request);
 			return rv;
 		}
 
@@ -156,7 +219,6 @@ namespace LiongPlus
 			if (res.Header.Contains(HttpHeader::Entity::ContentLength))
 			{
 				size_t contentLength = stoull(res.Header[HttpHeader::Entity::ContentLength]);
-
 				size_t contentHaveRead = recvInfo.Amount - headerLength;
 
 				while (contentLength > contentHaveRead)
@@ -168,10 +230,10 @@ namespace LiongPlus
 						contentHaveRead += complementInfo.Amount;
 				}
 			}
+
 			HttpBufferPool::Release(token);
 
 			return res;
 		}
-
 	}
 }
