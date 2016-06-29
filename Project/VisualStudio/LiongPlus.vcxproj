@@ -45,6 +45,7 @@
     <ClInclude Include="..\..\Include\Testing\Logger.hpp" />
     <ClInclude Include="..\..\Include\Testing\UnitTest.hpp" />
     <ClInclude Include="..\..\Include\DateTime.hpp" />
+    <ClInclude Include="..\..\Include\Uri.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Include\Buffer.cpp" />

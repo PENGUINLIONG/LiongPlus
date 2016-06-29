@@ -230,6 +230,11 @@ namespace LiongPlus
 						contentHaveRead += complementInfo.Amount;
 				}
 			}
+			if (res.Header.Contains(HttpHeader::General::Connection))
+			{
+				if (res.Header[HttpHeader::General::Connection] == "close")
+					this_ptr->_IsConnected = false;
+			}
 
 			HttpBufferPool::Release(token);
 
