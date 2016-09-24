@@ -17,7 +17,7 @@ namespace LiongPlus
 	private:
 		typedef Nullable<T> TSelf;
 		
-		bool Equals(TSelf& n1, TSelf& n2)
+		static bool Equals(TSelf& n1, TSelf& n2)
 		{
 			return
 				n1._Object ?
@@ -31,23 +31,10 @@ namespace LiongPlus
 	protected:
 		T* _Object;
 	public:
-		Nullable()
-			: _Object(nullptr)
-		{
-		}
-		Nullable(nullptr_t)
-			: _Object(nullptr)
-		{
-		}
-		Nullable(const T& obj)
-			: _Object(new T(obj))
-		{
-		}
-		Nullable(T&& obj)
-			: Nullable()
-		{
-			_Object = new T(std::forward<T>(obj));
-		}
+		Nullable() : _Object(nullptr) {}
+		Nullable(nullptr_t) : _Object(nullptr) {}
+		Nullable(const T& obj) : _Object(new T(obj)) {}
+		Nullable(T&& obj) : _Object(new T(std::forward<T>(obj))) {}
 		Nullable(const TSelf& nullable)
 			: _Object(nullptr)
 		{
@@ -58,26 +45,14 @@ namespace LiongPlus
 			}
 			else
 			{
-				if (_Object == nullptr)
-					_Object = new T(*nullable._Object);
-				else
-					*_Object = *nullable._Object;
+				if (_Object == nullptr) _Object = new T(*nullable._Object);
+				else *_Object = *nullable._Object;
 			}
 		}
-		Nullable(TSelf&& nullable)
-			: Nullable()
-		{
-			swap(_Object, nullable._Object);
-		}
-		~Nullable()
-		{
-			CleanUp();
-		}
+		Nullable(TSelf&& nullable) : Nullable() { swap(_Object, nullable._Object); }
+		~Nullable() { CleanUp(); }
 
-		TSelf& operator=(nullptr_t)
-		{
-			CleanUp();
-		}
+		TSelf& operator=(nullptr_t) { CleanUp(); }
 		TSelf& operator=(const T& obj)
 		{
 			if (_Object == nullptr)
@@ -91,7 +66,7 @@ namespace LiongPlus
 			if (_Object == nullptr)
 				_Object = new T(std::forward<T>(obj));
 			else
-				*_Object = obj;
+				*_Object = std::forward<T>(obj);
 			return *this;
 		}
 		TSelf& operator=(const TSelf& nullable)
@@ -103,10 +78,8 @@ namespace LiongPlus
 			}
 			else
 			{
-				if (_Object == nullptr)
-					_Object = new T(*nullable._Object);
-				else
-					*_Object = *nullable._Object;
+				if (_Object == nullptr) _Object = new T(*nullable._Object);
+				else *_Object = *nullable._Object;
 			}
 			return *this;
 		}
@@ -116,27 +89,12 @@ namespace LiongPlus
 			return *this;
 		}
 
-		bool operator==(const TSelf& nullable) const
-		{
-			return Equals(*this, nullable);
-		}
-		bool operator==(const nullptr_t nullptr) const
-		{
-			return _Object == nullptr;
-		}
-		bool operator!() const
-		{
-			return _Object == nullptr;
-		}
-		bool operator!=(const TSelf& nullable) const
-		{
-			return !Equals(*this, nullable);
-		}
+		bool operator==(const TSelf& nullable) const { return Equals(*this, nullable); }
+		bool operator==(const nullptr_t nullptr) const { return _Object == nullptr; }
+		bool operator!() const { return _Object == nullptr; }
+		bool operator!=(const TSelf& nullable) const { return !Equals(*this, nullable); }
 
-		operator bool() const
-		{
-			return _Object != nullptr;
-		}
+		operator bool() const { return _Object != nullptr; }
 
 		void CleanUp()
 		{
@@ -147,18 +105,9 @@ namespace LiongPlus
 			}
 		}
 
-		T& GetValueOrDefault(T& defaultValue) const
-		{
-			return _Object != nullptr ? *_Object : defaultValue;
-		}
-		bool HasValue() const
-		{
-			return _Object != nullptr;
-		}
-		T& Value() const
-		{
-			return *_Object;
-		}
+		T& GetValueOrDefault(T& defaultValue) const { return _Object != nullptr ? *_Object : defaultValue; }
+		bool HasValue() const { return _Object != nullptr; }
+		T& Value() const { return *_Object; }
 	};
 }
 #endif
