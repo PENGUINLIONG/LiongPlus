@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -19,13 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Include\AnsiCharUtils.hpp" />
     <ClInclude Include="..\..\Include\Array.hpp" />
     <ClInclude Include="..\..\Include\Buffer.hpp" />
-    <ClInclude Include="..\..\Include\Exception.hpp" />
+    <ClInclude Include="..\..\Include\BufferPool.hpp" />
     <ClInclude Include="..\..\Include\Fundamental.hpp" />
     <ClInclude Include="..\..\Include\Graphics\Texture.hpp" />
     <ClInclude Include="..\..\Include\IObservable.hpp" />
     <ClInclude Include="..\..\Include\IObserver.hpp" />
+    <ClInclude Include="..\..\Include\IO\BufferPool.hpp" />
     <ClInclude Include="..\..\Include\IO\MemoryStream.hpp" />
     <ClInclude Include="..\..\Include\IO\Stream.hpp" />
     <ClInclude Include="..\..\Include\Lazy.hpp" />
@@ -49,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Include\Buffer.cpp" />
+    <ClCompile Include="..\..\Include\BufferPool.cpp" />
     <ClCompile Include="..\..\Include\DateTime.cpp" />
     <ClCompile Include="..\..\Include\Fundamental.cpp" />
     <ClCompile Include="..\..\Include\Graphics\Texture.cpp" />
@@ -62,10 +65,11 @@
     <ClCompile Include="..\..\Include\Net\HttpUtils.cpp" />
     <ClCompile Include="..\..\Include\Net\Socket.cpp" />
     <ClCompile Include="..\..\Include\Net\SocketAddress.cpp" />
-    <ClCompile Include="..\..\Include\source.cpp" />
     <ClCompile Include="..\..\Include\Testing\Assert.cpp" />
     <ClCompile Include="..\..\Include\Testing\Logger.cpp" />
     <ClCompile Include="..\..\Include\Testing\UnitTest.cpp" />
+    <ClCompile Include="..\..\Include\Uri.cpp" />
+    <ClCompile Include="..\..\source.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F7B8D8F6-627C-476F-9461-DA3A6316B45D}</ProjectGuid>
@@ -77,26 +81,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>

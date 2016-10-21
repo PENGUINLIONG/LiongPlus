@@ -392,6 +392,14 @@ namespace LiongPlus
 		{
 		}
 
+		HttpRequest& HttpRequest::operator=(HttpRequest&& instance)
+		{
+			swap(RequestLine, instance.RequestLine);
+			swap(Header, instance.Header);
+			swap(Content, instance.Content);
+			return *this;
+		}
+
 		Buffer HttpRequest::ToBuffer() const
 		{
 			return forward<Buffer>(HttpMessage::ToBuffer(RequestLine, Header, Content));
@@ -431,6 +439,14 @@ namespace LiongPlus
 			: HttpMessage(forward<HttpHeader>(header), forward<Buffer>(content))
 			, StatusLine(line)
 		{
+		}
+
+		HttpResponse& HttpResponse::operator=(HttpResponse&& instance)
+		{
+			swap(StatusLine, instance.StatusLine);
+			swap(Header, instance.Header);
+			swap(Content, instance.Content);
+			return *this;
 		}
 
 		Buffer HttpResponse::ToBuffer() const

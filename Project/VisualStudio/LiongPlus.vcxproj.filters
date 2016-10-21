@@ -46,9 +46,6 @@
     <ClInclude Include="..\..\Include\Array.hpp">
       <Filter>Include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Include\Exception.hpp">
-      <Filter>Include</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Include\Fundamental.hpp">
       <Filter>Include</Filter>
     </ClInclude>
@@ -124,6 +121,15 @@
     <ClInclude Include="..\..\Include\Uri.hpp">
       <Filter>Include</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Include\AnsiCharUtils.hpp">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\IO\BufferPool.hpp">
+      <Filter>Include\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\BufferPool.hpp">
+      <Filter>Include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Include\Graphics\Texture.cpp">
@@ -137,9 +143,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Include\Media\Bmp.cpp">
       <Filter>Source\Media</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Include\source.cpp">
-      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Include\Fundamental.cpp">
       <Filter>Source</Filter>
@@ -179,6 +182,15 @@
     </ClCompile>
     <ClCompile Include="..\..\Include\Net\HttpBufferPool.cpp">
       <Filter>Source\Net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Include\Uri.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Include\BufferPool.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

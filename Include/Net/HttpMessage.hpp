@@ -194,6 +194,9 @@ namespace LiongPlus
 			HttpRequest(HttpRequest&&);
 			HttpRequest(HttpRequestLine& line, HttpHeader& header, Buffer& content);
 
+			HttpRequest& operator=(const HttpRequest&) = default;
+			HttpRequest& operator=(HttpRequest&&);
+
 			Buffer ToBuffer() const override;
 			// Return the length of non-content.
 			size_t FromBuffer(Buffer& buffer, size_t offset);
@@ -209,6 +212,9 @@ namespace LiongPlus
 			HttpResponse(const HttpResponse&) = default;
 			HttpResponse(HttpResponse&&);
 			HttpResponse(HttpStatusLine& line, HttpHeader& header, Buffer& content);
+
+			HttpResponse& operator=(const HttpResponse&) = default;
+			HttpResponse& operator=(HttpResponse&&);
 
 			Buffer ToBuffer() const override;
 			// Return the length of non-content.

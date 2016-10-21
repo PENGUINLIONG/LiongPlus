@@ -1,5 +1,6 @@
 // File: Uri.hpp
 // Author: Rendong Liang (Liong)
+#pragma once
 #include "Fundamental.hpp"
 
 namespace LiongPlus
@@ -24,48 +25,16 @@ namespace LiongPlus
 		Uri() = default;
 		Uri(const Uri&) = default;
 		Uri(Uri&&);
-		Uri(std::string scheme, std::string authority, std::string path, std::string query = std::string(), std::string fragment = std::string());
-		Uri(std::string scheme, std::string authority, std::string path, std::string fragment);
+		Uri(const std::string& scheme, const std::string& authority, const std::string& path, const std::string& query = std::string(), const std::string& fragment = std::string());
 
+		/*
+		 * Verify if the chars are valid in each section.
+		 * Returns:
+		 *   True if all the chars are valid.
+		 */
+		virtual bool Verify();
 		virtual std::string ToString();
 
-		static Uri Parse(std::string uri);
+		static std::unique_ptr<Uri> Parse(const std::string& uri);
 	};
-
-	struct HttpUri
-		: public Uri
-	{
-	private:
-		static const std::string _StrHttp;
-		static const std::string _StrHttps;
-
-	public:
-		HttpUri() = delete;
-		HttpUri(const HttpUri&);
-		HttpUri(HttpUri&&);
-		HttpUri(std::string authority, std::string path, std::string query = std::string(), std::string fragment = std::string(), bool isHttps = false);
-		HttpUri(std::string authority, std::string path, std::string fragment, bool isHttps = false);
-
-		bool IsHttp() const;
-		bool IsHttps() const;
-
-		static Uri Parse(std::string uri);
-	};
-
-	struct FileUri
-		: public Uri
-	{
-		FileUri() = delete;
-		FileUri(const FileUri&);
-		FileUri(FileUri&&);
-		FileUri(std::string path);
-
-		virtual std::string ToString();
-
-		static HttpUri Parse(std::string uri);
-	}
-
-
 }
-
-#undef _L_URI_MAKE_CONSTRUCTORS

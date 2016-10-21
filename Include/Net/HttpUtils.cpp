@@ -48,7 +48,7 @@ namespace LiongPlus
 					break;
 				++pos;
 			}
-			result = std::string(beg, pos);
+			result = std::string(beg, pos - beg);
 		}
 
 		void HttpUtils::CaptureNumber(char*& pos, const char* eol, long& result)
