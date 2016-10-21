@@ -27,7 +27,6 @@
     <ClInclude Include="..\..\Include\Graphics\Texture.hpp" />
     <ClInclude Include="..\..\Include\IObservable.hpp" />
     <ClInclude Include="..\..\Include\IObserver.hpp" />
-    <ClInclude Include="..\..\Include\IO\BufferPool.hpp" />
     <ClInclude Include="..\..\Include\IO\MemoryStream.hpp" />
     <ClInclude Include="..\..\Include\IO\Stream.hpp" />
     <ClInclude Include="..\..\Include\Lazy.hpp" />
@@ -35,13 +34,13 @@
     <ClInclude Include="..\..\Include\Media\Bmp.hpp" />
     <ClInclude Include="..\..\Include\Media\Image.hpp" />
     <ClInclude Include="..\..\Include\Net\Dns.hpp" />
-    <ClInclude Include="..\..\Include\Net\HttpBufferPool.hpp" />
     <ClInclude Include="..\..\Include\Net\HttpUtils.hpp" />
     <ClInclude Include="..\..\Include\Net\HttpClient.hpp" />
     <ClInclude Include="..\..\Include\Net\HttpMessage.hpp" />
     <ClInclude Include="..\..\Include\Net\SocketAddress.hpp" />
     <ClInclude Include="..\..\Include\Net\Socket.hpp" />
     <ClInclude Include="..\..\Include\Nullable.hpp" />
+    <ClInclude Include="..\..\Include\StaticInterface\StaticInterface.hpp" />
     <ClInclude Include="..\..\Include\Testing\Assert.hpp" />
     <ClInclude Include="..\..\Include\Testing\Assume.hpp" />
     <ClInclude Include="..\..\Include\Testing\Logger.hpp" />
@@ -59,7 +58,6 @@
     <ClCompile Include="..\..\Include\Media\Bitmap.cpp" />
     <ClCompile Include="..\..\Include\Media\Bmp.cpp" />
     <ClCompile Include="..\..\Include\Media\Image.cpp" />
-    <ClCompile Include="..\..\Include\Net\HttpBufferPool.cpp" />
     <ClCompile Include="..\..\Include\Net\HttpClient.cpp" />
     <ClCompile Include="..\..\Include\Net\HttpMessage.cpp" />
     <ClCompile Include="..\..\Include\Net\HttpUtils.cpp" />
@@ -69,7 +67,7 @@
     <ClCompile Include="..\..\Include\Testing\Logger.cpp" />
     <ClCompile Include="..\..\Include\Testing\UnitTest.cpp" />
     <ClCompile Include="..\..\Include\Uri.cpp" />
-    <ClCompile Include="..\..\source.cpp" />
+    <ClCompile Include="..\..\src.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F7B8D8F6-627C-476F-9461-DA3A6316B45D}</ProjectGuid>

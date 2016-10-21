@@ -1,12 +1,14 @@
 // File: HttpClient.cpp
 // Author: Rendong Liang (Liong)
 #include "HttpClient.hpp"
+#include "../BufferPool.hpp"
 
 namespace LiongPlus
 {
 	namespace Net
 	{
 		using namespace std;
+		using namespace LiongPlus;
 
 		string HttpClient::_UserAgentCode = "LiongPlus.Net/0.1";
 		string HttpClient::_AcceptContentType = "*/*";
@@ -207,9 +209,10 @@ namespace LiongPlus
 					goto tryConnecting;
 			}
 
-			HttpBufferToken token = HttpBufferPool::Apply();
-			Buffer& buffer = HttpBufferPool::Fetch(token);
-
+			auto& inst = BufferPool::Ginst();
+			auto ref = inst.Get();
+			auto buffer = *ref;
+			
 			auto recvInfo = socket.Receive(buffer);
 			if (recvInfo.Amount == 0)
 				return{};
@@ -235,8 +238,6 @@ namespace LiongPlus
 				if (res.Header[HttpHeader::General::Connection] == "close")
 					this_ptr->_IsConnected = false;
 			}
-
-			HttpBufferPool::Release(token);
 
 			return res;
 		}

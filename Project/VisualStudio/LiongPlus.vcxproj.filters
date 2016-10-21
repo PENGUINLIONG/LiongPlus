@@ -41,6 +41,9 @@
     <Filter Include="Source\Net">
       <UniqueIdentifier>{be80a33b-3015-49b5-9b76-61c9f49314e3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Include\StaticInterface">
+      <UniqueIdentifier>{127fe230-5ec9-4173-b324-1838eadfea0a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Include\Array.hpp">
@@ -115,20 +118,17 @@
     <ClInclude Include="..\..\Include\Net\HttpUtils.hpp">
       <Filter>Include\Net</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Include\Net\HttpBufferPool.hpp">
-      <Filter>Include\Net</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Include\Uri.hpp">
       <Filter>Include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Include\AnsiCharUtils.hpp">
       <Filter>Include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Include\IO\BufferPool.hpp">
-      <Filter>Include\IO</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Include\BufferPool.hpp">
       <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\StaticInterface\StaticInterface.hpp">
+      <Filter>Include\StaticInterface</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -180,16 +180,13 @@
     <ClCompile Include="..\..\Include\Net\HttpClient.cpp">
       <Filter>Source\Net</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Include\Net\HttpBufferPool.cpp">
-      <Filter>Source\Net</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Include\Uri.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source.cpp">
+    <ClCompile Include="..\..\Include\BufferPool.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Include\BufferPool.cpp">
+    <ClCompile Include="..\..\src.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

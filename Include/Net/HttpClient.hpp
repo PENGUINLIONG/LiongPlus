@@ -4,7 +4,6 @@
 #include "../Fundamental.hpp"
 #include "Dns.hpp"
 #include "HttpMessage.hpp"
-#include "HttpBufferPool.hpp"
 #include "Socket.hpp"
 
 namespace LiongPlus

@@ -14,7 +14,7 @@ namespace LiongPlus
 	{
 	public:
 		virtual unique_ptr<Object> Subscribe(IObserver<T> observer) = 0;
-	}
+	};
 }
 
 #endif

@@ -4,7 +4,6 @@
 #ifndef _L_IObserver
 #define _L_IObserver
 #include "Fundamental.hpp"
-#include "Exception.hpp"
 
 namespace LiongPlus
 {
