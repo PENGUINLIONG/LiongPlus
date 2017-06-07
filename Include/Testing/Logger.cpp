@@ -1,6 +1,8 @@
 // File: Logger.cpp
 // Author: Rendong Liang (Liong)
 #include "Logger.hpp"
+#include "UnitTest.hpp"
+#include "../DateTime.hpp"
 
 namespace LiongPlus
 {

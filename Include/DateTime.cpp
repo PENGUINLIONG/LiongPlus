@@ -1,53 +1,41 @@
 // File: DateTime.cpp
 // Author: Rendong Liang (Liong)
 #include "DateTime.hpp"
+#include "Buffer.hpp"
 
-namespace LiongPlus
+_L_NS_BEG
+
+using namespace std;
+
+string DateTime::GetDateTime(const string& format, const tm* timeFactors)
 {
-	using namespace std;
+	static auto buffer = Buffer(64);
 
-	mutex DateTime::_M;
-
-	string DateTime::GetDateTime(const char* format, const tm* timeFactors)
-	{
-		static char buffer[BUFFER_LENGTH];
-
-		auto len = strftime(buffer, BUFFER_LENGTH, format, timeFactors);
-		if (len == 0)
-			return "BUFFER TOO SHORT";
-		else
-			return buffer;
-	}
-
-	string DateTime::GetRfc1123(time_t t)
-	{
-		_M.lock();
-		auto rv = GetDateTime("%a, %d %b %Y %H:%M:%S GMT", gmtime(&t));
-		_M.unlock();
-		return rv;
-	}
-
-	string DateTime::GetRfc850(time_t t)
-	{
-		_M.lock();
-		auto rv = GetDateTime("%A, %d-%b-%y %H:%M:%S GMT", gmtime(&t));
-		_M.unlock();
-		return rv;
-	}
-
-	string DateTime::GetAsctimeGmt(time_t t)
-	{
-		_M.lock();
-		auto rv = asctime(gmtime(&t));
-		_M.unlock();
-		return rv;
-	}
-
-	string DateTime::GetCustomized(const char* format, time_t t)
-	{
-		_M.lock();
-		auto rv = GetDateTime(format, gmtime(&t));
-		_M.unlock();
-		return rv;
-	}
+	auto len = strftime((char*)(buffer.Field()), buffer.Length(), format.c_str(), timeFactors);
+	if (len == 0)
+		buffer = Buffer(buffer.Length() * 2);
+	else
+		return string((char*)buffer.Field());
 }
+
+string DateTime::GetRfc1123(time_t t)
+{
+	return GetDateTime("%a, %d %b %Y %H:%M:%S GMT", gmtime(&t));
+}
+
+string DateTime::GetRfc850(time_t t)
+{
+	return GetDateTime("%A, %d-%b-%y %H:%M:%S GMT", gmtime(&t));
+}
+
+string DateTime::GetAsctimeGmt(time_t t)
+{
+	return asctime(gmtime(&t));
+}
+
+string DateTime::GetCustomized(const string& format, time_t t)
+{
+	return GetDateTime(format, gmtime(&t));
+}
+
+_L_NS_END

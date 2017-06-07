@@ -29,13 +29,13 @@ namespace LiongPlus
 
 
 		TestResult::TestResult()
-			: Log()
+			: Log(std::make_shared<std::stringstream>())
 			, Name(std::string())
 			, State(TestState::Waiting)
 		{
 		}
 		TestResult::TestResult(std::string name)
-			: Log()
+			: Log(std::make_shared<std::stringstream>())
 			, Name(name)
 			, State(TestState::Waiting)
 		{
@@ -109,7 +109,7 @@ namespace LiongPlus
 				if (result.State == TestState::Passed)
 					++passed;
 			}
-			return std::to_string(_Results.size()) + " tests have been run and " + std::to_string(passed) + " of these passed.";
+			return std::to_string(_Results.size()) + " tests have been run and " + std::to_string(passed) + " of them passed.";
 		}
 		std::vector<int> UnitTest::ListResultId(TestState state)
 		{

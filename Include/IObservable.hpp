@@ -1,20 +1,19 @@
 // File: IObservable.hpp
 // Author: Rendong Liang (Liong)
+#pragma once
 
-#ifndef _L_IObservable
-#define _L_IObservable
-#include "Fundamental.hpp"
+#include <stdexcept>
+#include "_"
 #include "IObserver.hpp"
 
-namespace LiongPlus
-{
-	template<typename T>
-	class IObservable
-		: public virtual Interface
-	{
-	public:
-		virtual unique_ptr<Object> Subscribe(IObserver<T> observer) = 0;
-	};
-}
+_L_NS_BEG
 
-#endif
+template<typename T>
+class IObservable
+{
+public:
+	virtual void Subscribe(const IObserver<T>& observer) = 0;
+	virtual void Unsubscribe(const IObserver<T>& observer) = 0;
+};
+
+_L_NS_END

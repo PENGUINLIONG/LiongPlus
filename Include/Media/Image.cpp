@@ -1,15 +1,9 @@
 // File: Image.cpp
 // Author: Rendong Liang (Liong)
-#include "Media/Image.hpp"
+#include "Image.hpp"
 
-namespace LiongPlus
-{
-	namespace Media
-	{
-		Image* Image::FromMemory(MemoryStream stream)
-		{
-			//if (stream.ReadByte() == 'B')
-			throw std::logic_error("Not implemented yet.");
-		}
-	}
-}
+_L_NS_BEG_MEDIA
+
+
+
+_L_NS_END_MEDIA

@@ -1,0 +1,21 @@
+// File: _
+// Author: Rendong Liang (Liong)
+#pragma once
+
+#include <chrono>
+#include "../_"
+
+#define _L_NS_BEG_GRAPHICS_UI namespace LiongPlus{namespace Graphics{namespace UI{
+#define _L_NS_END_GRAPHICS_UI }}}
+
+_L_NS_BEG_GRAPHICS_UI
+
+using TimePoint = std::chrono::steady_clock::time_point;
+using Duration = std::chrono::steady_clock::duration;
+
+using WindowContext = HWND;
+using DeviceContext = HDC;
+
+_L_NS_END_GRAPHICS_UI
+
+#include "UICommonDefs.hpp"

@@ -1,0 +1,7 @@
+// File: _
+// Author: Rendong Liang (Liong)
+#pragma once
+#include "../_"
+
+#define _L_NS_BEG_GRAPHICS_UI_CONTROLS namespace LiongPlus{namespace Graphics{namespace UI{namespace Controls{
+#define _L_NS_END_GRAPHICS_UI_CONTROLS }}}}

@@ -1,42 +1,38 @@
 // File: Assume.hpp
 // Author: Rendong Liang (Liong)
+#pragma once
 
-#ifndef _L_Assume
-#define _L_Assume
-#include "../Fundamental.hpp"
+#include "_"
 #include "UnitTest.hpp"
 
-namespace LiongPlus
-{
-	namespace Testing
-	{
-		class Assume
-		{
-		public:
-			template<typename T>
-			static void Equals(T actual, T expectance)
-			{
-				if (actual != expectance)
-				{
-					UnitTest::_Results.Last().State = TestState::Skipped;
-					UnitTest::_Results.Last().Log.AppendLine(std::string("[Invalid Input(s), skip]"));
-				}
-			}
+_L_NS_BEG_TESTING
 
-			template<typename T, typename ... TArgs>
-			static void NoException(T func, TArgs ... args)
-			{
-				try
-				{
-					func(args ...);
-				}
-				catch (...)
-				{
-					UnitTest::_Results.Last().State = TestState::Skipped;
-					UnitTest::_Results.Last().Log.AppendLine(std::string("[Invalid Input(s), skip]"));
-				}
-			}
-		};
+class Assume
+{
+public:
+	template<typename T>
+	static void Equals(T actual, T expectance)
+	{
+		if (actual != expectance)
+		{
+			UnitTest::_Results.Last().State = TestState::Skipped;
+			UnitTest::_Results.Last().Log.AppendLine(std::string("[Invalid Input(s), skip]"));
+		}
 	}
-}
-#endif
+
+	template<typename T, typename ... TArgs>
+	static void NoException(T func, TArgs ... args)
+	{
+		try
+		{
+			func(args ...);
+		}
+		catch (...)
+		{
+			UnitTest::_Results.Last().State = TestState::Skipped;
+			UnitTest::_Results.Last().Log.AppendLine(std::string("[Invalid Input(s), skip]"));
+		}
+	}
+};
+
+_L_NS_END_TESTING

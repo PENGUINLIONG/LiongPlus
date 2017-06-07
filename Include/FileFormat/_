@@ -1,0 +1,7 @@
+// File: _
+// Author: Rendong Liang (Liong)
+#pragma once
+#include "../_"
+
+#define _L_NS_BEG_FILEFORMAT namespace LiongPlus{namespace FileFormat{
+#define _L_NS_END_FILEFORMAT }}

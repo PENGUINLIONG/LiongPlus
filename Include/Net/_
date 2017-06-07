@@ -1,0 +1,29 @@
+// File: _
+// Author: Rendong Liang (Liong)
+
+#pragma once
+#include "../_"
+
+#define _L_NS_BEG_NET namespace LiongPlus{namespace Net{
+#define _L_NS_END_NET }}
+
+#ifdef _WIN32
+
+#include <WinSock2.h>
+#include <Ws2tcpip.h>
+#include <WinDNS.h>
+
+#pragma comment (lib, "ws2_32.lib")
+#pragma comment (lib, "Dnsapi.lib")
+
+#elif defined __linux__
+
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+
+#else
+#endif
+
+

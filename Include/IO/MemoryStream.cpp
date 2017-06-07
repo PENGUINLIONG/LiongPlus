@@ -1,5 +1,6 @@
 // File: MemoryStream.cpp
 // Author: Rendong Liang (Liong)
+#include <cassert>
 #include "MemoryStream.hpp"
 
 namespace LiongPlus
@@ -8,16 +9,16 @@ namespace LiongPlus
 	{
 		using std::swap;
 		MemoryStream::MemoryStream()
-			: _Buffer(DEFAULT_BUFFER_CHUNK_SIZE)
+			: Stream()
+			, _Buffer(DEFAULT_BUFFER_CHUNK_SIZE)
 			, _Position(0)
-			, _Permission(StreamAccessPermission::ReadWrite)
 			, _IsClosed(false)
 		{
 		}
 		MemoryStream::MemoryStream(MemoryStream&& instance)
-			: _Buffer()
+			: Stream()
+			, _Buffer()
 			, _Position(0)
-			, _Permission(StreamAccessPermission::ReadWrite)
 			, _IsClosed(true)
 		{
 			swap(_Buffer, instance._Buffer);
@@ -26,24 +27,24 @@ namespace LiongPlus
 			swap(_IsClosed, instance._IsClosed);
 		}
 		MemoryStream::MemoryStream(StreamAccessPermission permission)
-			: _Buffer(DEFAULT_BUFFER_CHUNK_SIZE)
+			: Stream(permission)
+			, _Buffer(DEFAULT_BUFFER_CHUNK_SIZE)
 			, _Position(0)
-			, _Permission(permission)
 			, _IsClosed(false)
 		{
 		}
 		MemoryStream::MemoryStream(Buffer&& buffer)
-			: _Buffer()
+			: Stream()
+			, _Buffer()
 			, _Position(0)
-			, _Permission(StreamAccessPermission::ReadWrite)
 			, _IsClosed(false)
 		{
 			swap(_Buffer, buffer);
 		}
 		MemoryStream::MemoryStream(Buffer&& buffer, StreamAccessPermission permission)
-			: _Buffer()
+			: Stream(permission)
+			, _Buffer()
 			, _Position(0)
-			, _Permission(permission)
 			, _IsClosed(false)
 		{
 			swap(_Buffer, buffer);

@@ -1,26 +1,19 @@
 // File: Logger.hpp
 // Author: Rendong Liang (Liong)
+#pragma
 
-#ifndef _L_Logger
-#define _L_Logger
-#include "../Fundamental.hpp"
-#include "UnitTest.hpp"
-#include "../DateTime.hpp"
+#include <string>
+#include "_"
 
-namespace LiongPlus
+_L_NS_BEG_TESTING
+class Logger
 {
-	namespace Testing
-	{
-		class Logger
-		{
-		public:
-			static void Log(std::string label, std::string msg);
+public:
+	static void Log(std::string label, std::string msg);
 
-			static void Info(std::string msg);
-			static void Warn(std::string msg);
-			static void Excp(std::string msg);
-			static void Sver(std::string msg);
-		};
-	}
-}
-#endif
+	static void Info(std::string msg);
+	static void Warn(std::string msg);
+	static void Excp(std::string msg);
+	static void Sver(std::string msg);
+};
+_L_NS_END_TESTING

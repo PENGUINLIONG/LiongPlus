@@ -1,6 +1,8 @@
 // File: BufferPool.cpp
 // Author: Rendong Liang(Liong)
+
 #include "BufferPool.hpp"
+#include <sstream>
 
 namespace LiongPlus
 {
@@ -18,8 +20,8 @@ namespace LiongPlus
 	// BufferPool::Ref
 
 
-	BufferPool::Ref::Ref(shared_ptr<Unit> ref)
-		: _Ref(move(ref))
+	BufferPool::Ref::Ref(const shared_ptr<Unit>& ref)
+		: _Ref(ref)
 	{
 		++_Ref->_RefCount;
 	}
@@ -47,29 +49,32 @@ namespace LiongPlus
 		return &_Ref->_Buffer;
 	}
 
-
+	//
 	// BufferPool
+	//
 
-
-	BufferPool::BufferPool(unsigned long poolId)
-		: _PoolId(poolId)
-		, _Lock()
-		, _Pool()
-	{ }
-
-	unsigned long BufferPool::PoolId()
+	void BufferPool::_UnsafeAddOne(const size_t sizeOfBuffer)
 	{
-		return _PoolId;
+		if (nullptr == _Pool)
+		{
+			_Pool = new UnitChainNode{ make_shared<BufferPool::Unit>(sizeOfBuffer), nullptr };
+			_Pool->Next = _Pool;
+		}
+		else
+			_Pool->Next = new UnitChainNode{ make_shared<BufferPool::Unit>(sizeOfBuffer), _Pool->Next };
 	}
+
+	BufferPool::BufferPool(unsigned long poolId) : _Lock(), _Pool(nullptr) { }
 
 	BufferPool::Ref BufferPool::AddOne(const size_t sizeOfBuffer)
 	{
 		if (sizeOfBuffer == 0)
-			throw runtime_error("Cannot add 0-sized buffer into the pool.");
-		lock_guard<recursive_mutex> lock(_Lock);
+			throw length_error("Cannot add 0-sized buffer into the pool.");
 
-		_Pool.emplace_back(make_shared<BufferPool::Unit>(sizeOfBuffer));
-		return _Pool.back();
+		lock_guard<recursive_mutex> lock(_Lock);
+		_UnsafeAddOne(sizeOfBuffer);
+
+		return _Pool->Next->Unit;
 	}
 
 	size_t BufferPool::Add(const size_t sizeOfBuffer, const size_t num)
@@ -81,86 +86,92 @@ namespace LiongPlus
 		lock_guard<recursive_mutex> lock(_Lock);
 
 		while (toAdd-- > 0)
-			try { _Pool.push_back(make_shared<BufferPool::Unit>(sizeOfBuffer)); }
-		catch (...) { ++toAdd; break; }
+		{
+			try
+			{
+				_UnsafeAddOne(sizeOfBuffer);
+			}
+			catch (...) { ++toAdd; break; }
+		}
 		return num - toAdd;
 	}
 
 	BufferPool::Ref BufferPool::Get(size_t minSize)
 	{
 		lock_guard<recursive_mutex> lock(_Lock);
-		auto pos = _Pool.begin(), end = _Pool.end();
+		if (nullptr == _Pool) _UnsafeAddOne(_MinimumSize);
 
-		while (pos != end)
-			if ((*pos)->_Buffer.Length() >= minSize &&
-				(*pos)->_RefCount == 0)
-				return *pos;
+		auto pos = _Pool, end = _Pool;
+
+		do
+		{
+			if (pos->Unit->_Buffer.Length() >= minSize &&
+				pos->Unit->_RefCount == 0)
+				return pos->Unit;
 			else
-				++pos;
+				pos = pos->Next;
+		} while (pos != end);
 		return AddOne(_MinimumSize > minSize ? _MinimumSize : minSize);
 	}
 
 	size_t BufferPool::RemoveIf(Predicate<const Buffer&> condition)
 	{
-		if (condition == nullptr) throw runtime_error("Null func.");
+		if (condition == nullptr) throw invalid_argument("Null func.");
 
 		size_t removed = 0;
 		lock_guard<recursive_mutex> lock(_Lock);
-		auto pos = _Pool.begin(), end = _Pool.end();
+		auto pos = _Pool, end = _Pool;
 
-		while (pos != end)
-			if (condition((*pos)->_Buffer)) _Pool.erase(pos++), ++removed;
-			else ++pos;
-			return removed;
+		do
+		{
+			if (condition(pos->Next->Unit->_Buffer))
+			{
+				auto temp = pos->Next->Next;
+				delete pos->Next;
+				pos->Next = temp;
+				++removed;
+				// $end is removed, break to prevent another round of looping.
+				if (temp == end) break;
+			}
+			else pos = pos->Next;
+		} while (pos != end);
+		return removed;
 	}
 
 	size_t BufferPool::RemoveIdle()
 	{
 		size_t removed = 0;
 		lock_guard<recursive_mutex> lock(_Lock);
-		auto pos = _Pool.begin(), end = _Pool.end();
+		auto pos = _Pool, end = _Pool;
 
-		while (pos != end)
-			if ((*pos)->_RefCount == 0) _Pool.erase(pos++), ++removed;
-			else ++pos;
-			return removed;
+		do
+		{
+			if (0 == pos->Next->Unit->_RefCount)
+			{
+				auto temp = pos->Next->Next;
+				delete pos->Next;
+				pos->Next = temp;
+				++removed;
+				if (temp == end) break;
+			}
+			else pos = pos->Next;
+		} while (pos != end);
+		return removed;
 	}
 
 	// Static
 
 	BufferPool& BufferPool::Ginst(unsigned long groupId)
 	{
-		lock_guard<mutex> lock(_GlobalLock);
-		auto context = _ContextMap.find(groupId);
-		if (context == _ContextMap.end())
-			return *(_ContextMap.emplace(groupId, make_unique<BufferPool>(groupId)).first->second);
-		else return *context->second;
-	}
-
-	void BufferPool::Release(unsigned long poolId)
-	{
-		_ContextMap.erase(poolId);
-	}
-
-	string BufferPool::Report()
-	{
-		stringstream ss;
-		ss << _ContextMap.size() << " pools are allocated:" << endl;
-		lock_guard<mutex> globalLock(_GlobalLock);
-		for (auto& pr in _ContextMap)
-		{
-			lock_guard<recursive_mutex> lock(pr.second->_Lock);
-			size_t idleCount = 0;
-			for (auto& b in pr.second->_Pool)
-				if (b->_RefCount == 0) ++idleCount;
-			ss << "Pool #" << pr.first << ": " << pr.second->_Pool.size() << " (" << idleCount << " idle)" << endl;
-		}
-		return ss.str();
+		lock_guard<mutex> lock(s_GlobalLock);
+		if (t_CurrentPool == nullptr)
+			return *(t_CurrentPool = make_unique<BufferPool>(groupId));
+		else return *t_CurrentPool;
 	}
 
 	// Private
 	// Static
 
-	map<unsigned long, unique_ptr<BufferPool>> BufferPool::_ContextMap;
-	mutex BufferPool::_GlobalLock;
+	thread_local unique_ptr<BufferPool> BufferPool::t_CurrentPool;
+	mutex BufferPool::s_GlobalLock;
 }

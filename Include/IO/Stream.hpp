@@ -1,6 +1,5 @@
 // File: Stream.hpp
 // Author: Rendong Liang (Liong)
-#include "../Fundamental.hpp"
 #include "../Buffer.hpp"
 
 #ifndef Stream_hpp
@@ -25,6 +24,14 @@ namespace LiongPlus
 
 		class Stream
 		{
+		protected:
+			StreamAccessPermission _Permission;
+
+			Stream(StreamAccessPermission permission = StreamAccessPermission::ReadWrite)
+				: _Permission(permission)
+			{
+			}
+
 		public:
 			virtual bool CanRead() = 0;
 			virtual bool CanWrite() = 0;

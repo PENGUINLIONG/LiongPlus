@@ -1,0 +1,10 @@
+// File: _
+// Author: Rendong Liang (Liong)
+
+#pragma once
+
+#include "../_"
+
+#define _L_NS_BEG_TESTING namespace LiongPlus{namespace Testing{
+#define _L_NS_END_TESTING }}
+

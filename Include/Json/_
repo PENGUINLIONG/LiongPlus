@@ -1,0 +1,10 @@
+// File: _
+// Author: Rendong Liang (Liong)
+
+#pragma once
+#include "../_"
+
+#define _L_NS_BEG_JSON namespace LiongPlus{namespace Net{
+#define _L_NS_END_JSON }}
+
+

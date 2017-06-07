@@ -1,6 +1,8 @@
 // File: AnsiStringUtils.hpp
 // Author: Rendong Liang (Liong)
-#include "Fundamental.hpp"
+#pragma once
+#include "_"
+#include "DelegateDef.hpp"
 
 namespace LiongPlus
 {
@@ -43,7 +45,7 @@ namespace LiongPlus
 		*   True if two strings have case-insensitively equal content. Otherwise, false.
 		*/
 		template<typename TStr>
-		inline bool CaseInsensitiveEquals(TStr& a, TStr& b)
+		inline bool CaseInsensitiveEquals(const TStr& a, const TStr& b)
 		{
 			if (a.length() != b.length()) return false;
 
@@ -61,14 +63,15 @@ namespace LiongPlus
 		 * Returns:
 		 *   True if the section equals to the 'reference' string. Otherwise, false.
 		 */
-		template<typename TStr, typename TStrIt>
-		inline bool SectionalEquals(TStrIt pos, TStrIt end, TStr compareWith)
+		template<typename TStrItA, typename TStrItB>
+		inline bool SectionalEquals(const TStrItA begA, const TStrItA endA, const TStrItB begB, const TStrItB endB)
 		{
-			auto refPos = compareWith.begin(), refEnd = compareWith.end();
-			auto dist = distance(pos, end);
-			if (dist < 0 || static_cast<size_t>(dist) < compareWith.length()) return false;
-			while (refEnd != refPos && *(pos++) == *(refPos++));
-			return refEnd == refPos;
+			auto posA = const_cast<TStrItA>(begA);
+			auto posB = const_cast<TStrItB>(begB);
+			if (std::distance(begA, endA) != std::distance(begB, endB) ||
+				std::distance(begA, endA) <= 0) return false;
+			while (endA != posA && *(posA++) == *(posB++));
+			return endA == posA;
 		}
 		/*
 		 * Check if a section of string ($pos to $end) satisfies the $condition.
@@ -80,7 +83,7 @@ namespace LiongPlus
 		 *   True if the section satisfies the $condition. Otherwise, false.
 		 */
 		template<typename TStrIt>
-		inline bool ConditionalEquals(TStrIt pos, TStrIt end, Predicate<const char> condition)
+		inline bool ConditionalEquals(TStrIt pos, TStrIt end, const Predicate<char>& condition)
 		{
 			auto dist = distance(pos, end);
 			if (dist < 0) return false;
@@ -111,7 +114,37 @@ namespace LiongPlus
 		inline TStrIt SeekForLineBreak(TStrIt pos, TStrIt end)
 		{
 			while (pos != end)
-				if (*pos == '\r' || *pos == '\n') break; else ++pos;
+				if (IsLineBreak(*pos)) break; else ++pos;
+			return pos;
+		}
+		/*
+		* Seek for a char that is a whitespace, that is, ' ' or '\t'.
+		* Params:
+		*   $pos: The beginning of search.
+		*   $end: The end of search.
+		* Return:
+		*   The position of the first whitespace char.
+		*/
+		template<typename TStrIt>
+		inline TStrIt SeekForWhiteSpace(TStrIt pos, TStrIt end)
+		{
+			while (pos != end)
+				if (IsWhiteSpace(*pos)) break; else ++pos;
+			return pos;
+		}
+		/*
+		* Seek for a char that is not a whitespace, that is, ' ' or '\t'.
+		* Params:
+		*   $pos: The beginning of search.
+		*   $end: The end of search.
+		* Return:
+		*   The position of the first non-whitespace char.
+		*/
+		template<typename TStrIt>
+		inline TStrIt SeekForNonWhiteSpace(TStrIt pos, TStrIt end)
+		{
+			while (pos != end)
+				if (!IsWhiteSpace(*pos)) break; else ++pos;
 			return pos;
 		}
 		/*
@@ -122,11 +155,11 @@ namespace LiongPlus
 		* Return:
 		*   The position of the given char.
 		*/
-		template<typename TStrIt>
-		inline TStrIt SeekForChar(TStrIt pos, TStrIt end, const char c)
+		template<typename TStrIt, typename ... TChars>
+		inline TStrIt SeekForChar(TStrIt pos, TStrIt end, TChars ... cs)
 		{
 			while (pos != end)
-				if (*pos == c) break; else ++pos;
+				if (details::SeekForCharImpl(*pos, cs ...)) break; else ++pos;
 			return pos;
 		}
 		/*
@@ -160,39 +193,55 @@ namespace LiongPlus
 		 * Capture number literals ('0'-'9').
 		 * Params:
 		 *   $pos: [REF] The position of first char of line break.
-		 *     This iterator will be moved to the end of the number literals. 
+		 *     This iterator will be moved to where next to the last digit captured. 
 		 *   $end: The end of valid search range.
 		 * Return:
 		 *   The number literals captured.
 		 */
 		template<typename TStr, typename TStrIt>
-		inline TStr CaptureNumber(TStrIt pos, TStrIt end)
+		inline TStr CaptureDigits(TStrIt pos, TStrIt end)
 		{
 			auto beg = pos;
 			while (IsDigit(*pos) && pos++ != end);
-			return std::string(beg, pos);
+			return TStr(beg, pos);
 		}
 		/*
 		 * Capture alphabets ('A'-'Z', 'a'-'z').
 		 * Params:
 		 *   $pos: [REF] The position of first char of line break.
-		 *     This iterator will be moved to the end of the alphabets. 
+		 *     This iterator will be moved to where next to the last alphabet captured. 
 		 *   $end: The end of valid search range.
 		 * Return:
 		 *   The alphabets captured.
 		 */
 		template<typename TStr, typename TStrIt>
-		inline TStr CaptureWord(TStrIt pos, TStrIt end)
+		inline TStr CaptureAlphabets(TStrIt pos, TStrIt end)
 		{
 			auto beg = pos;
-			while (IsAlphabet(*pos) && pos++ != end);
-			return std::string(beg, pos);
+			while (pos++ != end && IsAlphabet(*pos++));
+			return TStr(beg, pos);
+		}
+		/*
+		* Capture all non-whitespace.
+		* Params:
+		*   $pos: [REF] The position of first char of line break.
+		*     This iterator will be moved to where next to the last char captured.
+		*   $end: The end of valid search range.
+		* Return:
+		*   The chars captured.
+		*/
+		template<typename TStr, typename TStrIt>
+		inline TStr CaptureNonWhiteSpace(TStrIt pos, TStrIt end)
+		{
+			auto beg = pos;
+			while (pos != end && !IsWhiteSpace(*pos++));
+			return TStr(beg, pos);
 		}
 		/*
 		 * Capture chars according to the result of $condition.
 		 * Params:
 		 *   $pos: [REF] The position of first char of line break.
-		 *     This iterator will be moved to the end of the valid chars. 
+		 *     This iterator will be moved to where next to the last valid char captured.
 		 *   $end: The end of valid search range.
 		 *   $condition: Function that determine whether a char is part of the captured text.
 		 * Return:
@@ -202,8 +251,22 @@ namespace LiongPlus
 		inline TStr CaptureIf(TStrIt pos, TStrIt end, Predicate<const char> condition)
 		{
 			auto beg = pos;
-			while (condition(*pos) && pos++ != end);
-			return std::string(beg, pos);
+			while (pos != end && condition(*pos++));
+			return TStr(beg, pos);
 		}
-	};
+
+		namespace details
+		{
+			template<typename TCurrent, typename TChar>
+			constexpr bool SeekForCharImpl(TCurrent currentChar, TChar c)
+			{
+				return currentChar == c;
+			}
+			template<typename TCurrent, typename TChar, typename ... TArgs>
+			constexpr bool SeekForCharImpl(TCurrent currentChar, TChar c, TArgs ... others)
+			{
+				return Aggregate(currentChar, c) || Aggregate(currentChar, others ...);
+			}
+		}
+	}
 }

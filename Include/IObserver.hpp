@@ -1,20 +1,19 @@
 // File: IObserver.hpp
 // Author: Rendong Liang (Liong)
+#pragma once
 
-#ifndef _L_IObserver
-#define _L_IObserver
-#include "Fundamental.hpp"
+#include <stdexcept>
+#include "_"
 
-namespace LiongPlus
+_L_NS_BEG
+
+template<typename T>
+class IObserver
 {
-	template<typename T>
-	class IObserver
-		: public virtual Interface
-	{
-	public:
-		virtual void OnCompleted() = 0;
-		virtual void OnError(Exception e) = 0;
-		virtual void OnNext(T value) = 0;		
-	}
-}
-#endif
+public:
+	virtual void OnCompleted() = 0;
+	virtual void OnError(const std::exception& e) = 0;
+	virtual void OnNext(T value) = 0;
+};
+
+_L_NS_END

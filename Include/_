@@ -1,0 +1,12 @@
+// File: _
+// Author: Rendong Liang (Liong)
+
+#pragma once
+#pragma execution_character_set("utf-8")
+
+#define _L_NS_BEG namespace LiongPlus{
+#define _L_NS_END }
+
+typedef unsigned char Byte;
+
+#define _L_UNALIGNED alignas(1)

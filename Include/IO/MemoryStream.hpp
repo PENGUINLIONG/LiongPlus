@@ -1,11 +1,10 @@
 // File: MemoryStream.hpp
 // Author: Rendong Liang (Liong)
-#include "Fundamental.hpp"
+#pragma once
+
+#include "_"
 #include "Stream.hpp"
 #include "../Buffer.hpp"
-
-#ifndef MemoryStream_hpp
-#define MemoryStream_hpp
 
 namespace LiongPlus
 {
@@ -19,7 +18,6 @@ namespace LiongPlus
 
 			size_t _Position;
 			Buffer _Buffer;
-			StreamAccessPermission _Permission;
 			bool _IsClosed;
 		public:
 			MemoryStream();
@@ -57,4 +55,3 @@ namespace LiongPlus
 		};
 	}
 }
-#endif /* MemoryStream_hpp */

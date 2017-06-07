@@ -1,33 +1,25 @@
 // File: Assert.hpp
 // Author: Rendong Liang (Liong)
+#pragma once
 
-#ifndef _L_Assert
-#define _L_Assert
-#include "../Fundamental.hpp"
-#include "UnitTest.hpp"
+#include "_"
 
-namespace LiongPlus
+_L_NS_BEG_TESTING
+class Assert
 {
-	namespace Testing
+public:
+	template<typename TA, typename TB>
+	static void Equals(const TA& actual, const TB& expectance)
 	{
-		class Assert
-		{
-		public:
-			template<typename T>
-			static void Equals(T actual, T expectance)
-			{
-				return Discriminate(actual == expectance);
-			}
-
-			template<typename T>
-			static void NotEquals(T actual, T expectance)
-			{
-				return Discriminate(actual != expectance);
-			}
-		private:
-			static void Discriminate(bool isTrue);
-		};
+		return Discriminate(actual == expectance);
 	}
-}
 
-#endif
+	template<typename TA, typename TB>
+	static void NotEquals(const TA& actual, const TB& expectance)
+	{
+		return Discriminate(actual != expectance);
+	}
+private:
+	static void Discriminate(bool isTrue);
+};
+_L_NS_END_TESTING
