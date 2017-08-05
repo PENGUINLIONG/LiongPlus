@@ -1,0 +1,20 @@
+report_using(USE_GRAPHICS_UI "LiongPlus::Graphics::UI")
+if (USE_GRAPHICS_UI)
+	set(LIONGPLUS_SOURCES ${LIONGPLUS_SOURCES}
+		${CMAKE_CURRENT_SOURCE_DIR}/Animation.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/Canvas.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/ContentControl.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/Control.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/DependencyInjection.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/OpenGLBrush.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/OpenGLCanvas.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/Panel.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/UICommonDefs.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/UIElement.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/UIUpdater.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/UIUpdater.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/Window.cpp
+	)
+	add_subdirectory(Controls)
+endif()
+set (LIONGPLUS_SOURCES ${LIONGPLUS_SOURCES} PARENT_SCOPE)

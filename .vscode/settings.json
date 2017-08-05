@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "*.ps": "powershell",
+        "*.prototxt": "protobuf"
+    }
+}

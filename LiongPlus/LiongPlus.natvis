@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+  <Type Name="LiongPlus::Array&lt;*&gt;">
+    <DisplayString>{{size={_Size}}}</DisplayString>
+    <Expand>
+      <ArrayItems>
+        <Size>_Size</Size>
+        <ValuePointer>_Ptr</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+
+  <Type Name="LiongPlus::_Vector4&lt;*&gt;">
+    <DisplayString>({X}, {Y}, {Z}, {W})</DisplayString>
+    <Expand>
+      <ArrayItems>
+        <Size>4</Size>
+        <ValuePointer>this</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+  
+
+</AutoVisualizer>

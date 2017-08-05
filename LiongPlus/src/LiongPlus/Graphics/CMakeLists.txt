@@ -1,0 +1,8 @@
+report_using(USE_GRAPHICS "LiongPlus::Graphics")
+if (USE_GRAPHICS)
+	assert_using(USE_MEDIA "LiongPlus::Media")
+	assert_using(USE_PLATFORM "LiongPlus::Platform")
+	add_subdirectory(OpenGL)
+	add_subdirectory(UI)
+endif()
+set (LIONGPLUS_SOURCES ${LIONGPLUS_SOURCES} PARENT_SCOPE)

@@ -1,0 +1,13 @@
+function(assert_using flag module)
+	if (NOT ${${flag}})
+		message(FATAL_ERROR "This module depends on ${module}, but it's disabled")
+	endif()
+endfunction(assert_using)
+
+function(report_using flag module)
+	if (${flag})
+		message("-- @ Enabled ${module}")
+	else()
+		message("-- X Disabled ${module}")
+	endif()
+endfunction(report_using)

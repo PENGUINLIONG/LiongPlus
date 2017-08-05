@@ -1,0 +1,23 @@
+// File: _
+// Author: Rendong Liang (Liong)
+#pragma once
+#pragma execution_character_set("utf-8")
+
+#define _L_NS_BEG namespace LiongPlus{
+#define _L_NS_END }
+
+#define _L_NS_BEG_DETAILS namespace details{
+#define _L_NS_END_DETAILS }
+
+using Byte = unsigned char;
+using Float = float;
+
+#define _L_UNALIGNED alignas(1)
+
+#if (defined(_WIN32) || defined(_WIN64))
+#define __L_WINDOWS
+#elif defined(__APPLE__)
+#define __L_MACOSX
+#elif (defined(__linux__))
+#define __L_LINUX
+#endif

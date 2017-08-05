@@ -1,0 +1,8 @@
+// File: _
+// Author: Rendong Liang (Liong)
+
+#pragma once
+#include "../_"
+
+#define _L_NS_BEG_PLATFORM namespace LiongPlus{namespace Platform{
+#define _L_NS_END_PLATFORM }}
